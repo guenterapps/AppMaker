@@ -1,0 +1,1014 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA124411185C9DA900058A30 /* MockedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA124410185C9DA900058A30 /* MockedItem.m */; };
+		AA124414185C9DB800058A30 /* MockedTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = AA124413185C9DB800058A30 /* MockedTopic.m */; };
+		AA124417185C9DC200058A30 /* MockedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = AA124416185C9DC200058A30 /* MockedImage.m */; };
+		AA124419185CBB3B00058A30 /* CLADataParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AA124418185CBB3B00058A30 /* CLADataParserTests.m */; };
+		AA2184C9188327AE00FF0B4D /* CLAEventTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2184C8188327AE00FF0B4D /* CLAEventTableViewCell.m */; };
+		AA2184E61885BE7F00FF0B4D /* NSData+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2184E51885BE7F00FF0B4D /* NSData+Hex.m */; };
+		AA3801361866EBA800473548 /* UITableViewCell+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3801351866EBA800473548 /* UITableViewCell+Common.m */; };
+		AA3801371866EBA800473548 /* UITableViewCell+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3801351866EBA800473548 /* UITableViewCell+Common.m */; };
+		AA39D020189AFF47009E93E4 /* CLAWebPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA39D01F189AFF47009E93E4 /* CLAWebPlayerController.m */; };
+		AA3AA4B3184A18E700A12FB3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3AA4B2184A18E700A12FB3 /* QuartzCore.framework */; };
+		AA3AA4B7184A1B1F00A12FB3 /* CLAAppDataStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3AA4B6184A1B1F00A12FB3 /* CLAAppDataStoreTests.m */; };
+		AA549FB91870791300A4D4CC /* CLACreditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA549FB81870791300A4D4CC /* CLACreditsViewController.m */; };
+		AA8D43831869856A00633BA1 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8D43821869856A00633BA1 /* Social.framework */; };
+		AA8D7E18186368B0004AB346 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */; };
+		AA8D7E19186368B0004AB346 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */; };
+		AAA387E31891CAC40081C900 /* CLAWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA387E21891CAC40081C900 /* CLAWebViewController.m */; };
+		AAA66F6518579D650097831C /* CLAFetchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F6418579D650097831C /* CLAFetchManager.m */; };
+		AAA66F6618579D650097831C /* CLAFetchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F6418579D650097831C /* CLAFetchManager.m */; };
+		AAA66F691857A80D0097831C /* CLADataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F681857A80D0097831C /* CLADataParser.m */; };
+		AAA66F6A1857A80D0097831C /* CLADataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F681857A80D0097831C /* CLADataParser.m */; };
+		AAA66F6C1857A9E90097831C /* CLAFetchManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F6B1857A9E90097831C /* CLAFetchManagerTests.m */; };
+		AAA790D7184BA47700E0027C /* CLAAppDataStore+FakeData.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790CA184BA47700E0027C /* CLAAppDataStore+FakeData.m */; };
+		AAA790D8184BA47700E0027C /* CLAAppDataStore+FakeData.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790CA184BA47700E0027C /* CLAAppDataStore+FakeData.m */; };
+		AAA790D9184BA47700E0027C /* CLAMainTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790CC184BA47700E0027C /* CLAMainTableViewController.m */; };
+		AAA790DA184BA47700E0027C /* CLAMainTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790CC184BA47700E0027C /* CLAMainTableViewController.m */; };
+		AAA790DD184BA47700E0027C /* ItemType.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790D0184BA47700E0027C /* ItemType.m */; };
+		AAA790DE184BA47700E0027C /* ItemType.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790D0184BA47700E0027C /* ItemType.m */; };
+		AAA790DF184BA47700E0027C /* Topic.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790D2184BA47700E0027C /* Topic.m */; };
+		AAA790E0184BA47700E0027C /* Topic.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790D2184BA47700E0027C /* Topic.m */; };
+		AAA790F0184BA4D300E0027C /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA790E6184BA4D300E0027C /* libOCMock.a */; };
+		AAA790F1184BA4D400E0027C /* XCTestCase+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790EF184BA4D300E0027C /* XCTestCase+Utils.m */; };
+		AAA790F4184D0CEF00E0027C /* CLASplashScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790F3184D0CEF00E0027C /* CLASplashScreenViewController.m */; };
+		AAA790F5184D0CEF00E0027C /* CLASplashScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790F3184D0CEF00E0027C /* CLASplashScreenViewController.m */; };
+		AAA790F8184D1D8300E0027C /* CLAMenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790F7184D1D8300E0027C /* CLAMenuTableViewController.m */; };
+		AAA790F9184D1D8300E0027C /* CLAMenuTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790F7184D1D8300E0027C /* CLAMenuTableViewController.m */; };
+		AAA790FC184D1DD700E0027C /* CLABaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790FB184D1DD600E0027C /* CLABaseViewController.m */; };
+		AAA790FD184D1DD700E0027C /* CLABaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA790FB184D1DD600E0027C /* CLABaseViewController.m */; };
+		AAA79103184D20EA00E0027C /* CLAMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AAA79102184D20EA00E0027C /* CLAMenuTableViewCell.xib */; };
+		AAA7910C184FBFFD00E0027C /* CLAMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA7910B184FBFFD00E0027C /* CLAMapViewController.m */; };
+		AAA7910D184FBFFD00E0027C /* CLAMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA7910B184FBFFD00E0027C /* CLAMapViewController.m */; };
+		AAA7910F184FC85600E0027C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAA7910E184FC85600E0027C /* MapKit.framework */; };
+		AAB1287818A027D8002799B5 /* Locale.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB1287718A027D8002799B5 /* Locale.m */; };
+		AAB1287B18A038E7002799B5 /* CLAPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB1287A18A038E7002799B5 /* CLAPreferencesViewController.m */; };
+		AAB1287E18A16C3E002799B5 /* CLAPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB1287D18A16C3E002799B5 /* CLAPreferences.m */; };
+		AAB7F75A185331E200AEC2FA /* CLAPanelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F759185331E200AEC2FA /* CLAPanelViewController.m */; };
+		AAB7F75B185331E200AEC2FA /* CLAPanelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F759185331E200AEC2FA /* CLAPanelViewController.m */; };
+		AAB7F7781853617C00AEC2FA /* CLADetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7771853617C00AEC2FA /* CLADetailViewController.m */; };
+		AAB7F7791853617C00AEC2FA /* CLADetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7771853617C00AEC2FA /* CLADetailViewController.m */; };
+		AAB7F7B418537F1B00AEC2FA /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7B318537F1B00AEC2FA /* Item.m */; };
+		AAB7F7B518537F1B00AEC2FA /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7B318537F1B00AEC2FA /* Item.m */; };
+		AAB7F7BC185381C600AEC2FA /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7BB185381C600AEC2FA /* Image.m */; };
+		AAB7F7BD185381C600AEC2FA /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7BB185381C600AEC2FA /* Image.m */; };
+		AAB7F7C11853824900AEC2FA /* NSManagedObject+Commons.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7C01853824900AEC2FA /* NSManagedObject+Commons.m */; };
+		AAB7F7C21853824900AEC2FA /* NSManagedObject+Commons.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7C01853824900AEC2FA /* NSManagedObject+Commons.m */; };
+		AAB7F7E1185485C000AEC2FA /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAB7F7E0185485C000AEC2FA /* MessageUI.framework */; };
+		AAB7F7F818548FA400AEC2FA /* CLAActionsDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7ED18548FA400AEC2FA /* CLAActionsDetailCell.m */; };
+		AAB7F7F918548FA400AEC2FA /* CLAActionsDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7ED18548FA400AEC2FA /* CLAActionsDetailCell.m */; };
+		AAB7F7FA18548FA400AEC2FA /* CLAAddressDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7EF18548FA400AEC2FA /* CLAAddressDetailCell.m */; };
+		AAB7F7FB18548FA400AEC2FA /* CLAAddressDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7EF18548FA400AEC2FA /* CLAAddressDetailCell.m */; };
+		AAB7F7FC18548FA400AEC2FA /* CLAAddressDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AAB7F7F018548FA400AEC2FA /* CLAAddressDetailCell.xib */; };
+		AAB7F7FD18548FA400AEC2FA /* CLADescriptionDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AAB7F7F118548FA400AEC2FA /* CLADescriptionDetailCell.xib */; };
+		AAB7F7FE18548FA400AEC2FA /* CLAHeaderDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7F318548FA400AEC2FA /* CLAHeaderDetailCell.m */; };
+		AAB7F7FF18548FA400AEC2FA /* CLAHeaderDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7F318548FA400AEC2FA /* CLAHeaderDetailCell.m */; };
+		AAB7F80018548FA400AEC2FA /* CLAMainTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7F518548FA400AEC2FA /* CLAMainTableViewCell.m */; };
+		AAB7F80118548FA400AEC2FA /* CLAMainTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7F518548FA400AEC2FA /* CLAMainTableViewCell.m */; };
+		AAB7F80218548FA400AEC2FA /* CLAMenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7F718548FA400AEC2FA /* CLAMenuTableViewCell.m */; };
+		AAB7F80318548FA400AEC2FA /* CLAMenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F7F718548FA400AEC2FA /* CLAMenuTableViewCell.m */; };
+		AAB7F82D1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F82C1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.m */; };
+		AAB7F82E1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F82C1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.m */; };
+		AAB7F8371854BAB400AEC2FA /* CLADescriptionDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F8361854BAB400AEC2FA /* CLADescriptionDetailCell.m */; };
+		AAB7F8381854BAB400AEC2FA /* CLADescriptionDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB7F8361854BAB400AEC2FA /* CLADescriptionDetailCell.m */; };
+		AABB00331847D28C002CCF40 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AABB00321847D28B002CCF40 /* Foundation.framework */; };
+		AABB00381847D28C002CCF40 /* AppMaker.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = AABB00371847D28C002CCF40 /* AppMaker.h */; };
+		AABB003A1847D28C002CCF40 /* AppMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = AABB00391847D28C002CCF40 /* AppMaker.m */; };
+		AABB00411847D28C002CCF40 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AABB00401847D28C002CCF40 /* XCTest.framework */; };
+		AABB00421847D28C002CCF40 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AABB00321847D28B002CCF40 /* Foundation.framework */; };
+		AABB00441847D28C002CCF40 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AABB00431847D28C002CCF40 /* UIKit.framework */; };
+		AABB00471847D28C002CCF40 /* libAppMakerStaticLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AABB002F1847D28B002CCF40 /* libAppMakerStaticLib.a */; };
+		AABB004D1847D28C002CCF40 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AABB004B1847D28C002CCF40 /* InfoPlist.strings */; };
+		AABB00AF1847DE33002CCF40 /* JASidePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = AABB00AC1847DE33002CCF40 /* JASidePanelController.m */; };
+		AABB00B01847DE33002CCF40 /* UIViewController+JASidePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AABB00AE1847DE33002CCF40 /* UIViewController+JASidePanel.m */; };
+		AAC4212A18871E380079C95C /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC4212918871E380079C95C /* SVProgressHUD.m */; };
+		AAC5A9801873229D0073FF6C /* CLAMenuViewControllerDelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = AAC5A97F18731CB80073FF6C /* CLAMenuViewControllerDelegate.h */; };
+		AAC5A9831874B2EB0073FF6C /* UITextView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC5A9821874B2EB0073FF6C /* UITextView+Utilities.m */; };
+		AAC5A9D1187855BA0073FF6C /* CLAProgressManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC5A9D0187855BA0073FF6C /* CLAProgressManager.m */; };
+		AACE5439185E06BE00C6E7CD /* CLAImageFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE5438185E06BE00C6E7CD /* CLAImageFetch.m */; };
+		AACE543A185E06BE00C6E7CD /* CLAImageFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE5438185E06BE00C6E7CD /* CLAImageFetch.m */; };
+		AADC92981849336A00917AAB /* CLAAppDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = AADC92971849336A00917AAB /* CLAAppDataStore.m */; };
+		AADC92991849336A00917AAB /* CLAAppDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = AADC92971849336A00917AAB /* CLAAppDataStore.m */; };
+		AADC92A7184938F000917AAB /* AppMaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AADC92A5184938F000917AAB /* AppMaker.xcdatamodeld */; };
+		AAF02B2818A7C3BB007AA4C5 /* CLALocalizedStringsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF02B2718A7C3BB007AA4C5 /* CLALocalizedStringsStore.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AABB00451847D28C002CCF40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AABB00271847D28B002CCF40 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AABB002E1847D28B002CCF40;
+			remoteInfo = AppMakerStaticLib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AABB002D1847D28B002CCF40 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				AABB00381847D28C002CCF40 /* AppMaker.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		AA12440F185C9DA900058A30 /* MockedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MockedItem.h; sourceTree = "<group>"; };
+		AA124410185C9DA900058A30 /* MockedItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MockedItem.m; sourceTree = "<group>"; };
+		AA124412185C9DB800058A30 /* MockedTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MockedTopic.h; sourceTree = "<group>"; };
+		AA124413185C9DB800058A30 /* MockedTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MockedTopic.m; sourceTree = "<group>"; };
+		AA124415185C9DC200058A30 /* MockedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MockedImage.h; sourceTree = "<group>"; };
+		AA124416185C9DC200058A30 /* MockedImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MockedImage.m; sourceTree = "<group>"; };
+		AA124418185CBB3B00058A30 /* CLADataParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLADataParserTests.m; sourceTree = "<group>"; };
+		AA2184C7188327AE00FF0B4D /* CLAEventTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAEventTableViewCell.h; path = Cells/CLAEventTableViewCell.h; sourceTree = SOURCE_ROOT; };
+		AA2184C8188327AE00FF0B4D /* CLAEventTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLAEventTableViewCell.m; path = Cells/CLAEventTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		AA2184CA1883281000FF0B4D /* CLAEventTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CLAEventTableViewCell.xib; path = Cells/CLAEventTableViewCell.xib; sourceTree = SOURCE_ROOT; };
+		AA2184E41885BE7F00FF0B4D /* NSData+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Hex.h"; path = "AppMakerStaticLib/NSData+Hex.h"; sourceTree = "<group>"; };
+		AA2184E51885BE7F00FF0B4D /* NSData+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Hex.m"; path = "AppMakerStaticLib/NSData+Hex.m"; sourceTree = "<group>"; };
+		AA27E75418511EA300BA9E30 /* CLAMainTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CLAMainTableViewCell.xib; path = Cells/CLAMainTableViewCell.xib; sourceTree = SOURCE_ROOT; };
+		AA3801341866EBA800473548 /* UITableViewCell+Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+Common.h"; sourceTree = "<group>"; };
+		AA3801351866EBA800473548 /* UITableViewCell+Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+Common.m"; sourceTree = "<group>"; };
+		AA39D01E189AFF47009E93E4 /* CLAWebPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAWebPlayerController.h; sourceTree = "<group>"; };
+		AA39D01F189AFF47009E93E4 /* CLAWebPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAWebPlayerController.m; sourceTree = "<group>"; };
+		AA3AA4B2184A18E700A12FB3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		AA3AA4B6184A1B1F00A12FB3 /* CLAAppDataStoreTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAAppDataStoreTests.m; sourceTree = "<group>"; };
+		AA549FB71870791300A4D4CC /* CLACreditsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLACreditsViewController.h; sourceTree = "<group>"; };
+		AA549FB81870791300A4D4CC /* CLACreditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLACreditsViewController.m; sourceTree = "<group>"; };
+		AA549FBA1870859700A4D4CC /* credits.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credits.plist; sourceTree = "<group>"; };
+		AA8D43821869856A00633BA1 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		AA8D7E16186368B0004AB346 /* UIColor-Expanded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor-Expanded.h"; sourceTree = "<group>"; };
+		AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor-Expanded.m"; sourceTree = "<group>"; };
+		AAA387E11891CAC40081C900 /* CLAWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAWebViewController.h; sourceTree = "<group>"; };
+		AAA387E21891CAC40081C900 /* CLAWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAWebViewController.m; sourceTree = "<group>"; };
+		AAA66F6318579D650097831C /* CLAFetchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAFetchManager.h; sourceTree = "<group>"; };
+		AAA66F6418579D650097831C /* CLAFetchManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAFetchManager.m; sourceTree = "<group>"; };
+		AAA66F671857A80D0097831C /* CLADataParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLADataParser.h; sourceTree = "<group>"; };
+		AAA66F681857A80D0097831C /* CLADataParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLADataParser.m; sourceTree = "<group>"; };
+		AAA66F6B1857A9E90097831C /* CLAFetchManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAFetchManagerTests.m; sourceTree = "<group>"; };
+		AAA66F6D1857AF010097831C /* CLADataParserHelperProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CLADataParserHelperProtocol.h; sourceTree = "<group>"; };
+		AAA66F6E1857B6230097831C /* CLAFetchManagerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CLAFetchManagerDelegate.h; sourceTree = "<group>"; };
+		AAA790C9184BA47700E0027C /* CLAAppDataStore+FakeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CLAAppDataStore+FakeData.h"; sourceTree = "<group>"; };
+		AAA790CA184BA47700E0027C /* CLAAppDataStore+FakeData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CLAAppDataStore+FakeData.m"; sourceTree = "<group>"; };
+		AAA790CB184BA47700E0027C /* CLAMainTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAMainTableViewController.h; sourceTree = "<group>"; };
+		AAA790CC184BA47700E0027C /* CLAMainTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAMainTableViewController.m; sourceTree = "<group>"; };
+		AAA790CF184BA47700E0027C /* ItemType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemType.h; sourceTree = "<group>"; };
+		AAA790D0184BA47700E0027C /* ItemType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemType.m; sourceTree = "<group>"; };
+		AAA790D1184BA47700E0027C /* Topic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Topic.h; sourceTree = "<group>"; };
+		AAA790D2184BA47700E0027C /* Topic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Topic.m; sourceTree = "<group>"; };
+		AAA790E6184BA4D300E0027C /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
+		AAA790E8184BA4D300E0027C /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
+		AAA790E9184BA4D300E0027C /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
+		AAA790EA184BA4D300E0027C /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
+		AAA790EB184BA4D300E0027C /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
+		AAA790EC184BA4D300E0027C /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
+		AAA790ED184BA4D300E0027C /* OCMockRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockRecorder.h; sourceTree = "<group>"; };
+		AAA790EE184BA4D300E0027C /* XCTestCase+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+Utils.h"; sourceTree = "<group>"; };
+		AAA790EF184BA4D300E0027C /* XCTestCase+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+Utils.m"; sourceTree = "<group>"; };
+		AAA790F2184D0CEF00E0027C /* CLASplashScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLASplashScreenViewController.h; sourceTree = "<group>"; };
+		AAA790F3184D0CEF00E0027C /* CLASplashScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLASplashScreenViewController.m; sourceTree = "<group>"; };
+		AAA790F6184D1D8300E0027C /* CLAMenuTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAMenuTableViewController.h; sourceTree = "<group>"; };
+		AAA790F7184D1D8300E0027C /* CLAMenuTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAMenuTableViewController.m; sourceTree = "<group>"; };
+		AAA790FA184D1DD600E0027C /* CLABaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLABaseViewController.h; sourceTree = "<group>"; };
+		AAA790FB184D1DD600E0027C /* CLABaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLABaseViewController.m; sourceTree = "<group>"; };
+		AAA79102184D20EA00E0027C /* CLAMenuTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CLAMenuTableViewCell.xib; path = Cells/CLAMenuTableViewCell.xib; sourceTree = SOURCE_ROOT; };
+		AAA7910A184FBFFD00E0027C /* CLAMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAMapViewController.h; sourceTree = "<group>"; };
+		AAA7910B184FBFFD00E0027C /* CLAMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAMapViewController.m; sourceTree = "<group>"; };
+		AAA7910E184FC85600E0027C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		AAB1287618A027D8002799B5 /* Locale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Locale.h; sourceTree = "<group>"; };
+		AAB1287718A027D8002799B5 /* Locale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Locale.m; sourceTree = "<group>"; };
+		AAB1287918A038E7002799B5 /* CLAPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAPreferencesViewController.h; sourceTree = "<group>"; };
+		AAB1287A18A038E7002799B5 /* CLAPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAPreferencesViewController.m; sourceTree = "<group>"; };
+		AAB1287C18A16C3E002799B5 /* CLAPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAPreferences.h; path = AppMakerStaticLib/CLAPreferences.h; sourceTree = "<group>"; };
+		AAB1287D18A16C3E002799B5 /* CLAPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAPreferences.m; sourceTree = "<group>"; };
+		AAB7F758185331E200AEC2FA /* CLAPanelViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAPanelViewController.h; sourceTree = "<group>"; };
+		AAB7F759185331E200AEC2FA /* CLAPanelViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAPanelViewController.m; sourceTree = "<group>"; };
+		AAB7F75C1853380E00AEC2FA /* UIViewController+JASidePanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIViewController+JASidePanel.h"; path = "../JASidePanels/JASidePanels/Source/UIViewController+JASidePanel.h"; sourceTree = "<group>"; };
+		AAB7F75D1853387700AEC2FA /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		AAB7F7761853617C00AEC2FA /* CLADetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLADetailViewController.h; sourceTree = "<group>"; };
+		AAB7F7771853617C00AEC2FA /* CLADetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLADetailViewController.m; sourceTree = "<group>"; };
+		AAB7F7A01853768E00AEC2FA /* CLAHeaderDetailCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CLAHeaderDetailCell.xib; path = Cells/CLAHeaderDetailCell.xib; sourceTree = SOURCE_ROOT; };
+		AAB7F7A1185376BE00AEC2FA /* CLAActionsDetailCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CLAActionsDetailCell.xib; path = Cells/CLAActionsDetailCell.xib; sourceTree = SOURCE_ROOT; };
+		AAB7F7B218537F1B00AEC2FA /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
+		AAB7F7B318537F1B00AEC2FA /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
+		AAB7F7BA185381C600AEC2FA /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
+		AAB7F7BB185381C600AEC2FA /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
+		AAB7F7BF1853824900AEC2FA /* NSManagedObject+Commons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+Commons.h"; sourceTree = "<group>"; };
+		AAB7F7C01853824900AEC2FA /* NSManagedObject+Commons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+Commons.m"; sourceTree = "<group>"; };
+		AAB7F7E0185485C000AEC2FA /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		AAB7F7EC18548FA400AEC2FA /* CLAActionsDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAActionsDetailCell.h; path = Cells/CLAActionsDetailCell.h; sourceTree = SOURCE_ROOT; };
+		AAB7F7ED18548FA400AEC2FA /* CLAActionsDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLAActionsDetailCell.m; path = Cells/CLAActionsDetailCell.m; sourceTree = SOURCE_ROOT; };
+		AAB7F7EE18548FA400AEC2FA /* CLAAddressDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAAddressDetailCell.h; path = Cells/CLAAddressDetailCell.h; sourceTree = SOURCE_ROOT; };
+		AAB7F7EF18548FA400AEC2FA /* CLAAddressDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLAAddressDetailCell.m; path = Cells/CLAAddressDetailCell.m; sourceTree = SOURCE_ROOT; };
+		AAB7F7F018548FA400AEC2FA /* CLAAddressDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CLAAddressDetailCell.xib; path = Cells/CLAAddressDetailCell.xib; sourceTree = SOURCE_ROOT; };
+		AAB7F7F118548FA400AEC2FA /* CLADescriptionDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CLADescriptionDetailCell.xib; path = Cells/CLADescriptionDetailCell.xib; sourceTree = SOURCE_ROOT; };
+		AAB7F7F218548FA400AEC2FA /* CLAHeaderDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAHeaderDetailCell.h; path = Cells/CLAHeaderDetailCell.h; sourceTree = SOURCE_ROOT; };
+		AAB7F7F318548FA400AEC2FA /* CLAHeaderDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLAHeaderDetailCell.m; path = Cells/CLAHeaderDetailCell.m; sourceTree = SOURCE_ROOT; };
+		AAB7F7F418548FA400AEC2FA /* CLAMainTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAMainTableViewCell.h; path = Cells/CLAMainTableViewCell.h; sourceTree = SOURCE_ROOT; };
+		AAB7F7F518548FA400AEC2FA /* CLAMainTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLAMainTableViewCell.m; path = Cells/CLAMainTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		AAB7F7F618548FA400AEC2FA /* CLAMenuTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAMenuTableViewCell.h; path = Cells/CLAMenuTableViewCell.h; sourceTree = SOURCE_ROOT; };
+		AAB7F7F718548FA400AEC2FA /* CLAMenuTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLAMenuTableViewCell.m; path = Cells/CLAMenuTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		AAB7F82B1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+SVPullToRefresh.h"; path = "../SVPullToRefresh/SVPullToRefresh/UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
+		AAB7F82C1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+SVPullToRefresh.m"; path = "../SVPullToRefresh/SVPullToRefresh/UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
+		AAB7F8351854BAB400AEC2FA /* CLADescriptionDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLADescriptionDetailCell.h; path = Cells/CLADescriptionDetailCell.h; sourceTree = SOURCE_ROOT; };
+		AAB7F8361854BAB400AEC2FA /* CLADescriptionDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLADescriptionDetailCell.m; path = Cells/CLADescriptionDetailCell.m; sourceTree = SOURCE_ROOT; };
+		AABB002F1847D28B002CCF40 /* libAppMakerStaticLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAppMakerStaticLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AABB00321847D28B002CCF40 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AABB00361847D28C002CCF40 /* AppMakerStaticLib-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppMakerStaticLib-Prefix.pch"; sourceTree = "<group>"; };
+		AABB00371847D28C002CCF40 /* AppMaker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppMaker.h; path = AppMakerStaticLib/AppMaker.h; sourceTree = "<group>"; };
+		AABB00391847D28C002CCF40 /* AppMaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppMaker.m; path = AppMakerStaticLib/AppMaker.m; sourceTree = "<group>"; };
+		AABB003F1847D28C002CCF40 /* AppMakerStaticLibTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppMakerStaticLibTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AABB00401847D28C002CCF40 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		AABB00431847D28C002CCF40 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		AABB004A1847D28C002CCF40 /* AppMakerStaticLibTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppMakerStaticLibTests-Info.plist"; sourceTree = "<group>"; };
+		AABB004C1847D28C002CCF40 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AABB00AB1847DE33002CCF40 /* JASidePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JASidePanelController.h; path = ../JASidePanels/JASidePanels/Source/JASidePanelController.h; sourceTree = "<group>"; };
+		AABB00AC1847DE33002CCF40 /* JASidePanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JASidePanelController.m; path = ../JASidePanels/JASidePanels/Source/JASidePanelController.m; sourceTree = "<group>"; };
+		AABB00AE1847DE33002CCF40 /* UIViewController+JASidePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+JASidePanel.m"; path = "../JASidePanels/JASidePanels/Source/UIViewController+JASidePanel.m"; sourceTree = "<group>"; };
+		AAC4212818871E380079C95C /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		AAC4212918871E380079C95C /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		AAC5A97F18731CB80073FF6C /* CLAMenuViewControllerDelegate.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; path = CLAMenuViewControllerDelegate.h; sourceTree = "<group>"; };
+		AAC5A9811874B2EB0073FF6C /* UITextView+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+Utilities.h"; sourceTree = "<group>"; };
+		AAC5A9821874B2EB0073FF6C /* UITextView+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Utilities.m"; sourceTree = "<group>"; };
+		AAC5A9CF187855BA0073FF6C /* CLAProgressManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAProgressManager.h; sourceTree = "<group>"; };
+		AAC5A9D0187855BA0073FF6C /* CLAProgressManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAProgressManager.m; sourceTree = "<group>"; };
+		AACE5437185E06BE00C6E7CD /* CLAImageFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAImageFetch.h; sourceTree = "<group>"; };
+		AACE5438185E06BE00C6E7CD /* CLAImageFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAImageFetch.m; sourceTree = "<group>"; };
+		AADC929518492FCC00917AAB /* CLAModelProtocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CLAModelProtocols.h; path = AppMakerStaticLib/CLAModelProtocols.h; sourceTree = "<group>"; };
+		AADC92961849336A00917AAB /* CLAAppDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAAppDataStore.h; path = AppMakerStaticLib/CLAAppDataStore.h; sourceTree = "<group>"; };
+		AADC92971849336A00917AAB /* CLAAppDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAAppDataStore.m; sourceTree = "<group>"; };
+		AADC92A6184938F000917AAB /* AppMaker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppMaker.xcdatamodel; sourceTree = "<group>"; };
+		AAF02B2618A7C3BB007AA4C5 /* CLALocalizedStringsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLALocalizedStringsStore.h; path = AppMakerStaticLib/CLALocalizedStringsStore.h; sourceTree = "<group>"; };
+		AAF02B2718A7C3BB007AA4C5 /* CLALocalizedStringsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLALocalizedStringsStore.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AABB002C1847D28B002CCF40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA8D43831869856A00633BA1 /* Social.framework in Frameworks */,
+				AAB7F7E1185485C000AEC2FA /* MessageUI.framework in Frameworks */,
+				AAA7910F184FC85600E0027C /* MapKit.framework in Frameworks */,
+				AA3AA4B3184A18E700A12FB3 /* QuartzCore.framework in Frameworks */,
+				AABB00331847D28C002CCF40 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABB003C1847D28C002CCF40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AABB00471847D28C002CCF40 /* libAppMakerStaticLib.a in Frameworks */,
+				AABB00411847D28C002CCF40 /* XCTest.framework in Frameworks */,
+				AABB00441847D28C002CCF40 /* UIKit.framework in Frameworks */,
+				AABB00421847D28C002CCF40 /* Foundation.framework in Frameworks */,
+				AAA790F0184BA4D300E0027C /* libOCMock.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AA12440E185C9D1000058A30 /* MockedObjects */ = {
+			isa = PBXGroup;
+			children = (
+				AA12440F185C9DA900058A30 /* MockedItem.h */,
+				AA124410185C9DA900058A30 /* MockedItem.m */,
+				AA124412185C9DB800058A30 /* MockedTopic.h */,
+				AA124413185C9DB800058A30 /* MockedTopic.m */,
+				AA124415185C9DC200058A30 /* MockedImage.h */,
+				AA124416185C9DC200058A30 /* MockedImage.m */,
+			);
+			name = MockedObjects;
+			sourceTree = "<group>";
+		};
+		AAA66F6218579D210097831C /* Fetch Operations */ = {
+			isa = PBXGroup;
+			children = (
+				AAA66F6E1857B6230097831C /* CLAFetchManagerDelegate.h */,
+				AAA66F6D1857AF010097831C /* CLADataParserHelperProtocol.h */,
+				AAA66F6318579D650097831C /* CLAFetchManager.h */,
+				AAA66F6418579D650097831C /* CLAFetchManager.m */,
+				AACE5437185E06BE00C6E7CD /* CLAImageFetch.h */,
+				AACE5438185E06BE00C6E7CD /* CLAImageFetch.m */,
+				AAA66F671857A80D0097831C /* CLADataParser.h */,
+				AAA66F681857A80D0097831C /* CLADataParser.m */,
+			);
+			name = "Fetch Operations";
+			sourceTree = "<group>";
+		};
+		AAA790E3184BA48800E0027C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AAB7F7C31853827A00AEC2FA /* Commons */,
+				AAB1287618A027D8002799B5 /* Locale.h */,
+				AAB1287718A027D8002799B5 /* Locale.m */,
+				AAA790CF184BA47700E0027C /* ItemType.h */,
+				AAA790D0184BA47700E0027C /* ItemType.m */,
+				AAA790D1184BA47700E0027C /* Topic.h */,
+				AAA790D2184BA47700E0027C /* Topic.m */,
+				AADC92A5184938F000917AAB /* AppMaker.xcdatamodeld */,
+				AAB7F7BA185381C600AEC2FA /* Image.h */,
+				AAB7F7BB185381C600AEC2FA /* Image.m */,
+				AAB7F7B218537F1B00AEC2FA /* Item.h */,
+				AAB7F7B318537F1B00AEC2FA /* Item.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		AAA790E4184BA49400E0027C /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				AAB7F7691853409400AEC2FA /* Commons */,
+				AAB1287918A038E7002799B5 /* CLAPreferencesViewController.h */,
+				AAB1287A18A038E7002799B5 /* CLAPreferencesViewController.m */,
+				AA39D01E189AFF47009E93E4 /* CLAWebPlayerController.h */,
+				AA39D01F189AFF47009E93E4 /* CLAWebPlayerController.m */,
+				AAB7F758185331E200AEC2FA /* CLAPanelViewController.h */,
+				AAC5A97F18731CB80073FF6C /* CLAMenuViewControllerDelegate.h */,
+				AAA387E11891CAC40081C900 /* CLAWebViewController.h */,
+				AAA387E21891CAC40081C900 /* CLAWebViewController.m */,
+				AA549FB71870791300A4D4CC /* CLACreditsViewController.h */,
+				AA549FB81870791300A4D4CC /* CLACreditsViewController.m */,
+				AAB7F759185331E200AEC2FA /* CLAPanelViewController.m */,
+				AAA7910A184FBFFD00E0027C /* CLAMapViewController.h */,
+				AAA7910B184FBFFD00E0027C /* CLAMapViewController.m */,
+				AAA790F2184D0CEF00E0027C /* CLASplashScreenViewController.h */,
+				AAB7F7761853617C00AEC2FA /* CLADetailViewController.h */,
+				AAB7F7771853617C00AEC2FA /* CLADetailViewController.m */,
+				AAA790F3184D0CEF00E0027C /* CLASplashScreenViewController.m */,
+				AAA790CB184BA47700E0027C /* CLAMainTableViewController.h */,
+				AAA790CC184BA47700E0027C /* CLAMainTableViewController.m */,
+				AAA790F6184D1D8300E0027C /* CLAMenuTableViewController.h */,
+				AAA790F7184D1D8300E0027C /* CLAMenuTableViewController.m */,
+			);
+			name = VC;
+			sourceTree = "<group>";
+		};
+		AAA790E5184BA49B00E0027C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AAA790C9184BA47700E0027C /* CLAAppDataStore+FakeData.h */,
+				AAA790CA184BA47700E0027C /* CLAAppDataStore+FakeData.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		AAA790E7184BA4D300E0027C /* OCMock */ = {
+			isa = PBXGroup;
+			children = (
+				AAA790E8184BA4D300E0027C /* NSNotificationCenter+OCMAdditions.h */,
+				AAA790E9184BA4D300E0027C /* OCMArg.h */,
+				AAA790EA184BA4D300E0027C /* OCMConstraint.h */,
+				AAA790EB184BA4D300E0027C /* OCMock.h */,
+				AAA790EC184BA4D300E0027C /* OCMockObject.h */,
+				AAA790ED184BA4D300E0027C /* OCMockRecorder.h */,
+			);
+			path = OCMock;
+			sourceTree = "<group>";
+		};
+		AAA790FE184D201B00E0027C /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				AA3801341866EBA800473548 /* UITableViewCell+Common.h */,
+				AA3801351866EBA800473548 /* UITableViewCell+Common.m */,
+				AAB7F79F1853757C00AEC2FA /* Menu and Main TableView */,
+				AAB7F79E1853756F00AEC2FA /* Detail Cells */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		AAB7F7691853409400AEC2FA /* Commons */ = {
+			isa = PBXGroup;
+			children = (
+				AAA790FA184D1DD600E0027C /* CLABaseViewController.h */,
+				AAA790FB184D1DD600E0027C /* CLABaseViewController.m */,
+			);
+			name = Commons;
+			sourceTree = "<group>";
+		};
+		AAB7F79E1853756F00AEC2FA /* Detail Cells */ = {
+			isa = PBXGroup;
+			children = (
+				AAB7F7D21854728D00AEC2FA /* Classes */,
+				AAB7F7D11854728200AEC2FA /* XIBs */,
+			);
+			name = "Detail Cells";
+			sourceTree = "<group>";
+		};
+		AAB7F79F1853757C00AEC2FA /* Menu and Main TableView */ = {
+			isa = PBXGroup;
+			children = (
+				AAB7F7F418548FA400AEC2FA /* CLAMainTableViewCell.h */,
+				AAB7F7F518548FA400AEC2FA /* CLAMainTableViewCell.m */,
+				AA2184C7188327AE00FF0B4D /* CLAEventTableViewCell.h */,
+				AA2184C8188327AE00FF0B4D /* CLAEventTableViewCell.m */,
+				AAB7F7F618548FA400AEC2FA /* CLAMenuTableViewCell.h */,
+				AAB7F7F718548FA400AEC2FA /* CLAMenuTableViewCell.m */,
+				AA2184CA1883281000FF0B4D /* CLAEventTableViewCell.xib */,
+				AAA79102184D20EA00E0027C /* CLAMenuTableViewCell.xib */,
+				AA27E75418511EA300BA9E30 /* CLAMainTableViewCell.xib */,
+			);
+			name = "Menu and Main TableView";
+			sourceTree = "<group>";
+		};
+		AAB7F7C31853827A00AEC2FA /* Commons */ = {
+			isa = PBXGroup;
+			children = (
+				AAB7F7BF1853824900AEC2FA /* NSManagedObject+Commons.h */,
+				AAB7F7C01853824900AEC2FA /* NSManagedObject+Commons.m */,
+			);
+			name = Commons;
+			sourceTree = "<group>";
+		};
+		AAB7F7D11854728200AEC2FA /* XIBs */ = {
+			isa = PBXGroup;
+			children = (
+				AAB7F7F018548FA400AEC2FA /* CLAAddressDetailCell.xib */,
+				AAB7F7F118548FA400AEC2FA /* CLADescriptionDetailCell.xib */,
+				AAB7F7A01853768E00AEC2FA /* CLAHeaderDetailCell.xib */,
+				AAB7F7A1185376BE00AEC2FA /* CLAActionsDetailCell.xib */,
+			);
+			name = XIBs;
+			sourceTree = "<group>";
+		};
+		AAB7F7D21854728D00AEC2FA /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				AAB7F7EC18548FA400AEC2FA /* CLAActionsDetailCell.h */,
+				AAB7F7ED18548FA400AEC2FA /* CLAActionsDetailCell.m */,
+				AAB7F8351854BAB400AEC2FA /* CLADescriptionDetailCell.h */,
+				AAB7F8361854BAB400AEC2FA /* CLADescriptionDetailCell.m */,
+				AAB7F7EE18548FA400AEC2FA /* CLAAddressDetailCell.h */,
+				AAB7F7EF18548FA400AEC2FA /* CLAAddressDetailCell.m */,
+				AAB7F7F218548FA400AEC2FA /* CLAHeaderDetailCell.h */,
+				AAB7F7F318548FA400AEC2FA /* CLAHeaderDetailCell.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		AABB00261847D28B002CCF40 = {
+			isa = PBXGroup;
+			children = (
+				AAB7F75D1853387700AEC2FA /* TODO */,
+				AABB00391847D28C002CCF40 /* AppMaker.m */,
+				AABB00CA1847E62C002CCF40 /* Headers */,
+				AABB00AA1847DE06002CCF40 /* Libraries */,
+				AABB00341847D28C002CCF40 /* AppMakerStaticLib */,
+				AABB00481847D28C002CCF40 /* AppMakerStaticLibTests */,
+				AABB00311847D28B002CCF40 /* Frameworks */,
+				AABB00301847D28B002CCF40 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AABB00301847D28B002CCF40 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AABB002F1847D28B002CCF40 /* libAppMakerStaticLib.a */,
+				AABB003F1847D28C002CCF40 /* AppMakerStaticLibTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AABB00311847D28B002CCF40 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AA8D43821869856A00633BA1 /* Social.framework */,
+				AAB7F7E0185485C000AEC2FA /* MessageUI.framework */,
+				AAA7910E184FC85600E0027C /* MapKit.framework */,
+				AA3AA4B2184A18E700A12FB3 /* QuartzCore.framework */,
+				AABB00321847D28B002CCF40 /* Foundation.framework */,
+				AABB00401847D28C002CCF40 /* XCTest.framework */,
+				AABB00431847D28C002CCF40 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AABB00341847D28C002CCF40 /* AppMakerStaticLib */ = {
+			isa = PBXGroup;
+			children = (
+				AAC5A9CE1878558B0073FF6C /* Utilities */,
+				AAA66F6218579D210097831C /* Fetch Operations */,
+				AAA790FE184D201B00E0027C /* Cells */,
+				AAA790E4184BA49400E0027C /* VC */,
+				AADC929A1849336F00917AAB /* Store */,
+				AABB00351847D28C002CCF40 /* Supporting Files */,
+			);
+			path = AppMakerStaticLib;
+			sourceTree = "<group>";
+		};
+		AABB00351847D28C002CCF40 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AABB00361847D28C002CCF40 /* AppMakerStaticLib-Prefix.pch */,
+				AA549FBA1870859700A4D4CC /* credits.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AABB00481847D28C002CCF40 /* AppMakerStaticLibTests */ = {
+			isa = PBXGroup;
+			children = (
+				AABB00491847D28C002CCF40 /* Supporting Files */,
+				AA3AA4B6184A1B1F00A12FB3 /* CLAAppDataStoreTests.m */,
+				AAA66F6B1857A9E90097831C /* CLAFetchManagerTests.m */,
+				AA124418185CBB3B00058A30 /* CLADataParserTests.m */,
+			);
+			path = AppMakerStaticLibTests;
+			sourceTree = "<group>";
+		};
+		AABB00491847D28C002CCF40 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AA12440E185C9D1000058A30 /* MockedObjects */,
+				AAA790E6184BA4D300E0027C /* libOCMock.a */,
+				AAA790E7184BA4D300E0027C /* OCMock */,
+				AAA790EE184BA4D300E0027C /* XCTestCase+Utils.h */,
+				AAA790EF184BA4D300E0027C /* XCTestCase+Utils.m */,
+				AABB004A1847D28C002CCF40 /* AppMakerStaticLibTests-Info.plist */,
+				AABB004B1847D28C002CCF40 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AABB00AA1847DE06002CCF40 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				AA8D7E16186368B0004AB346 /* UIColor-Expanded.h */,
+				AAC4212818871E380079C95C /* SVProgressHUD.h */,
+				AAC4212918871E380079C95C /* SVProgressHUD.m */,
+				AA2184E41885BE7F00FF0B4D /* NSData+Hex.h */,
+				AA2184E51885BE7F00FF0B4D /* NSData+Hex.m */,
+				AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */,
+				AAB7F82B1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.h */,
+				AAB7F82C1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.m */,
+				AAB7F75C1853380E00AEC2FA /* UIViewController+JASidePanel.h */,
+				AABB00AC1847DE33002CCF40 /* JASidePanelController.m */,
+				AABB00AE1847DE33002CCF40 /* UIViewController+JASidePanel.m */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		AABB00CA1847E62C002CCF40 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				AAF02B2618A7C3BB007AA4C5 /* CLALocalizedStringsStore.h */,
+				AABB00AB1847DE33002CCF40 /* JASidePanelController.h */,
+				AABB00371847D28C002CCF40 /* AppMaker.h */,
+				AADC92961849336A00917AAB /* CLAAppDataStore.h */,
+				AADC929518492FCC00917AAB /* CLAModelProtocols.h */,
+				AAB1287C18A16C3E002799B5 /* CLAPreferences.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		AAC5A9CE1878558B0073FF6C /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				AAC5A9811874B2EB0073FF6C /* UITextView+Utilities.h */,
+				AAC5A9821874B2EB0073FF6C /* UITextView+Utilities.m */,
+				AAC5A9CF187855BA0073FF6C /* CLAProgressManager.h */,
+				AAC5A9D0187855BA0073FF6C /* CLAProgressManager.m */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		AADC929A1849336F00917AAB /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				AAA790E5184BA49B00E0027C /* Utils */,
+				AAA790E3184BA48800E0027C /* Model */,
+				AADC92971849336A00917AAB /* CLAAppDataStore.m */,
+				AAB1287D18A16C3E002799B5 /* CLAPreferences.m */,
+				AAF02B2718A7C3BB007AA4C5 /* CLALocalizedStringsStore.m */,
+			);
+			name = Store;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AABB002E1847D28B002CCF40 /* AppMakerStaticLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABB00521847D28C002CCF40 /* Build configuration list for PBXNativeTarget "AppMakerStaticLib" */;
+			buildPhases = (
+				AABB002B1847D28B002CCF40 /* Sources */,
+				AABB002C1847D28B002CCF40 /* Frameworks */,
+				AABB002D1847D28B002CCF40 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppMakerStaticLib;
+			productName = AppMakerStaticLib;
+			productReference = AABB002F1847D28B002CCF40 /* libAppMakerStaticLib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		AABB003E1847D28C002CCF40 /* AppMakerStaticLibTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABB00551847D28C002CCF40 /* Build configuration list for PBXNativeTarget "AppMakerStaticLibTests" */;
+			buildPhases = (
+				AABB003B1847D28C002CCF40 /* Sources */,
+				AABB003C1847D28C002CCF40 /* Frameworks */,
+				AABB003D1847D28C002CCF40 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AABB00461847D28C002CCF40 /* PBXTargetDependency */,
+			);
+			name = AppMakerStaticLibTests;
+			productName = AppMakerStaticLibTests;
+			productReference = AABB003F1847D28C002CCF40 /* AppMakerStaticLibTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AABB00271847D28B002CCF40 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Christian Lao";
+			};
+			buildConfigurationList = AABB002A1847D28B002CCF40 /* Build configuration list for PBXProject "AppMakerStaticLib" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = AABB00261847D28B002CCF40;
+			productRefGroup = AABB00301847D28B002CCF40 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AABB002E1847D28B002CCF40 /* AppMakerStaticLib */,
+				AABB003E1847D28C002CCF40 /* AppMakerStaticLibTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AABB003D1847D28C002CCF40 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAB7F7FD18548FA400AEC2FA /* CLADescriptionDetailCell.xib in Resources */,
+				AAA79103184D20EA00E0027C /* CLAMenuTableViewCell.xib in Resources */,
+				AAB7F7FC18548FA400AEC2FA /* CLAAddressDetailCell.xib in Resources */,
+				AABB004D1847D28C002CCF40 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AABB002B1847D28B002CCF40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAB7F80218548FA400AEC2FA /* CLAMenuTableViewCell.m in Sources */,
+				AAA66F6518579D650097831C /* CLAFetchManager.m in Sources */,
+				AAB7F7B418537F1B00AEC2FA /* Item.m in Sources */,
+				AAB7F7F818548FA400AEC2FA /* CLAActionsDetailCell.m in Sources */,
+				AAA790F8184D1D8300E0027C /* CLAMenuTableViewController.m in Sources */,
+				AAB1287E18A16C3E002799B5 /* CLAPreferences.m in Sources */,
+				AAA790F4184D0CEF00E0027C /* CLASplashScreenViewController.m in Sources */,
+				AA549FB91870791300A4D4CC /* CLACreditsViewController.m in Sources */,
+				AAC5A9D1187855BA0073FF6C /* CLAProgressManager.m in Sources */,
+				AAB7F75A185331E200AEC2FA /* CLAPanelViewController.m in Sources */,
+				AACE5439185E06BE00C6E7CD /* CLAImageFetch.m in Sources */,
+				AAA790DF184BA47700E0027C /* Topic.m in Sources */,
+				AA2184C9188327AE00FF0B4D /* CLAEventTableViewCell.m in Sources */,
+				AAA790DD184BA47700E0027C /* ItemType.m in Sources */,
+				AAA790FC184D1DD700E0027C /* CLABaseViewController.m in Sources */,
+				AAB7F80018548FA400AEC2FA /* CLAMainTableViewCell.m in Sources */,
+				AAF02B2818A7C3BB007AA4C5 /* CLALocalizedStringsStore.m in Sources */,
+				AADC92981849336A00917AAB /* CLAAppDataStore.m in Sources */,
+				AAB7F7781853617C00AEC2FA /* CLADetailViewController.m in Sources */,
+				AABB00B01847DE33002CCF40 /* UIViewController+JASidePanel.m in Sources */,
+				AA2184E61885BE7F00FF0B4D /* NSData+Hex.m in Sources */,
+				AAA7910C184FBFFD00E0027C /* CLAMapViewController.m in Sources */,
+				AAA790D9184BA47700E0027C /* CLAMainTableViewController.m in Sources */,
+				AADC92A7184938F000917AAB /* AppMaker.xcdatamodeld in Sources */,
+				AAB7F7FE18548FA400AEC2FA /* CLAHeaderDetailCell.m in Sources */,
+				AAC5A9801873229D0073FF6C /* CLAMenuViewControllerDelegate.h in Sources */,
+				AAB7F7FA18548FA400AEC2FA /* CLAAddressDetailCell.m in Sources */,
+				AAC5A9831874B2EB0073FF6C /* UITextView+Utilities.m in Sources */,
+				AAA387E31891CAC40081C900 /* CLAWebViewController.m in Sources */,
+				AAB1287818A027D8002799B5 /* Locale.m in Sources */,
+				AAC4212A18871E380079C95C /* SVProgressHUD.m in Sources */,
+				AA8D7E18186368B0004AB346 /* UIColor-Expanded.m in Sources */,
+				AAA790D7184BA47700E0027C /* CLAAppDataStore+FakeData.m in Sources */,
+				AAB7F7BC185381C600AEC2FA /* Image.m in Sources */,
+				AA39D020189AFF47009E93E4 /* CLAWebPlayerController.m in Sources */,
+				AAB7F82D1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.m in Sources */,
+				AAB7F7C11853824900AEC2FA /* NSManagedObject+Commons.m in Sources */,
+				AABB00AF1847DE33002CCF40 /* JASidePanelController.m in Sources */,
+				AAA66F691857A80D0097831C /* CLADataParser.m in Sources */,
+				AAB7F8371854BAB400AEC2FA /* CLADescriptionDetailCell.m in Sources */,
+				AA3801361866EBA800473548 /* UITableViewCell+Common.m in Sources */,
+				AABB003A1847D28C002CCF40 /* AppMaker.m in Sources */,
+				AAB1287B18A038E7002799B5 /* CLAPreferencesViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABB003B1847D28C002CCF40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA8D7E19186368B0004AB346 /* UIColor-Expanded.m in Sources */,
+				AAB7F7B518537F1B00AEC2FA /* Item.m in Sources */,
+				AA124419185CBB3B00058A30 /* CLADataParserTests.m in Sources */,
+				AAA790E0184BA47700E0027C /* Topic.m in Sources */,
+				AA124411185C9DA900058A30 /* MockedItem.m in Sources */,
+				AAA7910D184FBFFD00E0027C /* CLAMapViewController.m in Sources */,
+				AA3AA4B7184A1B1F00A12FB3 /* CLAAppDataStoreTests.m in Sources */,
+				AAA790D8184BA47700E0027C /* CLAAppDataStore+FakeData.m in Sources */,
+				AACE543A185E06BE00C6E7CD /* CLAImageFetch.m in Sources */,
+				AAB7F7791853617C00AEC2FA /* CLADetailViewController.m in Sources */,
+				AAA790F5184D0CEF00E0027C /* CLASplashScreenViewController.m in Sources */,
+				AAA790DA184BA47700E0027C /* CLAMainTableViewController.m in Sources */,
+				AAB7F7F918548FA400AEC2FA /* CLAActionsDetailCell.m in Sources */,
+				AA124414185C9DB800058A30 /* MockedTopic.m in Sources */,
+				AAB7F7FB18548FA400AEC2FA /* CLAAddressDetailCell.m in Sources */,
+				AADC92991849336A00917AAB /* CLAAppDataStore.m in Sources */,
+				AAA66F6C1857A9E90097831C /* CLAFetchManagerTests.m in Sources */,
+				AAA790F9184D1D8300E0027C /* CLAMenuTableViewController.m in Sources */,
+				AAA66F6A1857A80D0097831C /* CLADataParser.m in Sources */,
+				AAA790DE184BA47700E0027C /* ItemType.m in Sources */,
+				AAB7F7FF18548FA400AEC2FA /* CLAHeaderDetailCell.m in Sources */,
+				AAA790FD184D1DD700E0027C /* CLABaseViewController.m in Sources */,
+				AA124417185C9DC200058A30 /* MockedImage.m in Sources */,
+				AAB7F7BD185381C600AEC2FA /* Image.m in Sources */,
+				AAB7F80318548FA400AEC2FA /* CLAMenuTableViewCell.m in Sources */,
+				AA3801371866EBA800473548 /* UITableViewCell+Common.m in Sources */,
+				AAA66F6618579D650097831C /* CLAFetchManager.m in Sources */,
+				AAB7F7C21853824900AEC2FA /* NSManagedObject+Commons.m in Sources */,
+				AAB7F82E1854AA2500AEC2FA /* UIScrollView+SVPullToRefresh.m in Sources */,
+				AAB7F80118548FA400AEC2FA /* CLAMainTableViewCell.m in Sources */,
+				AAB7F75B185331E200AEC2FA /* CLAPanelViewController.m in Sources */,
+				AAB7F8381854BAB400AEC2FA /* CLADescriptionDetailCell.m in Sources */,
+				AAA790F1184BA4D400E0027C /* XCTestCase+Utils.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AABB00461847D28C002CCF40 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AABB002E1847D28B002CCF40 /* AppMakerStaticLib */;
+			targetProxy = AABB00451847D28C002CCF40 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AABB004B1847D28C002CCF40 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AABB004C1847D28C002CCF40 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AABB00501847D28C002CCF40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos6.1;
+			};
+			name = Debug;
+		};
+		AABB00511847D28C002CCF40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				SDKROOT = iphoneos6.1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AABB00531847D28C002CCF40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Christian Lao (Q6VR6A5DNY)";
+				DSTROOT = /tmp/AppMakerStaticLib.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AppMakerStaticLib/AppMakerStaticLib-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		AABB00541847D28C002CCF40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Christian Lao (Q6VR6A5DNY)";
+				DSTROOT = /tmp/AppMakerStaticLib.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AppMakerStaticLib/AppMakerStaticLib-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		AABB00561847D28C002CCF40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AppMakerStaticLib/AppMakerStaticLib-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"LIB_UNIT_TEST=1",
+				);
+				INFOPLIST_FILE = "AppMakerStaticLibTests/AppMakerStaticLibTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/christian/Desktop/App&Map/AppMakerStaticLib/AppMakerStaticLibTests",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-force_load",
+					"$(SRCROOT)/AppMakerStaticLibTests/libOCMock.a",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos7.0;
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		AABB00571847D28C002CCF40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AppMakerStaticLib/AppMakerStaticLib-Prefix.pch";
+				INFOPLIST_FILE = "AppMakerStaticLibTests/AppMakerStaticLibTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/christian/Desktop/App&Map/AppMakerStaticLib/AppMakerStaticLibTests",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-force_load",
+					"$(SRCROOT)/AppMakerStaticLibTests/libOCMock.a",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos7.0;
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AABB002A1847D28B002CCF40 /* Build configuration list for PBXProject "AppMakerStaticLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABB00501847D28C002CCF40 /* Debug */,
+				AABB00511847D28C002CCF40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AABB00521847D28C002CCF40 /* Build configuration list for PBXNativeTarget "AppMakerStaticLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABB00531847D28C002CCF40 /* Debug */,
+				AABB00541847D28C002CCF40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AABB00551847D28C002CCF40 /* Build configuration list for PBXNativeTarget "AppMakerStaticLibTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABB00561847D28C002CCF40 /* Debug */,
+				AABB00571847D28C002CCF40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		AADC92A5184938F000917AAB /* AppMaker.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				AADC92A6184938F000917AAB /* AppMaker.xcdatamodel */,
+			);
+			currentVersion = AADC92A6184938F000917AAB /* AppMaker.xcdatamodel */;
+			path = AppMaker.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = AABB00271847D28B002CCF40 /* Project object */;
+}

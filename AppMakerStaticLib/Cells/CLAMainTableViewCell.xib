@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4514" systemVersion="13A598" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment defaultVersion="1552" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell opaque="NO" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="CLAMainTableViewCell" id="eRG-5P-8V4" customClass="CLAMainTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eRG-5P-8V4" id="3F8-hw-iAP">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="199"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V59-eC-tUm">
+                        <rect key="frame" x="10" y="10" width="300" height="190"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="bg-shadow.png" translatesAutoresizingMaskIntoConstraints="NO" id="oBR-ng-Sud" userLabel="background">
+                        <rect key="frame" x="10" y="10" width="300" height="190"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </imageView>
+                    <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" editable="NO" text="Label" translatesAutoresizingMaskIntoConstraints="NO" id="g9f-nr-ssU">
+                        <rect key="frame" x="20" y="20" width="275" height="173"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="173" placeholder="YES" id="GXr-0y-z9h"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="g9f-nr-ssU" secondAttribute="bottom" constant="6" id="8gK-eD-4Wz"/>
+                    <constraint firstAttribute="trailing" secondItem="g9f-nr-ssU" secondAttribute="trailing" constant="25" id="Rqc-Dd-yO6"/>
+                    <constraint firstItem="g9f-nr-ssU" firstAttribute="leading" secondItem="3F8-hw-iAP" secondAttribute="leading" constant="20" id="ee6-vZ-6WG"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <connections>
+                <outlet property="_backgroundImageView" destination="oBR-ng-Sud" id="s4T-8n-IG7"/>
+                <outlet property="_itemImageView" destination="V59-eC-tUm" id="cus-xZ-EnW"/>
+                <outlet property="_titleLabel" destination="g9f-nr-ssU" id="dUj-ef-hsZ"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="bg-shadow.png" width="47" height="263"/>
+    </resources>
+</document>

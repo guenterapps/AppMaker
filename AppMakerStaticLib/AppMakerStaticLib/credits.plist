@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>CLATitleKey</key>
+		<string>Credits</string>
+		<key>CLADescriptionKey</key>
+		<string>Fun tv, il format del divertimento.
+La vita notturna dei locali dedicati al divertimento, le novità più fashion, il gossip internazionale, gli eventi tutto questo è fun tv.
+Dalla tv digitale al vostro telefonino, sempre pronto a informarVi e a coinvolgerVi.
+E non è tutto, fun tv è anche una vera e propria piattaforma che distribuisce a livello nazionale clip e foto esclusive, con licenza di utilizzo dalla tv digitale al web.
+Grazie alla collaborazione con videoplugger siamo in grado di costruire o fornire materiale video per qualsiasi esigenza, dallo spettacolo alle news fino allo sport.
+Stay tuned!</string>
+	</dict>
+	<dict>
+		<key>CLATitleKey</key>
+		<string>Powered by App&amp;Map</string>
+		<key>CLADescriptionKey</key>
+		<string>Pubblica la tua prossima guida geolocalizzata per la tua destinazione o per il tuo evento. Vai su www.appandmap.com/it</string>
+	</dict>
+</array>
+</plist>

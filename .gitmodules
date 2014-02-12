@@ -1,0 +1,6 @@
+[submodule "JASidePanels"]
+	path = JASidePanels
+	url = git@github.com:guenterapps/JASidePanels.git
+[submodule "SVPullToRefresh"]
+	path = SVPullToRefresh
+	url = git@github.com:samvermette/SVPullToRefresh.git
