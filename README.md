@@ -1,2 +1,3 @@
-App-Map
-=======
+AppMaker
+
+App&amp;Map Library to build apps
