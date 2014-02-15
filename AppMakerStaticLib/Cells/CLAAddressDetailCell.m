@@ -7,7 +7,7 @@
 //
 
 #import "CLAAddressDetailCell.h"
-#import <UITableViewCell+Common.h>
+#import "UITableViewCell+Common.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation CLAAddressDetailCell

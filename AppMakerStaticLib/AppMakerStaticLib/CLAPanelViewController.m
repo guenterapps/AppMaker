@@ -67,5 +67,9 @@
 	return buttonsArray;
 }
 
+-(NSUInteger)supportedInterfaceOrientations
+{
+	return UIInterfaceOrientationMaskPortrait;
+}
 
 @end

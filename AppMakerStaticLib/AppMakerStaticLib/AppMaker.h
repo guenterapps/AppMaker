@@ -16,15 +16,30 @@
 
 @protocol CLASplashScreenDelegateProtocol;
 
-/**
- *  How to setup the Library on Custom App:
- *
- *  - import Headers in Custom App project
- *	- add static library in Custom App 'Link Binary with Libraries'
- *  - add core data model in in Custom App 'Compile Sources' 
- *  - add Cells in Custom App 'Copy Bundle Resources'
- *  - add Categories and Cell classes to compile in Custom App Project
+/*
+ *- create new project under a new folder (es: /newFolder/newProject)
+ *- add appmaker as submodule in the same new folder (es: newFolder/AppMaker)
+ *- update appmaker submodules
+ *- add appmaker project as a subproject to the app project
+ *- compile library to ensure everything is ok
+ *- add user search path (es: ../AppMaker)
+ *- from Custom App 'Compile Sources' add:
+ *	- all cell's classes
+ *	- all categories
+ *	- CoreData model and classes
+ *- add Mapkit, Social, MessageUI frameworks to the new project
+ *- add static library in Custom App 'Link Binary with Libraries'
+ *- import AppMaker.h header in Custom App project
+ *- add custom fonts and assets in App project and info.plist (new fonts)
+ *- add Cells in Custom App 'Copy Bundle Resources'
+ *- set preprocessor globals
+ *	- SERVERNAME @"http://admin.appandmap.com/api"
+ *	- APIKEY @"20cd41ed35a365d45b24d1f387e4ccbcaf26360f"
+ *- Start the app:
+ *	[AppMaker startWithApiKey:@"#############"];
+ *	self.window.rootViewController = [[AppMaker sharedMaker] rootViewController];
  */
+
 
 //Menu selection notification globals
 extern NSString *const CLAMenuControllerDidSelectItemNotificationKey;
