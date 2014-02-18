@@ -628,33 +628,67 @@ NSString *const CLAAppDataStoreUIShareIconKey			= @"CLAAppDataStoreUIShareIconKe
 
 -(NSDictionary *)userInterface
 {
-	//fake data
 	static NSDictionary *userInterface;
 	
 	if (!userInterface)
 	{
-		userInterface = @{CLAAppDataStoreUIBackgroundColorKey	: [UIColor colorWithHexString:@"CCCCCC"],
-						  CLAAppDataStoreUIHeaderColorKey		: [UIColor colorWithHexString:@"FFFFFF"],
-						  CLAAppDataStoreUIHeaderFontColorKey	: [UIColor colorWithHexString:@"636363"],
-						  CLAAppDataStoreUIHeaderFontSizeKey	: [NSNumber numberWithFloat:21.0],
-						  CLAAppDataStoreUIBoxColorKey			: [UIColor colorWithHexString:@"F2F2F3"],
-						  CLAAppDataStoreUIBoxFontColorKey		: [UIColor blackColor],
-						  CLAAppDataStoreUIBoxFontSizeKey		: [NSNumber numberWithFloat:17.0],
-						  CLAAppDataStoreUIBoxDescriptionFontKey : @"Oswald-Light",
-						  CLAAppDataStoreUIFontNameKey			: @"Oswald-Regular",
-						  CLAAppDataStoreUIFontColorKey			: [UIColor blackColor],
-						  CLAAppDataStoreUIMenuFontColorKey		: [UIColor colorWithHexString:@"C4C4BB"],
-						  CLAAppDataStoreUIMenuFontSizeKey		: [NSNumber numberWithFloat:18.0],
-						  CLAAppDataStoreUIMenuBackgroundColorKey : [UIColor colorWithHexString:@"2D3540"],
-						  CLAAppDataStoreUIMenuSelectedColorKey	: [UIColor colorWithHexString:@"20272F"],
-						  CLAAppDataStoreUIMainListFontColorKey : [UIColor whiteColor],
-						  CLAAppDataStoreUIMainListFontSizeKey	: [NSNumber numberWithInt:20.0],
-						  CLAAppDataStoreUIMapIconKey			: [UIImage imageNamed:@"map"],
-						  CLAAppDataStoreUIMenuIconKey			: [UIImage imageNamed:@"menu"],
-						  CLAAppDataStoreUIBackIconKey			: [UIImage imageNamed:@"back"],
-						  CLAAppDataStoreUIListIconKey			: [UIImage imageNamed:@"lista-icona"],
-						  CLAAppDataStoreUIShareIconKey			: [UIImage imageNamed:@"more"]
-						  };
+		/**
+		 *  build userInterface dictionary from App supplied files:
+		 *	- userInterfaceColors.plist
+		 *	- userInterfaceImages.plist
+		 *  - userInterfaceValues.plist
+		 */
+		
+		__block NSMutableDictionary *temporaryDictionary = [NSMutableDictionary dictionary];
+		
+		NSArray *dictionaries = @[@"userInterfaceColors", @"userInterfaceImages", @"userInterfaceValues"];
+				
+		[dictionaries enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+		{
+			NSString *dictionaryPath = [[NSBundle mainBundle] pathForResource:(NSString *)obj
+																	   ofType:@"plist"];
+			
+			NSAssert(dictionaryPath, @"Could not load userInterface dictionary at path: %@", dictionaryPath);
+			
+			NSDictionary *currentDictionary = [NSDictionary dictionaryWithContentsOfFile:dictionaryPath];
+			
+			NSAssert(currentDictionary, @"Could not load dictionary at path: %@", currentDictionary);
+			
+			switch (idx)
+			{
+				case 0:
+					for (NSString *key in currentDictionary)
+					{
+						UIColor *currentColor = [UIColor colorWithHexString:(NSString *)currentDictionary[key]];
+						
+						NSAssert(currentColor, @"Could not load color for key %@", key);
+						
+						[temporaryDictionary setValue:currentColor forKey:key];
+					}
+					break;
+				case 1:
+					for (NSString *key in currentDictionary)
+					{
+						UIImage *currentImage = [UIImage imageNamed:currentDictionary[key]];
+						
+						NSAssert(currentImage, @"Could not load image for key %@", key);
+						
+						[temporaryDictionary setValue:currentImage forKey:key];
+					}
+					break;
+					
+				default:
+					
+					[temporaryDictionary addEntriesFromDictionary:currentDictionary];
+					
+					break;
+			}
+			
+			
+		}];
+
+		userInterface = [NSDictionary dictionaryWithDictionary:temporaryDictionary];
+		
 	}
 	
 	
