@@ -42,7 +42,7 @@ NSString *const CLAAppDataStoreUIFontColorKey			= @"CLAAppDataStoreUIFontColorKe
 NSString *const CLAAppDataStoreUIHeaderFontColorKey		= @"CLAAppDataStoreUIHeaderFontColorKey";
 NSString *const CLAAppDataStoreUIHeaderFontSizeKey		= @"CLAAppDataStoreUIHeaderFontSizeKey";
 
-
+NSString *const CLAAppDataStoreUIBoxFontInterlineKey	= @"CLAAppDataStoreUIBoxFontInterlineKey";
 NSString *const CLAAppDataStoreUIBoxColorKey			= @"CLAAppDataStoreUIBoxColorKey";
 NSString *const CLAAppDataStoreUIBoxFontColorKey		= @"CLAAppDataStoreUIBoxFontColorKey";
 NSString *const CLAAppDataStoreUIBoxFontSizeKey			= @"CLAAppDataStoreUIBoxFontSizeKey";

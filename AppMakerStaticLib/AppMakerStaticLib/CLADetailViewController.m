@@ -212,11 +212,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 #pragma mark - helper methods
 
+#pragma mark Setup Cells
+
 -(UITableViewCell *)setupDescriptionCellOnIndexPath:(NSIndexPath *)indexPath
 {
 	CLADescriptionDetailCell *cell = (CLADescriptionDetailCell *)[self.tableView dequeueReusableCellWithIdentifier:CLADescriptionDetailCellIdentifier];
-	
-	cell.detailTextView.text	= self.item.detailText;
 	
 	cell.frame = CGRectMake(0.0, 0.0, cell.frame.size.width, 300.0);
 
@@ -224,12 +224,27 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	UIColor *fontColor			= [self.store userInterface][CLAAppDataStoreUIBoxFontColorKey];
 	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
 	//NSString *fontName			= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
+	CGFloat fontInterline		= [[self.store userInterface][CLAAppDataStoreUIBoxFontInterlineKey] floatValue];
 	
+	NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+	[paragraphStyle setLineSpacing:fontInterline];
+	
+	NSMutableAttributedString *textString = [[NSMutableAttributedString alloc] initWithString:self.item.detailText];
+	[textString addAttribute:NSParagraphStyleAttributeName
+					   value:paragraphStyle
+					   range:NSMakeRange(0, textString.length)];
+
+	cell.detailTextView.attributedText	= textString;
 	cell.detailTextView.backgroundColor = backgroundColor;
 	cell.detailTextView.font			= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontKey] size:fontSize];
 	cell.detailTextView.textColor		= fontColor;
 	
-	cell.titleTextView.text				= [self.item title];
+	textString = [[NSMutableAttributedString alloc] initWithString:[self.item title]];
+	[textString addAttribute:NSParagraphStyleAttributeName
+					   value:paragraphStyle
+					   range:NSMakeRange(0, textString.length)];
+	
+	cell.titleTextView.attributedText	= textString;
 	cell.titleTextView.backgroundColor	= [UIColor whiteColor];
 	cell.titleTextView.font				= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
 	cell.titleTextView.textColor		= fontColor;
@@ -532,12 +547,26 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			
 			CGFloat fontSize				= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
 			//NSString *fontName				= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
+			CGFloat fontInterline		= [[self.store userInterface][CLAAppDataStoreUIBoxFontInterlineKey] floatValue];
+			
+			NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+			[paragraphStyle setLineSpacing:fontInterline];
+			
+			NSMutableAttributedString *textString = [[NSMutableAttributedString alloc] initWithString:self.item.detailText];
+			[textString addAttribute:NSParagraphStyleAttributeName
+							   value:paragraphStyle
+							   range:NSMakeRange(0, textString.length)];
 
-			descCell.detailTextView.text	= self.item.detailText;
+			descCell.detailTextView.attributedText = textString;
 			descCell.detailTextView.font	= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontKey] size:fontSize];
+			
+			textString = [[NSMutableAttributedString alloc] initWithString:[self.item title]];
+			[textString addAttribute:NSParagraphStyleAttributeName
+							   value:paragraphStyle
+							   range:NSMakeRange(0, textString.length)];
 
-			descCell.titleTextView.text		= [self.item title];			
-			descCell.titleTextView.font		= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
+			descCell.titleTextView.attributedText	= textString;
+			descCell.titleTextView.font				= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
 
 			cellHeightFromNib = 2 * margin + [descCell.titleTextView heightForTextView] + [descCell.detailTextView heightForTextView];
 
@@ -551,6 +580,8 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	
 
 }
+
+#pragma mark Utilities
 
 -(BOOL)isPoi
 {

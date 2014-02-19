@@ -17,7 +17,8 @@
 	if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
 	{
 		UITextView *tempTextView = [[UITextView alloc] initWithFrame:self.bounds];
-		tempTextView.text = self.text;
+		//tempTextView.text = self.text;
+		tempTextView.attributedText = self.attributedText;
 		tempTextView.font = self.font;
 		tempTextView.textContainerInset = self.textContainerInset;
 		
