@@ -10,11 +10,19 @@
 #import "UITableViewCell+Common.h"
 #import <QuartzCore/QuartzCore.h>
 
+
+@interface CLAHeaderDetailCell ()
+{
+	UIView *backView;
+}
+
+@end
+
 @implementation CLAHeaderDetailCell
 
 -(void)awakeFromNib
 {
-	UIView *backView = [[UIView alloc] initWithFrame:self.scrollView.frame];
+	backView = [[UIView alloc] initWithFrame:self.scrollView.frame];
 	backView.backgroundColor = [UIColor blackColor];
 	
 	_backgroundImageView.layer.borderColor	= [UIColor whiteColor].CGColor;
@@ -33,6 +41,11 @@
 -(void)setTitle:(NSString *)title
 {
 	_titleLabel.text = [title copy];
+}
+
+-(CALayer *)actualShadowLayer
+{
+	return backView.layer;
 }
 
 

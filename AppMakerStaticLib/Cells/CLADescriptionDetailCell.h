@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CLATableViewCellConfigurationProtocol.h"
 
-@interface CLADescriptionDetailCell : UITableViewCell
+@interface CLADescriptionDetailCell : UITableViewCell <CLATableViewCellConfigurationProtocol>
 {
 	IBOutlet UIView *_backview;
 }

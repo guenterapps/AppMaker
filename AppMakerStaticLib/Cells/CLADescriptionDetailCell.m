@@ -61,6 +61,11 @@
 	[super updateConstraints];
 }
 
+-(CALayer *)actualShadowLayer
+{
+	return _backview.layer;
+}
+
 //
 // NB constranints are automatically added when xib is compiled
 //-(void)layoutSubviews

@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CLATableViewCellConfigurationProtocol.h"
 
-@interface CLAHeaderDetailCell : UITableViewCell
+@interface CLAHeaderDetailCell : UITableViewCell <CLATableViewCellConfigurationProtocol>
 {
 	__weak IBOutlet UILabel *_titleLabel;
 	

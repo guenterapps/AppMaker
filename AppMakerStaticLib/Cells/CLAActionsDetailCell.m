@@ -22,4 +22,9 @@
 	[_backView setBackgroundColor:color];
 }
 
+-(CALayer *)actualShadowLayer
+{
+	return _backView.layer;
+}
+
 @end

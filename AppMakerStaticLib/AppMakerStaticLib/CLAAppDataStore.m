@@ -35,10 +35,15 @@ NSString *const CLALastPositionLatitudeKey				= @"CLALastPositionLatitudeKey";
 NSString *const CLALastPositionLongitudeKey				= @"CLALastPositionLongitudeKey";
 NSString *const CLAAppDataStoreFetchErrorKey			= @"CLAAppDataStoreFetchErrorKey";
 
+#pragma mark User Interface Keys
+
 NSString *const CLAAppDataStoreUIBackgroundColorKey		= @"CLAAppDataStoreUIBackgroundColorKey";
-NSString *const CLAAppDataStoreUIHeaderColorKey			= @"CLAAppDataStoreUIHeaderColorKey";
 NSString *const CLAAppDataStoreUIFontNameKey			= @"CLAAppDataStoreUIFontNameKey";
 NSString *const CLAAppDataStoreUIFontColorKey			= @"CLAAppDataStoreUIFontColorKey";
+
+NSString *const CLAAppDataStoreUICellShadowColorKey		= @"CLAAppDataStoreUICellShadowColorKey";
+
+NSString *const CLAAppDataStoreUIHeaderColorKey			= @"CLAAppDataStoreUIHeaderColorKey";
 NSString *const CLAAppDataStoreUIHeaderFontColorKey		= @"CLAAppDataStoreUIHeaderFontColorKey";
 NSString *const CLAAppDataStoreUIHeaderFontSizeKey		= @"CLAAppDataStoreUIHeaderFontSizeKey";
 

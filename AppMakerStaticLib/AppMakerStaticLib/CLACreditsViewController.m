@@ -89,6 +89,9 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 	cell.detailTextView.textColor		= fontColor;
 
 	cell.titleTextView.backgroundColor	= [UIColor whiteColor];
+	
+	[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+	
 	UIFont *font			= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
 	
 	NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.textData[indexPath.row][CLATitleKey]];

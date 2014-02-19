@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CLATableViewCellConfigurationProtocol.h"
 
-@interface CLAActionsDetailCell : UITableViewCell
+@interface CLAActionsDetailCell : UITableViewCell <CLATableViewCellConfigurationProtocol>
 {
 	
 	__weak IBOutlet UIView *_backView;

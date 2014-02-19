@@ -45,4 +45,9 @@
 	_subtitleLabel.text = [subtitle copy];
 }
 
+-(CALayer *)actualShadowLayer
+{
+	return _backgroundImageView.layer;
+}
+
 @end

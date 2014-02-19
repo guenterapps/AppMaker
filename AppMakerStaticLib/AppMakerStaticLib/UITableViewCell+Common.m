@@ -7,6 +7,7 @@
 //
 
 #import "UITableViewCell+Common.h"
+#import "CLATableViewCellConfigurationProtocol.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation UITableViewCell (Common)
@@ -18,6 +19,16 @@
 //	view.layer.shadowRadius		= 4.0;
 	view.layer.shadowOpacity	= 0.8;
 
+}
+
+-(void)setShadowColor:(UIColor *)color
+{
+	NSParameterAssert(color);
+	NSAssert([self conformsToProtocol:@protocol(CLATableViewCellConfigurationProtocol)], @"Cannot invoke this method on a cell that does not implement CLATableViewCellConfigurationProtocol!");
+	
+	id <CLATableViewCellConfigurationProtocol>cell = (id <CLATableViewCellConfigurationProtocol>)self;
+	
+	[cell actualShadowLayer].shadowColor = color.CGColor;
 }
 
 @end

@@ -12,4 +12,6 @@
 
 -(void)setupShadowOnView:(UIView *)view;
 
+-(void)setShadowColor:(UIColor *)color;
+
 @end

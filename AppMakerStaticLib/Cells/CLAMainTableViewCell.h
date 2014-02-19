@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CLATableViewCellConfigurationProtocol.h"
 
-@interface CLAMainTableViewCell : UITableViewCell
+@interface CLAMainTableViewCell : UITableViewCell <CLATableViewCellConfigurationProtocol>
 {
 	
 	__weak IBOutlet UIImageView *_itemImageView;

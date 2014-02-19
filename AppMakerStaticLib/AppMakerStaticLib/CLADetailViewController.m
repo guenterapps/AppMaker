@@ -20,6 +20,7 @@
 #import "UITextView+Utilities.h"
 #import "CLAWebViewController.h"
 #import "CLAWebPlayerController.h"
+#import "UITableViewCell+Common.h"
 
 #define EVENT @"event"
 
@@ -180,7 +181,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 {
 	SEL cellSetupSelector = NSSelectorFromString([_cellSetupSelectors objectForKey:@(indexPath.row)]);
 	
-	return [self performSelector:cellSetupSelector withObject:indexPath];
+	UITableViewCell *cell = [self performSelector:cellSetupSelector withObject:indexPath];
+	
+	[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+
+	return cell;
 }
 
 #pragma mark - UITableView delegate methods

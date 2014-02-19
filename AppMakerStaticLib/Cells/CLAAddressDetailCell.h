@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CLATableViewCellConfigurationProtocol.h"
 
-@interface CLAAddressDetailCell : UITableViewCell
+@interface CLAAddressDetailCell : UITableViewCell <CLATableViewCellConfigurationProtocol>
 {
 	__weak IBOutlet UIImageView *_backgroundImageView;
 	

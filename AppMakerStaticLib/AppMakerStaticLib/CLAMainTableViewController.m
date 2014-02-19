@@ -16,6 +16,7 @@
 #import "CLAEventTableViewCell.h"
 #import <CoreLocation/CoreLocation.h>
 #import "Item.h"
+#import "UITableViewCell+Common.h"
 
 static NSString *const CLAMainTableViewCellIdentifier = @"CLAMainTableViewCell";
 static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
@@ -225,6 +226,8 @@ static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell
 		cell = (UITableViewCell *)mainCell;
 	}
 
+	[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+	
     return cell;
 
 //	else

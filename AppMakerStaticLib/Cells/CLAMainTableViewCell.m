@@ -72,4 +72,9 @@
 	[self.layer removeAllAnimations];
 }
 
+-(CALayer *)actualShadowLayer
+{
+	return _itemImageView.layer;
+}
+
 @end
