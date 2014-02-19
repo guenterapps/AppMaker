@@ -37,8 +37,8 @@
 	_backview.layer.shouldRasterize = YES;
 	_backview.layer.rasterizationScale = [[UIScreen mainScreen] scale];
 	
-	self.detailTextView.layer.borderColor		= [UIColor whiteColor].CGColor;
-	self.detailTextView.layer.borderWidth		= 2.0;
+	//self.detailTextView.layer.borderColor		= [UIColor whiteColor].CGColor;
+	//self.detailTextView.layer.borderWidth		= 2.0;
 	
 	if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
 	{
