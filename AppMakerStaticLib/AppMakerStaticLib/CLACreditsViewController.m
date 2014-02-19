@@ -76,7 +76,18 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 {
 	CLADescriptionDetailCell *cell = (CLADescriptionDetailCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 	
-	cell.detailTextView.text	= self.textData[indexPath.row][CLADescriptionKey];
+	CGFloat fontInterline		= [[self.store userInterface][CLAAppDataStoreUIBoxFontInterlineKey] floatValue];
+	
+	NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+	[paragraphStyle setLineSpacing:fontInterline];
+	
+	NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.textData[indexPath.row][CLADescriptionKey]];
+	
+	[attributedString addAttribute:NSParagraphStyleAttributeName
+							 value:paragraphStyle
+							 range:NSMakeRange(0, attributedString.length)];
+	
+	cell.detailTextView.attributedText	= attributedString;
 	
 	cell.frame = CGRectMake(0.0, 0.0, cell.frame.size.width, 300.0);
 	
@@ -94,10 +105,14 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 	
 	UIFont *font			= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
 	
-	NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.textData[indexPath.row][CLATitleKey]];
+	attributedString = [[NSMutableAttributedString alloc] initWithString:self.textData[indexPath.row][CLATitleKey]];
 		
 	[attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [attributedString length])];
 	[attributedString addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, [attributedString length])];
+	
+	[attributedString addAttribute:NSParagraphStyleAttributeName
+							 value:paragraphStyle
+							 range:NSMakeRange(0, attributedString.length)];
 	
 	if (indexPath.row == 1)
 	{
@@ -132,16 +147,34 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 		
 	CGFloat textViewHeight			= CGRectGetHeight(descCell.detailTextView.frame);
 	CGFloat margin					= (cellHeightFromNib - textViewHeight - descCell.titleTextView.contentSize.height) / 2.0;
+	
+	CGFloat fontSize				= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
+	CGFloat fontInterline		= [[self.store userInterface][CLAAppDataStoreUIBoxFontInterlineKey] floatValue];
+	
+	NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+	[paragraphStyle setLineSpacing:fontInterline];
 		
 	for (int i = 0; i < 2; ++i)
 	{
-		CGFloat fontSize				= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
+		NSMutableAttributedString *textString = [[NSMutableAttributedString alloc] initWithString:self.textData[i][CLADescriptionKey]];
+	
+		[textString addAttribute:NSParagraphStyleAttributeName
+						   value:paragraphStyle
+						   range:NSMakeRange(0, textString.length)];
 		
+		descCell.detailTextView.attributedText = textString;
 		descCell.detailTextView.font	= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontKey] size:fontSize];
-		descCell.detailTextView.text	= self.textData[i][CLADescriptionKey];
+	
 		
+		textString = [[NSMutableAttributedString alloc] initWithString:self.textData[i][CLATitleKey]];
+		
+		[textString addAttribute:NSParagraphStyleAttributeName
+						   value:paragraphStyle
+						   range:NSMakeRange(0, textString.length)];
+		
+		descCell.titleTextView.attributedText = textString;
 		descCell.titleTextView.font		= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
-		descCell.titleTextView.text		= self.textData[i][CLATitleKey];
+
 		
 		cellHeightFromNib = 2 * margin + [descCell.detailTextView heightForTextView] + [descCell.titleTextView heightForTextView];
 		
