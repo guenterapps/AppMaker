@@ -226,7 +226,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	cell.frame = CGRectMake(0.0, 0.0, cell.frame.size.width, 300.0);
 
 	UIColor *backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
-	UIColor *fontColor			= [self.store userInterface][CLAAppDataStoreUIBoxFontColorKey];
+	UIColor *fontColor			= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontColorKey];
 	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
 	//NSString *fontName			= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
 	CGFloat fontInterline		= [[self.store userInterface][CLAAppDataStoreUIBoxFontInterlineKey] floatValue];
@@ -252,7 +252,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	cell.titleTextView.attributedText	= textString;
 	cell.titleTextView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxTitleColorKey];
 	cell.titleTextView.font				= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
-	cell.titleTextView.textColor		= fontColor;
+	cell.titleTextView.textColor		= [self.store userInterface][CLAAppDataStoreUIBoxTitleFontColorKey];
 	
 	[cell setNeedsUpdateConstraints];
 

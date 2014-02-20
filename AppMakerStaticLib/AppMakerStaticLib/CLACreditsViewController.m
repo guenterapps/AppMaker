@@ -92,12 +92,11 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 	cell.frame = CGRectMake(0.0, 0.0, cell.frame.size.width, 300.0);
 	
 	UIColor *backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
-	UIColor *fontColor			= [self.store userInterface][CLAAppDataStoreUIBoxFontColorKey];
 	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
 	
 	cell.detailTextView.backgroundColor = backgroundColor;
 	cell.detailTextView.font			= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontKey] size:fontSize];
-	cell.detailTextView.textColor		= fontColor;
+	cell.detailTextView.textColor		= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontColorKey];
 
 	cell.titleTextView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxTitleColorKey];
 	
@@ -107,7 +106,10 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 	
 	attributedString = [[NSMutableAttributedString alloc] initWithString:self.textData[indexPath.row][CLATitleKey]];
 		
-	[attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [attributedString length])];
+	[attributedString addAttribute:NSForegroundColorAttributeName
+							 value:[self.store userInterface][CLAAppDataStoreUIBoxTitleFontColorKey]
+							 range:NSMakeRange(0, [attributedString length])];
+	
 	[attributedString addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, [attributedString length])];
 	
 	[attributedString addAttribute:NSParagraphStyleAttributeName

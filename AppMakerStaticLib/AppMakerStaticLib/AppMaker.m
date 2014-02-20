@@ -253,7 +253,7 @@ static id appMaker = nil;
 	UINavigationBar *navBar = [mainNavigationController navigationBar];
 	
 	UIColor *headerColor =[self.store userInterface][CLAAppDataStoreUIHeaderColorKey];
-	[navBar setTintColor:headerColor];
+	[navBar setBarTintColor:headerColor];
 	[navBar setTranslucent:NO];
 	
 	//adding shadow to navigation bar
