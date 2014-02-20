@@ -38,6 +38,7 @@ NSString *const CLAAppDataStoreFetchErrorKey			= @"CLAAppDataStoreFetchErrorKey"
 #pragma mark User Interface Keys
 
 NSString *const CLAAppDataStoreUIBackgroundColorKey		= @"CLAAppDataStoreUIBackgroundColorKey";
+NSString *const CLAAppDataStoreUISplashTintColorKey		= @"CLAAppDataStoreUISplashTintColorKey";
 NSString *const CLAAppDataStoreUIStatusBarStyleKey		= @"CLAAppDataStoreUIStatusBarStyleKey";
 
 NSString *const CLAAppDataStoreUIFontNameKey			= @"CLAAppDataStoreUIFontNameKey";
@@ -678,7 +679,7 @@ NSString *const CLAAppDataStoreUIShareIconKey			= @"CLAAppDataStoreUIShareIconKe
 				case 1:
 					for (NSString *key in currentDictionary)
 					{
-						UIImage *currentImage = [UIImage imageNamed:currentDictionary[key]];
+						UIImage *currentImage = [[UIImage imageNamed:currentDictionary[key]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 						
 						NSAssert(currentImage, @"Could not load image for key %@", key);
 						

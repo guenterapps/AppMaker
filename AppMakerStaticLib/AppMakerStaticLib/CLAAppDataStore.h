@@ -38,6 +38,7 @@ extern NSString *const CLAAppDataStoreFetchErrorKey;
 
 
 extern NSString *const CLAAppDataStoreUIBackgroundColorKey;
+extern NSString *const CLAAppDataStoreUISplashTintColorKey;
 extern NSString *const CLAAppDataStoreUIStatusBarStyleKey;
 
 extern NSString *const CLAAppDataStoreUICellShadowColorKey;

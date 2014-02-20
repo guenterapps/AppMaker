@@ -40,7 +40,8 @@
     [super viewDidLoad];
 	
 	CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-	
+	UIColor *tintColor = [self.store userInterface][CLAAppDataStoreUISplashTintColorKey];
+
 	self.view.backgroundColor = [UIColor blackColor];
 	
 	UIImageView *backImage = [[UIImageView alloc] initWithFrame:self.view.bounds];
@@ -54,6 +55,8 @@
 	
 	[_activityIndicatorView setCenter:CGPointMake(screenSize.width / 2., (screenSize.height / 5.0) * 3.0)];
 	
+	[_activityIndicatorView setTintColor:tintColor];
+	
 	[self.view addSubview:_activityIndicatorView];
 	
 	[_activityIndicatorView startAnimating];
@@ -62,6 +65,7 @@
 	
 	progress.font		= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:[[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue]];
 	
+	progress.textColor = tintColor;
 	progress.textAlignment	= NSTextAlignmentCenter;
 	progress.center = CGPointMake(screenSize.width / 2., (screenSize.height / 10.0) * 9.0);
 	

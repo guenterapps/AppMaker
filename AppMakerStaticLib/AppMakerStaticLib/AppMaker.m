@@ -252,7 +252,10 @@ static id appMaker = nil;
 	
 	UINavigationBar *navBar = [mainNavigationController navigationBar];
 	
-	UIColor *headerColor =[self.store userInterface][CLAAppDataStoreUIHeaderColorKey];
+	UIColor *headerColor		= [self.store userInterface][CLAAppDataStoreUIHeaderColorKey];
+	UIColor *headerTintColor	= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	
+	[navBar setTintColor:headerTintColor];
 	[navBar setBarTintColor:headerColor];
 	[navBar setTranslucent:NO];
 	
