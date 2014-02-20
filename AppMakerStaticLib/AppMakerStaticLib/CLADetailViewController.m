@@ -128,7 +128,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 {
 	[super viewDidLoad];
 	
-	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+	UIStatusBarStyle style = [[self.store userInterface][CLAAppDataStoreUIStatusBarStyleKey] integerValue];
+	
+	NSAssert(style >= 0 && style <= 1, @"Invalid status bar style %d", style);
+	
+	[[UIApplication sharedApplication] setStatusBarStyle:style];
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 
 	[self.view setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIBackgroundColorKey]];

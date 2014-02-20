@@ -137,7 +137,11 @@ static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell
 		_scrolledHeight	= self.tableView.frame.size.height;
 	}
 	
-	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+	UIStatusBarStyle style = [[self.store userInterface][CLAAppDataStoreUIStatusBarStyleKey] integerValue];
+	
+	NSAssert(style >= 0 && style <= 1, @"Invalid status bar style %d", style);
+	
+	[[UIApplication sharedApplication] setStatusBarStyle:style];
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 	
 	[self setNeedsStatusBarAppearanceUpdate];
