@@ -45,6 +45,7 @@
 	[self setupTableView:self.tableView withCellIdentifier:nil];
 	[self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"UITableViewCell"];
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+	//self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIBackgroundColorKey];
 
 	[self setupTitleView];
 	
@@ -53,9 +54,10 @@
 																  target:self
 																  action:@selector(savePreferences:)];
 	
-	saveButton.tintColor		= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	//saveButton.tintColor		= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
 
 	self.navigationItem.rightBarButtonItem = saveButton;
+	
 	
 	[self setupLabels];
 
@@ -101,8 +103,8 @@
 	CGFloat fontSize		= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
 	
 	cell.textLabel.font			= [UIFont fontWithName:fontName size:fontSize];
-	cell.textLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
-	cell.tintColor				= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	//cell.textLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	//cell.tintColor				= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
 	
 	id <CLALocale> language = self.languages[indexPath.row];
 
@@ -140,7 +142,7 @@
 	
 	label.textAlignment = NSTextAlignmentCenter;
 	label.font			= [UIFont fontWithName:fontName size:fontSize];
-	label.textColor		= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	//label.textColor		= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
 	
 	NSString *chooseLanguage = [self.localizedStrings localizedStringForString:@"Choose language:"];
 	
