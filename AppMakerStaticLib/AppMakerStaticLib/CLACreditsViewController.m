@@ -91,7 +91,7 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 	
 	cell.frame = CGRectMake(0.0, 0.0, cell.frame.size.width, 300.0);
 	
-	UIColor *backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxColorKey];
+	UIColor *backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
 	UIColor *fontColor			= [self.store userInterface][CLAAppDataStoreUIBoxFontColorKey];
 	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
 	
@@ -99,7 +99,7 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 	cell.detailTextView.font			= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontKey] size:fontSize];
 	cell.detailTextView.textColor		= fontColor;
 
-	cell.titleTextView.backgroundColor	= [UIColor whiteColor];
+	cell.titleTextView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxTitleColorKey];
 	
 	[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
 	

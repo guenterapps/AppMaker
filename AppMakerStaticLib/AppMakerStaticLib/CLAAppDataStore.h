@@ -45,7 +45,9 @@ extern NSString *const CLAAppDataStoreUIFontNameKey;
 extern NSString *const CLAAppDataStoreUIFontColorKey;
 
 extern NSString *const CLAAppDataStoreUIBoxFontInterlineKey;
-extern NSString *const CLAAppDataStoreUIBoxColorKey;
+extern NSString *const CLAAppDataStoreUIBoxDescriptionColorKey;
+extern NSString *const CLAAppDataStoreUIBoxTitleColorKey;
+
 extern NSString *const CLAAppDataStoreUIBoxDescriptionFontKey;
 extern NSString *const CLAAppDataStoreUIBoxFontColorKey;
 extern NSString *const CLAAppDataStoreUIBoxFontSizeKey;

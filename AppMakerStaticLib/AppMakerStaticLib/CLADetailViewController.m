@@ -225,7 +225,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	
 	cell.frame = CGRectMake(0.0, 0.0, cell.frame.size.width, 300.0);
 
-	UIColor *backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxColorKey];
+	UIColor *backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
 	UIColor *fontColor			= [self.store userInterface][CLAAppDataStoreUIBoxFontColorKey];
 	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
 	//NSString *fontName			= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
@@ -250,7 +250,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 					   range:NSMakeRange(0, textString.length)];
 	
 	cell.titleTextView.attributedText	= textString;
-	cell.titleTextView.backgroundColor	= [UIColor whiteColor];
+	cell.titleTextView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxTitleColorKey];
 	cell.titleTextView.font				= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
 	cell.titleTextView.textColor		= fontColor;
 	
@@ -388,7 +388,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	UIColor *disabledTextColor	= [textColor colorWithAlphaComponent:0.5];
 	CGFloat fontSize	= 16.;//[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
 	
-	UIColor *backColor	= [self.store userInterface][CLAAppDataStoreUIBoxColorKey];
+	UIColor *backColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
 	UIColor *boxColor	= [self.store userInterface][CLAAppDataStoreUIBackgroundColorKey];
 	
 	UIFont *font = [UIFont fontWithName:fontName size:fontSize];
