@@ -101,12 +101,11 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 {
 	if (!_previousSelection)
 	{
-		if ([self.tableView numberOfRowsInSection:0] > 0)
-		{
-			_previousSelection = [NSIndexPath indexPathForItem:0 inSection:0];
+		_previousSelection = [NSIndexPath indexPathForItem:0 inSection:0];
+		[self.tableView selectRowAtIndexPath:_previousSelection animated:NO scrollPosition:UITableViewScrollPositionNone];
+
+		if ([self.tableView numberOfRowsInSection:0] > 2)
 			_lastTopicCode = [[[self.items objectAtIndex:0] topicCode] copy];
-			[self.tableView selectRowAtIndexPath:_previousSelection animated:NO scrollPosition:UITableViewScrollPositionNone];
-		}
 		
 	}
 }
@@ -175,7 +174,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	
 	NSAssert(_previousSelection, @"There should always be a selection!");
 	
-	if (indexPath.row < [self.items count] - 1)
+	if (indexPath.row < (NSInteger)[self.items count] - 1)
 	{
 		if (![self.delegate menuViewControllerShouldSelectTopic:[self.items objectAtIndex:indexPath.row]])
 		{
@@ -278,10 +277,10 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		{
 			indexPathToSelect = [NSIndexPath indexPathForItem:selection inSection:0];
 		}
-		else
-			indexPathToSelect = [NSIndexPath indexPathForItem:0 inSection:0];
-	
 	}
+	
+	if (!indexPathToSelect)
+			indexPathToSelect = [NSIndexPath indexPathForItem:0 inSection:0];
 
 	[self.tableView reloadData];
 
