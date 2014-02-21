@@ -795,7 +795,7 @@ static id appMaker = nil;
 		NSAssert(@"Error creating json data for token registration: %@", [jsonError localizedDescription]);
 		
 #ifdef DEBUG
-		NSLog(@"FUNtv is registering APN token to server %@", [notificationServerUrl absoluteString]);
+		NSLog(@"App&Map is registering APN token to server %@", [notificationServerUrl absoluteString]);
 #endif
 		
 		NSError *error;
@@ -809,22 +809,22 @@ static id appMaker = nil;
 		[request setHTTPBody:jsonData];
 		
 #ifdef DEBUG
-		NSLog(@"FUNtv is requesting to register APN token with request: %@\n%@\n%@", request, [request allHTTPHeaderFields], [request HTTPBody]);
+		NSLog(@"App&Map is requesting to register APN token with request: %@\n%@\n%@", request, [request allHTTPHeaderFields], [request HTTPBody]);
 #endif
 		
 		NSData *response = [NSURLConnection sendSynchronousRequest:request returningResponse:&httpResponse error:&error];
 
 #ifdef DEBUG
-		NSLog(@"FUNtv did get reponse from notification server: %i - %@", httpResponse.statusCode, [NSString stringWithUTF8String:[response bytes]]);
+		NSLog(@"App&Map did get reponse from notification server: %i - %@", httpResponse.statusCode, [NSString stringWithUTF8String:[response bytes]]);
 #endif
 		
 		if (error)
 		{
-			NSLog(@"FUNtv could not register APN token: %@", [error localizedDescription]);
+			NSLog(@"App&Map could not register APN token: %@", [error localizedDescription]);
 		}
 		else if (200 != httpResponse.statusCode)
 		{
-			NSLog(@"FUNtv could not register APN token for server response: %i - %@", httpResponse.statusCode, [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+			NSLog(@"App&Map could not register APN token for server response: %i - %@", httpResponse.statusCode, [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
 		}
 		else
 		{
