@@ -693,15 +693,16 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 -(void)shareOnSocialNetwork:(NSString *)socialNetwork
 {
+	
+	if (!self.appMaker.shareHandler)
+		return;
+	
 	//if ([SLComposeViewController isAvailableForServiceType:socialNetwork])
 	__weak id weakSelf = self;
 	
 	SLComposeViewController *shareController = [SLComposeViewController composeViewControllerForServiceType:socialNetwork];
 
-	[shareController setInitialText:[NSString stringWithFormat:@"Sto guardando %@ tramite FUNtv!", self.item.title]];
-	[shareController addImage:self.item.mainImage];
-	[shareController addURL:[NSURL URLWithString:@"http://www.funtv.it"]];
-#warning change url
+	self.appMaker.shareHandler(shareController, self.item);
 	
 	shareController.completionHandler = ^(SLComposeViewControllerResult result)
 	{

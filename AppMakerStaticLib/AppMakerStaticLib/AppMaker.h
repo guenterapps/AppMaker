@@ -12,7 +12,7 @@
 #import "CLAAppDataStore.h"
 
 
-@class CLLocation, CLAMenuTableViewController, CLAMainTableViewController, CLAMapViewController, CLACreditsViewController, CLAPreferencesViewController, CLAPreferences, CLALocalizedStringsStore;
+@class CLLocation, CLAMenuTableViewController, CLAMainTableViewController, CLAMapViewController, CLACreditsViewController, CLAPreferencesViewController, CLAPreferences, CLALocalizedStringsStore, SLComposeViewController;
 
 @protocol CLASplashScreenDelegateProtocol;
 
@@ -40,6 +40,7 @@
  *	self.window.rootViewController = [[AppMaker sharedMaker] rootViewController];
  */
 
+typedef void (^ShareHandler)(SLComposeViewController *composer, id item);
 
 //Menu selection notification globals
 extern NSString *const CLAMenuControllerDidSelectItemNotificationKey;
@@ -83,6 +84,8 @@ extern NSString *const CLAMenuControllerSelectedIndexPathKey;
 
 @property (nonatomic, readonly) BOOL serverPushEnabled;
 @property (nonatomic) NSData *lastAPNToken;
+
+@property (nonatomic, copy) ShareHandler shareHandler;
 
 /**
  *  Default value per-App for initial startup or
