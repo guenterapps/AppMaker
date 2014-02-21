@@ -12,6 +12,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "CLAFetchManager.h"
 #import "CLAFetchManagerDelegate.h"
+#import "CLAAppDataStoreUIComponentKeys.h"
 
 @class AppMaker, Image, CLAPreferences;
 
@@ -35,48 +36,6 @@ extern NSString *const CLALastPositionLatitudeKey;
 extern NSString *const CLALastPositionLongitudeKey;
 
 extern NSString *const CLAAppDataStoreFetchErrorKey;
-
-
-extern NSString *const CLAAppDataStoreUIBackgroundColorKey;
-extern NSString *const CLAAppDataStoreUISplashTintColorKey;
-extern NSString *const CLAAppDataStoreUIStatusBarStyleKey;
-
-extern NSString *const CLAAppDataStoreUICellShadowColorKey;
-
-extern NSString *const CLAAppDataStoreUIFontNameKey;
-extern NSString *const CLAAppDataStoreUIFontColorKey;
-
-extern NSString *const CLAAppDataStoreUIBoxFontInterlineKey;
-extern NSString *const CLAAppDataStoreUIBoxDescriptionColorKey;
-extern NSString *const CLAAppDataStoreUIBoxTitleColorKey;
-
-extern NSString *const CLAAppDataStoreUIBoxDescriptionFontColorKey;
-extern NSString *const CLAAppDataStoreUIBoxTitleFontColorKey;
-
-extern NSString *const CLAAppDataStoreUIBoxDescriptionFontKey;
-extern NSString *const CLAAppDataStoreUIBoxFontSizeKey;
-
-extern NSString *const CLAAppDataStoreUIHeaderColorKey;
-extern NSString *const CLAAppDataStoreUIHeaderFontColorKey;
-extern NSString *const CLAAppDataStoreUIHeaderFontSizeKey;
-
-extern NSString *const CLAAppDataStoreUIActionCellColorKey;
-extern NSString *const CLAAppDataStoreUIActionCellTintColorKey;
-extern NSString *const CLAAppDataStoreUIActionFontSizeKey;
-
-extern NSString *const CLAAppDataStoreUIMenuFontColorKey;
-extern NSString *const CLAAppDataStoreUIMenuFontSizeKey;
-extern NSString *const CLAAppDataStoreUIMenuBackgroundColorKey;
-extern NSString *const CLAAppDataStoreUIMenuSelectedColorKey;
-
-extern NSString *const CLAAppDataStoreUIMapIconKey;
-extern NSString *const CLAAppDataStoreUIMenuIconKey;
-
-extern NSString *const CLAAppDataStoreUIMainListFontColorKey;
-extern NSString *const CLAAppDataStoreUIMainListFontSizeKey;
-extern NSString *const CLAAppDataStoreUIBackIconKey;
-extern NSString *const CLAAppDataStoreUIListIconKey;
-extern NSString *const CLAAppDataStoreUIShareIconKey;
 
 @class CLLocation;
 

@@ -45,7 +45,7 @@
 	[self setupTableView:self.tableView withCellIdentifier:nil];
 	[self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"UITableViewCell"];
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
-	//self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIBackgroundColorKey];
+	self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIBackgroundColorKey];
 
 	[self setupTitleView];
 	
@@ -104,7 +104,8 @@
 	
 	cell.textLabel.font			= [UIFont fontWithName:fontName size:fontSize];
 	//cell.textLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
-	//cell.tintColor				= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	cell.tintColor				= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontColorKey];
+	cell.backgroundColor		= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
 	
 	id <CLALocale> language = self.languages[indexPath.row];
 
@@ -142,7 +143,7 @@
 	
 	label.textAlignment = NSTextAlignmentCenter;
 	label.font			= [UIFont fontWithName:fontName size:fontSize];
-	//label.textColor		= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	label.textColor		= [self.store userInterface][CLAAppDataStoreUIForegroundColorKey];
 	
 	NSString *chooseLanguage = [self.localizedStrings localizedStringForString:@"Choose language:"];
 	
