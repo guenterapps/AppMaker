@@ -388,18 +388,22 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	CLAActionsDetailCell *cell = (CLAActionsDetailCell *)[self.tableView dequeueReusableCellWithIdentifier:CLAActionsDetailCellIdentifier];
 	
 	NSString *fontName			= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
-	UIColor *textColor			= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	UIColor *textColor			= [self.store userInterface][CLAAppDataStoreUIActionCellTintColorKey];
 	UIColor *disabledTextColor	= [textColor colorWithAlphaComponent:0.5];
-	CGFloat fontSize	= 16.;//[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
+	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIActionFontSizeKey] floatValue];
 	
-	UIColor *backColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
+	cell.tintColor				= [self.store userInterface][CLAAppDataStoreUIActionCellTintColorKey];
+	
+	UIColor *backColor	= [self.store userInterface][CLAAppDataStoreUIActionCellColorKey];
 	UIColor *boxColor	= [self.store userInterface][CLAAppDataStoreUIBackgroundColorKey];
 	
 	UIFont *font = [UIFont fontWithName:fontName size:fontSize];
 
 	NSString *gotoWebSite = [self.localizedStrings localizedStringForString:@"Go to website"];
 	
-	[self setupButton:cell.mailButton withImage:[UIImage imageNamed:@"web"] selector:@selector(openBrowser:)];
+	UIImage *webImage = [[UIImage imageNamed:@"web"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+	
+	[self setupButton:cell.mailButton withImage:webImage selector:@selector(openBrowser:)];
 	[cell.mailButton setTitle:gotoWebSite forState:UIControlStateNormal];
 	[cell.mailButton setTitleColor:textColor forState:UIControlStateNormal];
 	[cell.mailButton setTitleColor:disabledTextColor forState:UIControlStateDisabled];
@@ -414,7 +418,9 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 	NSString *call = [self.localizedStrings localizedStringForString:@"Call"];
 	
-	[self setupButton:cell.phoneButton withImage:[UIImage imageNamed:@"chiama"] selector:@selector(callPhone:)];
+	UIImage *callImage = [[UIImage imageNamed:@"chiama"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+	
+	[self setupButton:cell.phoneButton withImage:callImage selector:@selector(callPhone:)];
 	[cell.phoneButton setTitle:call forState:UIControlStateNormal];
 	[cell.phoneButton setTitleColor:textColor forState:UIControlStateNormal];
 	[cell.phoneButton setTitleColor:disabledTextColor forState:UIControlStateDisabled];
@@ -627,7 +633,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 -(void)showShareMenu
 {
-	UIActionSheet *share = [[UIActionSheet alloc] initWithTitle:@"Condividi!"
+	UIActionSheet *share = [[UIActionSheet alloc] initWithTitle:nil
 													   delegate:self
 											  cancelButtonTitle:@"Annulla"
 										 destructiveButtonTitle:nil

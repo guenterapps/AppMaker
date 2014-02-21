@@ -60,6 +60,10 @@ extern NSString *const CLAAppDataStoreUIHeaderColorKey;
 extern NSString *const CLAAppDataStoreUIHeaderFontColorKey;
 extern NSString *const CLAAppDataStoreUIHeaderFontSizeKey;
 
+extern NSString *const CLAAppDataStoreUIActionCellColorKey;
+extern NSString *const CLAAppDataStoreUIActionCellTintColorKey;
+extern NSString *const CLAAppDataStoreUIActionFontSizeKey;
+
 extern NSString *const CLAAppDataStoreUIMenuFontColorKey;
 extern NSString *const CLAAppDataStoreUIMenuFontSizeKey;
 extern NSString *const CLAAppDataStoreUIMenuBackgroundColorKey;
