@@ -10,7 +10,7 @@
 
 @interface UITableViewCell (Common)
 
--(void)setupShadowOnView:(UIView *)view;
+//-(void)setupShadowOnView:(UIView *)view;
 
 -(void)setShadowColor:(UIColor *)color;
 

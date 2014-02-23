@@ -13,7 +13,7 @@
 
 -(void)awakeFromNib
 {
-	[self setupShadowOnView:_backView];
+	//[self setupShadowOnView:_backView];
 }
 
 

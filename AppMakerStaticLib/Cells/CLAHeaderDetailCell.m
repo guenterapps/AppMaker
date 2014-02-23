@@ -30,7 +30,7 @@
 	
 	[self.contentView insertSubview:backView belowSubview:self.scrollView];
 
-	[self setupShadowOnView:backView];
+	//[self setupShadowOnView:backView];
 	backView.layer.shadowPath		= [UIBezierPath bezierPathWithRect:backView.bounds].CGPath;
 	
 	self.scrollView.layer.borderColor		= [UIColor whiteColor].CGColor;

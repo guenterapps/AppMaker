@@ -12,14 +12,14 @@
 
 @implementation UITableViewCell (Common)
 
--(void)setupShadowOnView:(UIView *)view
-{
-	//view.layer.shadowColor		= [UIColor blackColor].CGColor;
-	view.layer.shadowOffset		= CGSizeMake(0.0, 0.0);
-//	view.layer.shadowRadius		= 4.0;
-	view.layer.shadowOpacity	= 0.8;
-
-}
+//-(void)setupShadowOnView:(UIView *)view
+//{
+//	//view.layer.shadowColor		= [UIColor blackColor].CGColor;
+//	view.layer.shadowOffset		= CGSizeMake(0.0, 0.0);
+////	view.layer.shadowRadius		= 4.0;
+//	view.layer.shadowOpacity	= 0.8;
+//
+//}
 
 -(void)setShadowColor:(UIColor *)color
 {
@@ -30,7 +30,9 @@
 	
 	id <CLATableViewCellConfigurationProtocol>cell = (id <CLATableViewCellConfigurationProtocol>)self;
 	
-	[cell actualShadowLayer].shadowColor = color.CGColor;
+	[cell actualShadowLayer].shadowOpacity	= 0.8;
+	[cell actualShadowLayer].shadowOffset	= CGSizeMake(0.0, 0.0);
+	[cell actualShadowLayer].shadowColor	= color.CGColor;
 }
 
 @end

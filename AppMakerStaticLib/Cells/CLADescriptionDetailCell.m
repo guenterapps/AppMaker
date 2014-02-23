@@ -32,7 +32,7 @@
 														 constant:1.];
 	[_backview addConstraint:_titleViewConstraint];
 	
-	[self setupShadowOnView:_backview];
+	//[self setupShadowOnView:_backview];
 	
 	_backview.layer.shouldRasterize = YES;
 	_backview.layer.rasterizationScale = [[UIScreen mainScreen] scale];

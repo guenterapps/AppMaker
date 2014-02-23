@@ -36,7 +36,7 @@
 	
 	[_titleLabel addConstraint:_titleViewConstraint];
 	
-	[self setupShadowOnView:_itemImageView];
+	//[self setupShadowOnView:_itemImageView];
 	
 	_itemImageView.layer.borderColor		= [UIColor whiteColor].CGColor;
 	_itemImageView.layer.borderWidth		= 2.0;

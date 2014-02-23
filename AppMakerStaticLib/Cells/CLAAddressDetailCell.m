@@ -15,7 +15,7 @@
 
 -(void)awakeFromNib
 {
-	[self setupShadowOnView:_backgroundImageView];
+	//[self setupShadowOnView:_backgroundImageView];
 	_backgroundImageView.layer.shadowPath = [UIBezierPath bezierPathWithRect:_backgroundImageView.bounds].CGPath;
 }
 
