@@ -100,7 +100,10 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 
 	cell.titleTextView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxTitleColorKey];
 	
-	[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+	NSUInteger shadowMask = (NSUInteger)[[self.store userInterface][CLAAppDataStoreUICellShadowBitMaskKey] integerValue];
+	
+	if (shadowMask & CLACellShadowMaskDescriptionCell)
+		[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
 	
 	UIFont *font			= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
 	
