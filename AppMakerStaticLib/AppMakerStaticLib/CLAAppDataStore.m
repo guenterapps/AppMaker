@@ -46,6 +46,7 @@ NSString *const CLAAppDataStoreUIFontNameKey			= @"CLAAppDataStoreUIFontNameKey"
 NSString *const CLAAppDataStoreUIFontColorKey			= @"CLAAppDataStoreUIFontColorKey";
 
 NSString *const CLAAppDataStoreUICellShadowColorKey		= @"CLAAppDataStoreUICellShadowColorKey";
+NSString *const CLAAppDataStoreUICellShadowBitMaskKey	= @"CLAAppDataStoreUICellShadowBitMaskKey";
 
 NSString *const CLAAppDataStoreUIHeaderColorKey			= @"CLAAppDataStoreUIHeaderColorKey";
 NSString *const CLAAppDataStoreUIHeaderFontColorKey		= @"CLAAppDataStoreUIHeaderFontColorKey";

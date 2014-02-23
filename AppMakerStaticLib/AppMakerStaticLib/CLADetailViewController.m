@@ -186,8 +186,6 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	SEL cellSetupSelector = NSSelectorFromString([_cellSetupSelectors objectForKey:@(indexPath.row)]);
 	
 	UITableViewCell *cell = [self performSelector:cellSetupSelector withObject:indexPath];
-	
-	[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
 
 	return cell;
 }
@@ -257,6 +255,12 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	cell.titleTextView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxTitleColorKey];
 	cell.titleTextView.font				= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:fontSize];
 	cell.titleTextView.textColor		= [self.store userInterface][CLAAppDataStoreUIBoxTitleFontColorKey];
+	
+	NSUInteger shadowMask = (NSUInteger)[[self.store userInterface][CLAAppDataStoreUICellShadowBitMaskKey] integerValue];
+
+	if (shadowMask & CLACellShadowMaskDescriptionCell)
+		[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+
 	
 	[cell setNeedsUpdateConstraints];
 
@@ -379,6 +383,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	[_headerDetailCell.pageControl setNumberOfPages:[_images count]];
 	[_headerDetailCell.pageControl addTarget:self action:@selector(selectImage:) forControlEvents:UIControlEventValueChanged];
 	
+	NSUInteger shadowMask = (NSUInteger)[[self.store userInterface][CLAAppDataStoreUICellShadowBitMaskKey] integerValue];
+	
+	if (shadowMask & CLACellShadowMaskHeaderCell)
+		[_headerDetailCell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+	
 	return _headerDetailCell;
 }
 
@@ -434,6 +443,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	
 	[cell setBackviewColor:boxColor];
 	
+	NSUInteger shadowMask = (NSUInteger)[[self.store userInterface][CLAAppDataStoreUICellShadowBitMaskKey] integerValue];
+	
+	if (shadowMask & CLACellShadowMaskActionsCell)
+		[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+	
 	return cell;
 	
 }
@@ -486,6 +500,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	
 	titleLabel.font			= [UIFont fontWithName:fontName size:14.];
 	subtitleLabel.font		= [UIFont fontWithName:fontName size:10.];
+	
+	NSUInteger shadowMask = (NSUInteger)[[self.store userInterface][CLAAppDataStoreUICellShadowBitMaskKey] integerValue];
+	
+	if (shadowMask & CLACellShadowMaskAddressCell)
+		[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
 	
 	indexPathToMap = indexPath;
 	

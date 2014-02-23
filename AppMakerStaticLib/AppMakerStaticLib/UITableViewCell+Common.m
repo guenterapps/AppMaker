@@ -14,7 +14,7 @@
 
 -(void)setupShadowOnView:(UIView *)view
 {
-	view.layer.shadowColor		= [UIColor blackColor].CGColor;
+	//view.layer.shadowColor		= [UIColor blackColor].CGColor;
 	view.layer.shadowOffset		= CGSizeMake(0.0, 0.0);
 //	view.layer.shadowRadius		= 4.0;
 	view.layer.shadowOpacity	= 0.8;
@@ -23,8 +23,10 @@
 
 -(void)setShadowColor:(UIColor *)color
 {
-	NSParameterAssert(color);
 	NSAssert([self conformsToProtocol:@protocol(CLATableViewCellConfigurationProtocol)], @"Cannot invoke this method on a cell that does not implement CLATableViewCellConfigurationProtocol!");
+	
+	if (!color)
+		return;
 	
 	id <CLATableViewCellConfigurationProtocol>cell = (id <CLATableViewCellConfigurationProtocol>)self;
 	

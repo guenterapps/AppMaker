@@ -230,7 +230,11 @@ static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell
 		cell = (UITableViewCell *)mainCell;
 	}
 
-	[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+	NSUInteger shadowMask = (NSUInteger)[[self.store userInterface][CLAAppDataStoreUICellShadowBitMaskKey] integerValue];
+
+	if (shadowMask & CLACellShadowMaskMainCell)
+		[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
+
 	
     return cell;
 

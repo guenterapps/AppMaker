@@ -11,12 +11,23 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum
+{
+	CLACellShadowMaskMainCell			= 1,
+	CLACellShadowMaskHeaderCell			= 1 << 1,
+	CLACellShadowMaskActionsCell		= 1 << 2,
+	CLACellShadowMaskAddressCell		= 1 << 3,
+	CLACellShadowMaskDescriptionCell	= 1 << 4
+	
+} CLACellShadowMask;
+
 extern NSString *const CLAAppDataStoreUIBackgroundColorKey;
 extern NSString *const CLAAppDataStoreUIForegroundColorKey;
 extern NSString *const CLAAppDataStoreUISplashTintColorKey;
 extern NSString *const CLAAppDataStoreUIStatusBarStyleKey;
 
 extern NSString *const CLAAppDataStoreUICellShadowColorKey;
+extern NSString *const CLAAppDataStoreUICellShadowBitMaskKey;
 
 extern NSString *const CLAAppDataStoreUIFontNameKey;
 extern NSString *const CLAAppDataStoreUIFontColorKey;
