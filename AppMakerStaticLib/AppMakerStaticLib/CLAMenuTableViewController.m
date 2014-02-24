@@ -120,7 +120,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [self.items count] + 2;
+	return [self.items count] + 1;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -135,12 +135,12 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	
 		[(CLAMenuTableViewCell *)cell setTitle:item.title];
 	}
-	else if (indexPath.row == [self.items count])
+	else //if (indexPath.row == [self.items count])
 	{
 		[(CLAMenuTableViewCell *)cell setTitle:[self.localizedStrings localizedStringForString:@"Preferences"]];
 	}
-	else
-		[(CLAMenuTableViewCell *)cell setTitle:@"CREDITS"];
+//	else
+//		[(CLAMenuTableViewCell *)cell setTitle:@"CREDITS"];
 
     return cell;
 }
