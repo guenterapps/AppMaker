@@ -236,7 +236,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 	[paragraphStyle setLineSpacing:fontInterline];
 	
-	NSMutableAttributedString *textString = [[NSMutableAttributedString alloc] initWithString:self.item.detailText];
+	NSMutableAttributedString *textString;
+	
+	if (self.item.detailText)
+		textString = [[NSMutableAttributedString alloc] initWithString:self.item.detailText];
+	
 	[textString addAttribute:NSParagraphStyleAttributeName
 					   value:paragraphStyle
 					   range:NSMakeRange(0, textString.length)];
@@ -586,7 +590,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
 			[paragraphStyle setLineSpacing:fontInterline];
 			
-			NSMutableAttributedString *textString = [[NSMutableAttributedString alloc] initWithString:self.item.detailText];
+			NSMutableAttributedString *textString;
+
+			if (self.item.detailText)
+				textString = [[NSMutableAttributedString alloc] initWithString:self.item.detailText];
+
 			[textString addAttribute:NSParagraphStyleAttributeName
 							   value:paragraphStyle
 							   range:NSMakeRange(0, textString.length)];
