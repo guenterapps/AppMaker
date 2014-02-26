@@ -229,7 +229,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 	UIColor *backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
 	UIColor *fontColor			= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontColorKey];
-	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
+	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontSizeKey] floatValue];
 	//NSString *fontName			= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
 	CGFloat fontInterline		= [[self.store userInterface][CLAAppDataStoreUIBoxFontInterlineKey] floatValue];
 	
@@ -254,6 +254,8 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	[textString addAttribute:NSParagraphStyleAttributeName
 					   value:paragraphStyle
 					   range:NSMakeRange(0, textString.length)];
+	
+	fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxTitleFontSizeKey] floatValue];
 	
 	cell.titleTextView.attributedText	= textString;
 	cell.titleTextView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxTitleColorKey];
@@ -583,7 +585,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			CGFloat textViewHeight			= CGRectGetHeight(descCell.detailTextView.frame);
 			CGFloat margin = (cellHeightFromNib - textViewHeight - descCell.titleTextView.contentSize.height) / 2.0;
 			
-			CGFloat fontSize				= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
+			CGFloat fontSize				= [[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontSizeKey] floatValue];
 			//NSString *fontName				= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
 			CGFloat fontInterline		= [[self.store userInterface][CLAAppDataStoreUIBoxFontInterlineKey] floatValue];
 			
@@ -601,6 +603,8 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 			descCell.detailTextView.attributedText = textString;
 			descCell.detailTextView.font	= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontKey] size:fontSize];
+			
+			fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxTitleFontSizeKey] floatValue];
 			
 			textString = [[NSMutableAttributedString alloc] initWithString:[self.item title]];
 			[textString addAttribute:NSParagraphStyleAttributeName

@@ -62,7 +62,8 @@ NSString *const CLAAppDataStoreUIBoxDescriptionColorKey	= @"CLAAppDataStoreUIBox
 NSString *const CLAAppDataStoreUIBoxTitleColorKey		= @"CLAAppDataStoreUIBoxTitleColorKey";
 NSString *const CLAAppDataStoreUIBoxDescriptionFontColorKey		= @"CLAAppDataStoreUIBoxDescriptionFontColorKey";
 NSString *const CLAAppDataStoreUIBoxTitleFontColorKey	= @"CLAAppDataStoreUIBoxTitleFontColorKey";
-NSString *const CLAAppDataStoreUIBoxFontSizeKey			= @"CLAAppDataStoreUIBoxFontSizeKey";
+NSString *const CLAAppDataStoreUIBoxDescriptionFontSizeKey	= @"CLAAppDataStoreUIBoxDescriptionFontSizeKey";
+NSString *const CLAAppDataStoreUIBoxTitleFontSizeKey	= @"CLAAppDataStoreUIBoxTitleFontSizeKey";
 NSString *const CLAAppDataStoreUIBoxDescriptionFontKey	= @"CLAAppDataStoreUIBoxDescriptionFontKey";
 
 NSString *const CLAAppDataStoreUIMenuFontColorKey		= @"CLAAppDataStoreUIMenuFontColorKey";

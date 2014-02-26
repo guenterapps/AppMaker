@@ -92,7 +92,7 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 	cell.frame = CGRectMake(0.0, 0.0, cell.frame.size.width, 300.0);
 	
 	UIColor *backgroundColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
-	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
+	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontSizeKey] floatValue];
 	
 	cell.detailTextView.backgroundColor = backgroundColor;
 	cell.detailTextView.font			= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontKey] size:fontSize];
@@ -153,7 +153,7 @@ static NSString *const CLADescriptionKey	= @"CLADescriptionKey";
 	CGFloat textViewHeight			= CGRectGetHeight(descCell.detailTextView.frame);
 	CGFloat margin					= (cellHeightFromNib - textViewHeight - descCell.titleTextView.contentSize.height) / 2.0;
 	
-	CGFloat fontSize				= [[self.store userInterface][CLAAppDataStoreUIBoxFontSizeKey] floatValue];
+	CGFloat fontSize				= [[self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontSizeKey] floatValue];
 	CGFloat fontInterline		= [[self.store userInterface][CLAAppDataStoreUIBoxFontInterlineKey] floatValue];
 	
 	NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
