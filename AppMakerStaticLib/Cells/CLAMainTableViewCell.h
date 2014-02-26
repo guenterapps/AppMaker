@@ -18,6 +18,8 @@
 	__weak IBOutlet UIImageView *_backgroundImageView;
 }
 
+@property (nonatomic) BOOL skipBorder;
+
 -(void)setTitle:(NSString *)title;
 -(void)setImage:(UIImage *)image;
 

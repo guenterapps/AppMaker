@@ -25,16 +25,23 @@
 	backView = [[UIView alloc] initWithFrame:self.scrollView.frame];
 	backView.backgroundColor = [UIColor blackColor];
 	
-	_backgroundImageView.layer.borderColor	= [UIColor whiteColor].CGColor;
-	_backgroundImageView.layer.borderWidth	= 2.0;
+	if (!self.skipBorder)
+	{
+		_backgroundImageView.layer.borderColor	= [UIColor whiteColor].CGColor;
+		_backgroundImageView.layer.borderWidth	= 2.0;
+	}
 	
 	[self.contentView insertSubview:backView belowSubview:self.scrollView];
 
 	//[self setupShadowOnView:backView];
 	backView.layer.shadowPath		= [UIBezierPath bezierPathWithRect:backView.bounds].CGPath;
 	
-	self.scrollView.layer.borderColor		= [UIColor whiteColor].CGColor;
-	self.scrollView.layer.borderWidth		= 2.0;
+	if (!self.skipBorder)
+	{
+		self.scrollView.layer.borderColor		= [UIColor whiteColor].CGColor;
+		self.scrollView.layer.borderWidth		= 2.0;
+	}
+
 
 }
 

@@ -20,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *monthLabel;
 @property (weak, nonatomic) IBOutlet UILabel *dayLabel;
 
+@property (nonatomic) BOOL skipBorder;
+
 -(void)setTitle:(NSString *)title;
 -(void)setImage:(UIImage *)image;
 @end

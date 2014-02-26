@@ -36,10 +36,13 @@
 	
 	//[self setupShadowOnView:_itemImageView];
 
-	_itemImageView.layer.borderColor		= [UIColor whiteColor].CGColor;
-	_itemImageView.layer.borderWidth		= 2.0;
-	_backgroundImageView.layer.borderColor	= [UIColor whiteColor].CGColor;
-	_backgroundImageView.layer.borderWidth	= 2.0;
+	if (!self.skipBorder)
+	{
+		_itemImageView.layer.borderColor		= [UIColor whiteColor].CGColor;
+		_itemImageView.layer.borderWidth		= 2.0;
+		_backgroundImageView.layer.borderColor	= [UIColor whiteColor].CGColor;
+		_backgroundImageView.layer.borderWidth	= 2.0;
+	}
 	
 	_itemImageView.layer.shadowPath			= [UIBezierPath bezierPathWithRect:_itemImageView.layer.bounds].CGPath;
 }
