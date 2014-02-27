@@ -342,7 +342,9 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 		else
 		{
 			UIImageView *imageView = [[UIImageView alloc] initWithFrame:nextFrame];
-
+			imageView.contentMode = UIViewContentModeScaleAspectFill;
+			imageView.clipsToBounds = YES;
+			
 			[_headerDetailCell.scrollView addSubview:imageView];
 			imageView.image = imageItem.image;
 			
