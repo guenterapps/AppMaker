@@ -103,7 +103,7 @@
 	CGFloat fontSize		= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
 	
 	cell.textLabel.font			= [UIFont fontWithName:fontName size:fontSize];
-	//cell.textLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey];
+	cell.textLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontColorKey];
 	cell.tintColor				= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionFontColorKey];
 	cell.backgroundColor		= [self.store userInterface][CLAAppDataStoreUIBoxDescriptionColorKey];
 	
