@@ -56,7 +56,11 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 {
     [super viewDidLoad];
 	
-	[self.tableView setBounces:NO];
+	UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
+	self.tableView.backgroundView = backView;
+
+	self.tableView.backgroundView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+	
 	self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 	[self setupTableView:self.tableView withCellIdentifier:CLAMenuTableViewCellIdentifier];
 	
