@@ -195,6 +195,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	label.font			= [UIFont fontWithName:fontName size:fontSize];
 	label.textColor		= fontColor;
 	
+	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
+	
 	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
 	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
 	
@@ -232,7 +234,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	{
 		_indexPathSelectedFromSearch = indexPath;
 		
-		[searchController setActive:NO];
+		[searchController setActive:NO animated:YES];
 		
 		return;
 	}
