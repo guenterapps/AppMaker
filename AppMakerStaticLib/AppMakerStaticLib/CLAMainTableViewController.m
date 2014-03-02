@@ -248,7 +248,14 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		
 		cell = (UITableViewCell *)mainCell;
 	}
-
+	
+	UILabel     *titleLabel			= [cell valueForKey:@"_titleLabel"];
+	
+	NSString *fontName		= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
+	CGFloat fontSize		= [[self.store userInterface][CLAAppDataStoreUIMainListFontSizeKey] floatValue];
+	
+	titleLabel.font			= [UIFont fontWithName:fontName size:fontSize];
+	titleLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIMainListFontColorKey];
 	NSUInteger shadowMask = (NSUInteger)[[self.store userInterface][CLAAppDataStoreUICellShadowBitMaskKey] integerValue];
 
 	if (shadowMask & CLACellShadowMaskMainCell)
@@ -310,14 +317,6 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UILabel     *titleLabel			= [cell valueForKey:@"_titleLabel"];
-	
-	NSString *fontName		= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
-	CGFloat fontSize		= [[self.store userInterface][CLAAppDataStoreUIMainListFontSizeKey] floatValue];
-	
-	titleLabel.font			= [UIFont fontWithName:fontName size:fontSize];
-	titleLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIMainListFontColorKey];
-
 
 	if (cell.frame.origin.y <= _scrolledHeight || self.skipAnimation)
 	{
