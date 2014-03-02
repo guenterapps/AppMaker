@@ -11,12 +11,18 @@
 #import "CLAModelProtocols.h"
 #import "UIScrollView+SVPullToRefresh.h"
 
+extern NSString *const CLAMainTableViewCellIdentifier;
+extern NSString *const CLAEventTableViewCellIdentifier;
+
 @interface CLAMainTableViewController : CLABaseViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) NSArray *items;
+@property (nonatomic) NSArray *searchControllerItems;
 @property (nonatomic) id <CLATopic>topic;
 
 @property (nonatomic) BOOL skipAnimation;
+
+@property (nonatomic) NSString *queryString;
 
 -(UITableView *)tableView;
 

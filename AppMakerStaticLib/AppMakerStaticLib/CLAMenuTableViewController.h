@@ -12,7 +12,7 @@
 
 @class CLALocalizedStringsStore;
 
-@interface CLAMenuTableViewController : CLABaseViewController <UITableViewDelegate, UITableViewDataSource>
+@interface CLAMenuTableViewController : CLABaseViewController <UITableViewDelegate, UITableViewDataSource, UISearchDisplayDelegate>
 
 @property (nonatomic) CLALocalizedStringsStore *localizedStrings;
 
