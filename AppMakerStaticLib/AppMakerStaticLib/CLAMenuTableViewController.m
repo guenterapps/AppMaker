@@ -56,22 +56,30 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 {
     [super viewDidLoad];
 	
+	BOOL showSearchBar = [[self.store userInterface][CLAAppDataStoreUIShowSearchBar] boolValue];
+	
 	UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
 	self.tableView.backgroundView = backView;
 
 	self.tableView.backgroundView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 	
 	self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+
 	[self setupTableView:self.tableView withCellIdentifier:CLAMenuTableViewCellIdentifier];
 	
-	if (YES == [[self.store userInterface][CLAAppDataStoreUIShowSearchBar] boolValue])
+	if (YES == showSearchBar)
 	{
+		
 		UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
 		
 		searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar
 															 contentsController:self];
-		self.tableView.tableHeaderView = searchBar;
+		
+		searchController.navigationItem.titleView = searchBar;
+		searchController.displaysSearchBarInNavigationBar = YES;
 
+		self.navigationController.navigationBar.barTintColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+		
 		searchBar.barTintColor		= [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 		searchBar.tintColor			= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
 		searchBar.searchBarStyle	= UISearchBarStyleMinimal;
@@ -79,6 +87,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		
 		searchController.searchResultsTableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 		searchController.searchResultsTableView.separatorStyle	= UITableViewCellSeparatorStyleNone;
+		searchController.searchResultsTableView.contentOffset = CGPointMake(0., -200);
 
 		[self setupTableView:searchController.searchResultsTableView withCellIdentifier:CLAMainTableViewCellIdentifier];
 		[self setupTableView:searchController.searchResultsTableView withCellIdentifier:CLAEventTableViewCellIdentifier];
@@ -87,9 +96,12 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		searchController.searchResultsDelegate	 = self;
 		
 		searchController.delegate = self;
+		
+		if (self.iOS7Running)
+			self.edgesForExtendedLayout = UIRectEdgeTop;
 	}
 	
-	if (self.iOS7Running)
+	if (self.iOS7Running && !showSearchBar)
 	{
 		self.tableView.contentInset = UIEdgeInsetsMake(20.0, 0., 0., 0.);
 	}
@@ -356,11 +368,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	{
 		CLAPanelViewController *panel = (CLAPanelViewController *)self.appMaker.rootViewController;
 		
-		[panel setCenterPanelHidden:YES animated:YES duration:0.2];
-		
-		[self.tableView setContentInset:UIEdgeInsetsZero];
-		
-		[[UIApplication sharedApplication] setStatusBarHidden:YES];
+		[panel setCenterPanelHidden:YES];
+
 	}];
 
 }
@@ -369,17 +378,15 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 -(void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
 {
 	
-	[UIView animateWithDuration:0.2 animations:^()
+	[UIView animateWithDuration:0.2
+					 animations:^()
 	{
-		self.tableView.contentInset = UIEdgeInsetsMake(20.0, 0., 0., 0.);
-		[self.tableView setContentOffset:CGPointMake(0., -20.)];
-		
 		CLAPanelViewController *panel = (CLAPanelViewController *)self.appMaker.rootViewController;
 		
-		[panel setCenterPanelHidden:NO animated:YES duration:0.2];
-		
-		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-	}completion:^(BOOL finished)
+		[panel setCenterPanelHidden:NO];
+
+	}
+					 completion:^(BOOL finished)
 	{
 		if (_indexPathSelectedFromSearch)
 		{
