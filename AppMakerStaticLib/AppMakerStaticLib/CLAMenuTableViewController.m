@@ -36,6 +36,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 }
 
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification;
+-(NSArray *)searchBarSpacer;
 
 @end
 
@@ -70,13 +71,14 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	if (YES == showSearchBar)
 	{
 		
-		UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
+		UISearchBar *searchBar	= [[UISearchBar alloc] initWithFrame:CGRectZero];
 		
 		searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar
 															 contentsController:self];
 		
-		searchController.navigationItem.titleView = searchBar;
 		searchController.displaysSearchBarInNavigationBar = YES;
+
+		searchController.navigationItem.rightBarButtonItems	= [self searchBarSpacer];
 
 		self.navigationController.navigationBar.barTintColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 		
@@ -87,7 +89,6 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		
 		searchController.searchResultsTableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 		searchController.searchResultsTableView.separatorStyle	= UITableViewCellSeparatorStyleNone;
-		searchController.searchResultsTableView.contentOffset = CGPointMake(0., -200);
 
 		[self setupTableView:searchController.searchResultsTableView withCellIdentifier:CLAMainTableViewCellIdentifier];
 		[self setupTableView:searchController.searchResultsTableView withCellIdentifier:CLAEventTableViewCellIdentifier];
@@ -317,6 +318,17 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 #pragma mark - Private Methods
 
+-(NSArray *)searchBarSpacer
+{
+	
+	UIBarButtonItem *dummyButton	= [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
+	UIBarButtonItem *fixedSpace		= [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+	
+	fixedSpace.width = 38.;
+
+	return @[fixedSpace, dummyButton];
+}
+
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification
 {
 	self.items = [self.store.topics copy];
@@ -366,6 +378,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	[UIView animateWithDuration:0.2
 					 animations:^()
 	{
+		self.searchDisplayController.navigationItem.rightBarButtonItems = nil;
 		CLAPanelViewController *panel = (CLAPanelViewController *)self.appMaker.rootViewController;
 		
 		[panel setCenterPanelHidden:YES];
@@ -377,10 +390,11 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
 {
-	
 	[UIView animateWithDuration:0.2
 					 animations:^()
 	{
+		self.searchDisplayController.navigationItem.rightBarButtonItems = [self searchBarSpacer];
+
 		CLAPanelViewController *panel = (CLAPanelViewController *)self.appMaker.rootViewController;
 		
 		[panel setCenterPanelHidden:NO];
