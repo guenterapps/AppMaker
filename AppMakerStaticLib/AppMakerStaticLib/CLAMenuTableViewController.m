@@ -15,6 +15,8 @@
 #import "CLADetailViewController.h"
 #import "CLAPreferencesViewController.h"
 #import "CLALocalizedStringsStore.h"
+#import "CLAPanelViewController.h"
+#import "CLAMainTableViewController.h"
 
 NSString *const CLAMenuControllerDidSelectItemNotificationKey	= @"CLAMenuControllerDidSelectItemNotificationKey";
 NSString *const CLAMenuControllerSelectedItemKey				= @"CLAMenuControllerSelectedItemKey";
@@ -28,9 +30,13 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	id lastSelectedViewController;
 	NSIndexPath *_previousSelection;
 	NSString *_lastTopicCode;
+	
+	UISearchDisplayController *searchController;
+	NSIndexPath *_indexPathSelectedFromSearch;
 }
 
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification;
+-(NSArray *)searchBarSpacer;
 
 @end
 
@@ -76,13 +82,55 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 {
     [super viewDidLoad];
 	
-	if (self.iOS7Running)
+	BOOL showSearchBar = [[self.store userInterface][CLAAppDataStoreUIShowSearchBar] boolValue];
+	
+	UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
+	self.tableView.backgroundView = backView;
+
+	self.tableView.backgroundView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+	
+	self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+
+	[self setupTableView:self.tableView withCellIdentifier:CLAMenuTableViewCellIdentifier];
+	
+	if (YES == showSearchBar)
+	{
+		
+		UISearchBar *searchBar	= [[UISearchBar alloc] initWithFrame:CGRectZero];
+		
+		searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar
+															 contentsController:self];
+		
+		searchController.displaysSearchBarInNavigationBar = YES;
+
+		searchController.navigationItem.rightBarButtonItems	= [self searchBarSpacer];
+
+		self.navigationController.navigationBar.barTintColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+		
+		searchBar.barTintColor		= [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+		searchBar.tintColor			= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
+		searchBar.searchBarStyle	= UISearchBarStyleMinimal;
+		searchBar.translucent		= NO;
+		
+		searchController.searchResultsTableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+		searchController.searchResultsTableView.separatorStyle	= UITableViewCellSeparatorStyleNone;
+
+		[self setupTableView:searchController.searchResultsTableView withCellIdentifier:CLAMainTableViewCellIdentifier];
+		[self setupTableView:searchController.searchResultsTableView withCellIdentifier:CLAEventTableViewCellIdentifier];
+		
+		searchController.searchResultsDataSource = self.appMaker.mainTableViewController;
+		searchController.searchResultsDelegate	 = self;
+		
+		searchController.delegate = self;
+		
+		if (self.iOS7Running)
+			self.edgesForExtendedLayout = UIRectEdgeTop;
+	}
+	
+	if (self.iOS7Running && !showSearchBar)
 	{
 		self.tableView.contentInset = UIEdgeInsetsMake(20.0, 0., 0., 0.);
 	}
-
-	self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
-	[self setupTableView:self.tableView withCellIdentifier:CLAMenuTableViewCellIdentifier];
 
 }
 
@@ -174,6 +222,9 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	if (tableView != self.tableView)
+		return;
+	
 	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
 	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
 	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
@@ -181,6 +232,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	
 	label.font			= [UIFont fontWithName:fontName size:fontSize];
 	label.textColor		= fontColor;
+	
+	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
 	
 	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
 	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
@@ -194,16 +247,19 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 }
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{	
-	_previousSelection = [tableView indexPathForSelectedRow];
-	
-	NSAssert(_previousSelection, @"There should always be a selection!");
-	
-	if (indexPath.row < (NSInteger)[self.items count] - 1)
+{
+	if (tableView == self.tableView)
 	{
-		if (![self.delegate menuViewControllerShouldSelectTopic:[self.items objectAtIndex:indexPath.row]])
+		_previousSelection = [tableView indexPathForSelectedRow];
+		
+		NSAssert(_previousSelection, @"There should always be a selection!");
+		
+		if (indexPath.row < (NSInteger)[self.items count] - 1)
 		{
-			return _previousSelection;
+			if (![self.delegate menuViewControllerShouldSelectTopic:[self.items objectAtIndex:indexPath.row]])
+			{
+				return _previousSelection;
+			}
 		}
 	}
 	
@@ -212,6 +268,14 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	if (tableView != self.tableView)
+	{
+		_indexPathSelectedFromSearch = indexPath;
+		
+		[searchController setActive:NO animated:YES];
+		
+		return;
+	}
 	
 	if (indexPath.row < [self.items count])
 	{
@@ -279,6 +343,17 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 #pragma mark - Private Methods
 
+-(NSArray *)searchBarSpacer
+{
+	
+	UIBarButtonItem *dummyButton	= [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
+	UIBarButtonItem *fixedSpace		= [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+	
+	fixedSpace.width = 38.;
+
+	return @[fixedSpace, dummyButton];
+}
+
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification
 {
 	self.items = [self.store.topics copy];
@@ -319,6 +394,72 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 	});
 
+}
+
+#pragma mark UISearchDisplayDelegate
+
+-(void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller
+{
+	[UIView animateWithDuration:0.2
+					 animations:^()
+	{
+		self.searchDisplayController.navigationItem.rightBarButtonItems = nil;
+		CLAPanelViewController *panel = (CLAPanelViewController *)self.appMaker.rootViewController;
+		
+		[panel setCenterPanelHidden:YES];
+
+	}];
+
+}
+
+
+-(void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
+{
+	[UIView animateWithDuration:0.2
+					 animations:^()
+	{
+		self.searchDisplayController.navigationItem.rightBarButtonItems = [self searchBarSpacer];
+
+		CLAPanelViewController *panel = (CLAPanelViewController *)self.appMaker.rootViewController;
+		
+		[panel setCenterPanelHidden:NO];
+
+	}
+					 completion:^(BOOL finished)
+	{
+		if (_indexPathSelectedFromSearch)
+		{
+			UINavigationController *navController = (UINavigationController *)self.sidePanelController.centerPanel;
+
+			id <CLAItem> item = self.appMaker.mainTableViewController.searchControllerItems[_indexPathSelectedFromSearch.row];
+
+			CLADetailViewController *detailVC = [[CLADetailViewController alloc] initWithItem:item];
+
+			[navController setViewControllers:@[detailVC]];
+
+			detailVC.store		= self.store;
+			detailVC.appMaker	= self.appMaker;
+			detailVC.skipList	= YES;
+			detailVC.localizedStrings = self.localizedStrings;
+
+			[self.sidePanelController toggleLeftPanel:self];
+		}
+		 
+		_indexPathSelectedFromSearch = nil;
+	 }];
+
+}
+
+-(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+	if ([searchString length] > 0)
+	{
+		[self.appMaker.mainTableViewController setQueryString:searchString];
+		
+		return YES;
+	}
+	
+	return NO;
 }
 
 @end

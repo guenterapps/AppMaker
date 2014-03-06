@@ -80,6 +80,7 @@ NSString *const CLAAppDataStoreUIBackIconKey			= @"CLAAppDataStoreUIIconBackKey"
 NSString *const CLAAppDataStoreUIListIconKey			= @"CLAAppDataStoreUIListIconKey";
 NSString *const CLAAppDataStoreUIShareIconKey			= @"CLAAppDataStoreUIShareIconKey";
 
+NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearchBar";
 
 @interface CLAAppDataStore ()
 {

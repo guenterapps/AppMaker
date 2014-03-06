@@ -20,15 +20,17 @@
 #import "Topic.h"
 #import "UITableViewCell+Common.h"
 
-static NSString *const CLAMainTableViewCellIdentifier = @"CLAMainTableViewCell";
-static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
+NSString *const CLAMainTableViewCellIdentifier = @"CLAMainTableViewCell";
+NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 @interface CLAMainTableViewController ()
 {
 	CGFloat _scrolledHeight;
+	
 }
 
 @property (nonatomic) NSString *lastTopicCode;
+
 
 -(void)reloadContentsForNewTopic:(NSNotification *)notification;
 
@@ -208,15 +210,32 @@ static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return self.items.count;
+	if (tableView == self.tableView)
+	{
+		return self.items.count;
+	}
 
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", @"title", self.queryString];
+	
+	self.searchControllerItems = [[self.store contents] filteredArrayUsingPredicate:predicate];
+	
+	return [self.searchControllerItems count];
+	
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
+	id <CLAItem> item;
     
-    id <CLAItem> item = [self.items objectAtIndex:indexPath.row];
+	if (tableView == self.tableView)
+	{
+		item = [self.items objectAtIndex:indexPath.row];
+	}
+	else
+    {
+		item = [self.searchControllerItems objectAtIndex:indexPath.row];
+	}
 	
 	if ([item.subType isEqualToString:@"event"])
 	{
@@ -264,7 +283,14 @@ static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell
 		
 		cell = (UITableViewCell *)mainCell;
 	}
-
+	
+	UILabel     *titleLabel			= [cell valueForKey:@"_titleLabel"];
+	
+	NSString *fontName		= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
+	CGFloat fontSize		= [[self.store userInterface][CLAAppDataStoreUIMainListFontSizeKey] floatValue];
+	
+	titleLabel.font			= [UIFont fontWithName:fontName size:fontSize];
+	titleLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIMainListFontColorKey];
 	NSUInteger shadowMask = (NSUInteger)[[self.store userInterface][CLAAppDataStoreUICellShadowBitMaskKey] integerValue];
 
 	if (shadowMask & CLACellShadowMaskMainCell)
@@ -326,14 +352,6 @@ static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UILabel     *titleLabel			= [cell valueForKey:@"_titleLabel"];
-	
-	NSString *fontName		= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
-	CGFloat fontSize		= [[self.store userInterface][CLAAppDataStoreUIMainListFontSizeKey] floatValue];
-	
-	titleLabel.font			= [UIFont fontWithName:fontName size:fontSize];
-	titleLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIMainListFontColorKey];
-
 
 	if (cell.frame.origin.y <= _scrolledHeight || self.skipAnimation)
 	{

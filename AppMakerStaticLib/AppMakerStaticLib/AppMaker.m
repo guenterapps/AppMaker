@@ -271,7 +271,11 @@ static id appMaker = nil;
 	gradient.frame = navBarFrame;
 	[navBar.layer addSublayer:gradient];
 	
-	panel.leftPanel = _menuTableViewController;
+	if ([[self.store userInterface][CLAAppDataStoreUIShowSearchBar] boolValue])
+		panel.leftPanel = [[UINavigationController alloc] initWithRootViewController:_menuTableViewController];
+	else
+		panel.leftPanel = _menuTableViewController;
+	
 	panel.centerPanel = mainNavigationController;
 	
 	_nextViewController = panel;

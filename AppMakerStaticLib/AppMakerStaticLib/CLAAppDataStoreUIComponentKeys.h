@@ -65,4 +65,6 @@ extern NSString *const CLAAppDataStoreUIBackIconKey;
 extern NSString *const CLAAppDataStoreUIListIconKey;
 extern NSString *const CLAAppDataStoreUIShareIconKey;
 
+extern NSString *const CLAAppDataStoreUIShowSearchBar;
+
 #endif
