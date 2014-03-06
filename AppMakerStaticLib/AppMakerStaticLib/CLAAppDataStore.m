@@ -815,10 +815,13 @@ NSString *const CLAAppDataStoreUIShareIconKey			= @"CLAAppDataStoreUIShareIconKe
 		
 		NSError *error;
 		
+		NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption	: @YES,
+										NSInferMappingModelAutomaticallyOption	: @YES};
+		
 		NSPersistentStore *store = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
 															  configuration:nil
 																		URL:storeUrl
-																	options:nil
+																	options:options
 																	  error:&error];
 		if (!store)
 		{

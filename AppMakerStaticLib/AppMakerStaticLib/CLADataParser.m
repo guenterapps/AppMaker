@@ -20,7 +20,8 @@ static NSDateFormatter *dateFormatter;
 		topicMap = @{@"code"		: @"topicCode",
 					 @"name"		: @"title",
 					 @"updated_at"	: @"lastUpdated",
-					 @"created_at"	: @"created"
+					 @"created_at"	: @"created",
+					 @"sort"		: @"sortOrder"
 					 };
 		
 		itemMap = @{@"name"			: @"title",

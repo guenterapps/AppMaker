@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A598" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Image" representedClassName="Image" syncable="YES">
         <attribute name="created" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
@@ -52,6 +52,7 @@
         <attribute name="hidden" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="ordering" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="sortOrder" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" attributeType="String" defaultValueString="Topic" indexed="YES" syncable="YES"/>
         <attribute name="topicCode" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="topic" inverseEntity="Item" syncable="YES"/>
@@ -59,7 +60,7 @@
     <elements>
         <element name="Image" positionX="0" positionY="0" width="0" height="0"/>
         <element name="Item" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Topic" positionX="0" positionY="0" width="0" height="0"/>
         <element name="Locale" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Topic" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

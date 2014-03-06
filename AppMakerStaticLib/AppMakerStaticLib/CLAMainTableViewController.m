@@ -7,6 +7,7 @@
 //
 
 #define TIMEOUT 10.0
+#define ORDERBY_POSITION @"distance"
 
 #import "CLAMainTableViewController.h"
 #import "CLAMapViewController.h"
@@ -16,6 +17,7 @@
 #import "CLAEventTableViewCell.h"
 #import <CoreLocation/CoreLocation.h>
 #import "Item.h"
+#import "Topic.h"
 #import "UITableViewCell+Common.h"
 
 static NSString *const CLAMainTableViewCellIdentifier = @"CLAMainTableViewCell";
@@ -31,6 +33,7 @@ static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell
 -(void)reloadContentsForNewTopic:(NSNotification *)notification;
 
 -(void)reloadContentsForStoreFetchedData:(NSNotification *)notification;
+-(void)setItems:(NSArray *)items;
 
 @end
 
@@ -49,6 +52,38 @@ static NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell
 	}
 	
 	return self;
+}
+
+-(void)setItems:(NSArray *)items
+{
+	if ([ORDERBY_POSITION isEqualToString:[(Topic *)self.topic sortOrder]])
+	{
+		items	= [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+		{
+			Item *item1	= (Item *)obj1;
+			Item *item2	= (Item *)obj2;
+
+			CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
+
+			CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
+
+			CLLocationDistance distance1 = [location1 distanceFromLocation:self.store.lastPosition];
+			CLLocationDistance distance2 = [location2 distanceFromLocation:self.store.lastPosition];
+
+			NSComparisonResult result;
+
+			if (distance1 > distance2)
+				result = NSOrderedDescending;
+			else if (distance2 > distance1)
+				result = NSOrderedAscending;
+			else
+				result = NSOrderedSame;
+
+			return result;
+		}];
+	}
+	
+	_items = items;
 }
 
 

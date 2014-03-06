@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSSet *items;
 @property (nonatomic, retain) NSString *topicCode;
+@property (nonatomic, retain) NSString *sortOrder;
 @end
 
 @interface Topic (CoreDataGeneratedAccessors)

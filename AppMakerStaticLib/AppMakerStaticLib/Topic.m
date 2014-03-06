@@ -18,5 +18,6 @@
 @dynamic lastUpdated;
 @dynamic ordering;
 @dynamic created;
+@dynamic sortOrder;
 
 @end
