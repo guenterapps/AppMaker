@@ -153,6 +153,10 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
 		[self.locationManager startUpdatingLocation];
 	}
+	else
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreDidStopSeachingPosition object:self];
+	}
 }
 
 -(void)save:(NSError **)error
