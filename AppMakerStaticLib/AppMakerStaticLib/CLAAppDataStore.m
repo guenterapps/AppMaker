@@ -737,6 +737,27 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		NSPredicate *_notEmptyTopics = [NSPredicate predicateWithFormat:@"items.@count > 0"];
 		
 		_topics = [_topics filteredArrayUsingPredicate:_notEmptyTopics];
+		
+		_topics = [_topics sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+				  {
+					  id <CLATopic>topic1 = (id <CLATopic>)obj1;
+					  id <CLATopic>topic2	= (id <CLATopic>)obj2;
+					  
+					  
+					  NSComparisonResult result = NSOrderedSame;
+					  
+					  if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
+					  {
+						  result = NSOrderedDescending;
+					  }
+					  else if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic2.title])
+					  {
+						  result = NSOrderedAscending;
+					  }
+					  
+					  return result;
+					  
+				  }];
 	}
 	
 	return _topics;
@@ -820,10 +841,13 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		
 		NSError *error;
 		
+		NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption	: @YES,
+										NSInferMappingModelAutomaticallyOption	: @YES};
+		
 		NSPersistentStore *store = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
 															  configuration:nil
 																		URL:storeUrl
-																	options:nil
+																	options:options
 																	  error:&error];
 		if (!store)
 		{
