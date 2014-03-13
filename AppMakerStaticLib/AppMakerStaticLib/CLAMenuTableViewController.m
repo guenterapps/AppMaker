@@ -73,6 +73,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		
 		UISearchBar *searchBar	= [[UISearchBar alloc] initWithFrame:CGRectZero];
 		
+		searchBar.delegate = self;
+		
 		searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar
 															 contentsController:self];
 		
@@ -393,7 +395,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	[UIView animateWithDuration:0.2
 					 animations:^()
 	{
-		self.searchDisplayController.navigationItem.rightBarButtonItems = [self searchBarSpacer];
+		//self.searchDisplayController.navigationItem.rightBarButtonItems = [self searchBarSpacer];
 
 		CLAPanelViewController *panel = (CLAPanelViewController *)self.appMaker.rootViewController;
 		
@@ -418,6 +420,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 			detailVC.localizedStrings = self.localizedStrings;
 
 			[self.sidePanelController toggleLeftPanel:self];
+
 		}
 		 
 		_indexPathSelectedFromSearch = nil;
@@ -435,6 +438,25 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	}
 	
 	return NO;
+}
+
+#pragma mark - UISearchBarDelegate
+
+-(BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
+{
+	[self.searchDisplayController setActive:YES animated:YES];
+
+	return YES;
+}
+
+-(BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar
+{
+	[UIView animateWithDuration:0.2 animations:^()
+	 {
+		 self.searchDisplayController.navigationItem.rightBarButtonItems = [self searchBarSpacer];
+	 }];
+	
+	return YES;
 }
 
 @end
