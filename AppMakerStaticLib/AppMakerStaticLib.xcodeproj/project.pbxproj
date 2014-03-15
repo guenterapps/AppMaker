@@ -22,6 +22,7 @@
 		AA8D43831869856A00633BA1 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8D43821869856A00633BA1 /* Social.framework */; };
 		AA8D7E18186368B0004AB346 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */; };
 		AA8D7E19186368B0004AB346 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */; };
+		AA8DD11D18D497C7002BE768 /* CLAQRCodeReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8DD11C18D497C7002BE768 /* CLAQRCodeReaderViewController.m */; };
 		AAA387E31891CAC40081C900 /* CLAWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA387E21891CAC40081C900 /* CLAWebViewController.m */; };
 		AAA66F6518579D650097831C /* CLAFetchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F6418579D650097831C /* CLAFetchManager.m */; };
 		AAA66F6618579D650097831C /* CLAFetchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F6418579D650097831C /* CLAFetchManager.m */; };
@@ -150,6 +151,8 @@
 		AA8D43821869856A00633BA1 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		AA8D7E16186368B0004AB346 /* UIColor-Expanded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor-Expanded.h"; sourceTree = "<group>"; };
 		AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor-Expanded.m"; sourceTree = "<group>"; };
+		AA8DD11B18D497C7002BE768 /* CLAQRCodeReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAQRCodeReaderViewController.h; sourceTree = "<group>"; };
+		AA8DD11C18D497C7002BE768 /* CLAQRCodeReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAQRCodeReaderViewController.m; sourceTree = "<group>"; };
 		AAA0621018B52B6D00133ED2 /* CLATableViewCellConfigurationProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLATableViewCellConfigurationProtocol.h; sourceTree = "<group>"; };
 		AAA387E11891CAC40081C900 /* CLAWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAWebViewController.h; sourceTree = "<group>"; };
 		AAA387E21891CAC40081C900 /* CLAWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAWebViewController.m; sourceTree = "<group>"; };
@@ -354,6 +357,8 @@
 				AAA790CC184BA47700E0027C /* CLAMainTableViewController.m */,
 				AAA790F6184D1D8300E0027C /* CLAMenuTableViewController.h */,
 				AAA790F7184D1D8300E0027C /* CLAMenuTableViewController.m */,
+				AA8DD11B18D497C7002BE768 /* CLAQRCodeReaderViewController.h */,
+				AA8DD11C18D497C7002BE768 /* CLAQRCodeReaderViewController.m */,
 			);
 			name = VC;
 			sourceTree = "<group>";
@@ -714,6 +719,7 @@
 				AAC5A9831874B2EB0073FF6C /* UITextView+Utilities.m in Sources */,
 				AAA387E31891CAC40081C900 /* CLAWebViewController.m in Sources */,
 				AAB1287818A027D8002799B5 /* Locale.m in Sources */,
+				AA8DD11D18D497C7002BE768 /* CLAQRCodeReaderViewController.m in Sources */,
 				AAC4212A18871E380079C95C /* SVProgressHUD.m in Sources */,
 				AA8D7E18186368B0004AB346 /* UIColor-Expanded.m in Sources */,
 				AAA790D7184BA47700E0027C /* CLAAppDataStore+FakeData.m in Sources */,

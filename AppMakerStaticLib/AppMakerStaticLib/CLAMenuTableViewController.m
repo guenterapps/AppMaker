@@ -17,6 +17,7 @@
 #import "CLALocalizedStringsStore.h"
 #import "CLAPanelViewController.h"
 #import "CLAMainTableViewController.h"
+#import "CLAQRCodeReaderViewController.h"
 
 NSString *const CLAMenuControllerDidSelectItemNotificationKey	= @"CLAMenuControllerDidSelectItemNotificationKey";
 NSString *const CLAMenuControllerSelectedItemKey				= @"CLAMenuControllerSelectedItemKey";
@@ -170,7 +171,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [self.items count] + 1;
+	
+	return [self.items count] + 1 + (self.appMaker.useQRReader ? 1 : 0);
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -185,12 +187,14 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	
 		[(CLAMenuTableViewCell *)cell setTitle:item.title];
 	}
-	else //if (indexPath.row == [self.items count])
+	else
 	{
-		[(CLAMenuTableViewCell *)cell setTitle:[self.localizedStrings localizedStringForString:@"Preferences"]];
+		if (indexPath.row == [self.items count] && self.appMaker.useQRReader)
+			[(CLAMenuTableViewCell *)cell setTitle:@"QR Reader"];
+		else
+			[(CLAMenuTableViewCell *)cell setTitle:[self.localizedStrings localizedStringForString:@"Preferences"]];
 	}
-//	else
-//		[(CLAMenuTableViewCell *)cell setTitle:@"CREDITS"];
+
 
     return cell;
 }
@@ -292,27 +296,33 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 															object:self
 														userInfo:userInfo];		
 	}
-	else if (indexPath.row == [self.items count])
-	{
-		UINavigationController *navController = (UINavigationController *)self.sidePanelController.centerPanel;
-		
-		if (!lastSelectedViewController)
-		{
-			lastSelectedViewController = self.appMaker.mainTableViewController;
-		}
-		
-		[navController setViewControllers:@[self.appMaker.preferencesViewController]];
-	}
 	else
 	{
-		UINavigationController *navController = (UINavigationController *)self.sidePanelController.centerPanel;
-		
-		if (!lastSelectedViewController)
+		if (indexPath.row == [self.items count] && self.appMaker.useQRReader)
 		{
-			lastSelectedViewController = self.appMaker.mainTableViewController;
+			UINavigationController *navController = (UINavigationController *)self.sidePanelController.centerPanel;
+			
+			if (!lastSelectedViewController)
+			{
+				lastSelectedViewController = self.appMaker.mainTableViewController;
+			}
+			
+			CLAQRCodeReaderViewController *qrReader = [[CLAQRCodeReaderViewController alloc] init];
+			qrReader.appMaker = self.appMaker;
+			qrReader.store	= self.store;
+			[navController setViewControllers:@[qrReader]];
 		}
-		
-		[navController setViewControllers:@[self.appMaker.creditsViewController]];
+		else
+		{
+			UINavigationController *navController = (UINavigationController *)self.sidePanelController.centerPanel;
+			
+			if (!lastSelectedViewController)
+			{
+				lastSelectedViewController = self.appMaker.mainTableViewController;
+			}
+			
+			[navController setViewControllers:@[self.appMaker.preferencesViewController]];
+		}
 	}
 	
 	[self.sidePanelController toggleLeftPanel:self];

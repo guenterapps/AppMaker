@@ -70,6 +70,7 @@ extern NSString *const CLAMenuControllerSelectedIndexPathKey;
 
 #pragma mark - Properties
 
+@property (nonatomic, assign) BOOL useQRReader;
 @property (nonatomic, readonly) CLAPreferences *preferences;
 @property (nonatomic, readonly) CLALocalizedStringsStore *stringsStore;
 
