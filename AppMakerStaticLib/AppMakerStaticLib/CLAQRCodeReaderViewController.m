@@ -7,6 +7,7 @@
 //
 
 #import "CLAQRCodeReaderViewController.h"
+#import "CLAWebViewController.h"
 
 @interface CLAQRCodeReaderViewController ()
 {
@@ -77,10 +78,9 @@
 	[(UILabel *)self.navigationItem.titleView setText:@"QR Reader"];
 }
 
-
--(void)viewDidAppear:(BOOL)animated
+-(void)viewWillAppear:(BOOL)animated
 {
-	[super viewDidAppear:animated];
+	[super viewWillAppear:animated];
 	
 	[_session startRunning];
 }
@@ -110,8 +110,6 @@
 			
 			if (1 == [dataDetector numberOfMatchesInString:decodedString options:0 range:linkRange])
 			{
-				UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.frame];
-				
 				if (![decodedString hasPrefix:@"http"] && ![decodedString hasPrefix:@"https"])
 				{
 					decodedString = [@"http://" stringByAppendingString:decodedString];
@@ -120,18 +118,15 @@
 				NSURL *decodedURL = [NSURL URLWithString:decodedString];
 				NSURLRequest *request = [NSURLRequest requestWithURL:decodedURL];
 				
-				[webView loadRequest:request];
+				CLAWebViewController *webViewController = [[CLAWebViewController alloc] init];
 				
-				[UIView transitionFromView:self.view
-									toView:webView
-								  duration:0.2
-								   options:UIViewAnimationOptionTransitionFlipFromRight
-								completion:^(BOOL finished)
-				{
-					self.view = webView;
-					
-					[(UILabel *)self.navigationItem.titleView setText:[decodedURL host]];
-				}];
+				webViewController.appMaker		= self.appMaker;
+				webViewController.store			= self.store;
+				webViewController.headerTitle	= [decodedURL host];
+				
+				[(UIWebView *)webViewController.view loadRequest:request];
+				
+				[self.navigationController pushViewController:webViewController animated:YES];
 				
 			}
 			else

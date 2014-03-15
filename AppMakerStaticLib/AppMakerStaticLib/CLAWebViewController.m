@@ -37,7 +37,15 @@
 {
 	[super viewWillAppear:animated];
 	
-	[(UILabel *)self.navigationItem.titleView setText:[self.item title]];
+	if (self.item)
+	{
+		[(UILabel *)self.navigationItem.titleView setText:[self.item title]];
+	}
+	else
+	{
+		[(UILabel *)self.navigationItem.titleView setText:self.headerTitle];
+	}
+
 }
 
 @end

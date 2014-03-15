@@ -12,6 +12,7 @@
 @interface CLAWebViewController : CLABaseViewController
 
 @property (nonatomic, readonly) UIWebView *webView;
+@property (nonatomic) NSString *headerTitle;
 @property (nonatomic) id <CLAItem> item;
 
 @end
