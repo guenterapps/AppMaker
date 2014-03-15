@@ -507,8 +507,10 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	[self.tableView.pullToRefreshView setTitle:@"Aggiorna!" forState:SVPullToRefreshStateTriggered];
 	[self.tableView.pullToRefreshView setTitle:@"Finito!" forState:SVPullToRefreshStateStopped];
 	
-	//[self.tableView.pullToRefreshView setTextColor:[UIColor whiteColor]];
-	//[self.tableView.pullToRefreshView setArrowColor:[UIColor whiteColor]];
+	UIColor *foreGroundColor = [self.store userInterface][CLAAppDataStoreUIForegroundColorKey];
+	
+	[self.tableView.pullToRefreshView setTextColor:foreGroundColor];
+	[self.tableView.pullToRefreshView setArrowColor:foreGroundColor];
 }
 
 @end
