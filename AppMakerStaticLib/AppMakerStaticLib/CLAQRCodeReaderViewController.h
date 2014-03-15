@@ -8,6 +8,8 @@
 
 #import "CLABaseViewController.h"
 
-@interface CLAQRCodeReaderViewController : CLABaseViewController
+@import AVFoundation;
+
+@interface CLAQRCodeReaderViewController : CLABaseViewController <AVCaptureMetadataOutputObjectsDelegate, UIAlertViewDelegate>
 
 @end

@@ -23,6 +23,7 @@
 		AA8D7E18186368B0004AB346 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */; };
 		AA8D7E19186368B0004AB346 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */; };
 		AA8DD11D18D497C7002BE768 /* CLAQRCodeReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8DD11C18D497C7002BE768 /* CLAQRCodeReaderViewController.m */; };
+		AA8DD12018D4A6B1002BE768 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8DD11F18D4A6B1002BE768 /* AVFoundation.framework */; };
 		AAA387E31891CAC40081C900 /* CLAWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA387E21891CAC40081C900 /* CLAWebViewController.m */; };
 		AAA66F6518579D650097831C /* CLAFetchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F6418579D650097831C /* CLAFetchManager.m */; };
 		AAA66F6618579D650097831C /* CLAFetchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA66F6418579D650097831C /* CLAFetchManager.m */; };
@@ -153,6 +154,7 @@
 		AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor-Expanded.m"; sourceTree = "<group>"; };
 		AA8DD11B18D497C7002BE768 /* CLAQRCodeReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAQRCodeReaderViewController.h; sourceTree = "<group>"; };
 		AA8DD11C18D497C7002BE768 /* CLAQRCodeReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAQRCodeReaderViewController.m; sourceTree = "<group>"; };
+		AA8DD11F18D4A6B1002BE768 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		AAA0621018B52B6D00133ED2 /* CLATableViewCellConfigurationProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLATableViewCellConfigurationProtocol.h; sourceTree = "<group>"; };
 		AAA387E11891CAC40081C900 /* CLAWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAWebViewController.h; sourceTree = "<group>"; };
 		AAA387E21891CAC40081C900 /* CLAWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAWebViewController.m; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA8DD12018D4A6B1002BE768 /* AVFoundation.framework in Frameworks */,
 				AA8D43831869856A00633BA1 /* Social.framework in Frameworks */,
 				AAB7F7E1185485C000AEC2FA /* MessageUI.framework in Frameworks */,
 				AAA7910F184FC85600E0027C /* MapKit.framework in Frameworks */,
@@ -492,6 +495,7 @@
 		AABB00311847D28B002CCF40 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA8DD11F18D4A6B1002BE768 /* AVFoundation.framework */,
 				AA8D43821869856A00633BA1 /* Social.framework */,
 				AAB7F7E0185485C000AEC2FA /* MessageUI.framework */,
 				AAA7910E184FC85600E0027C /* MapKit.framework */,

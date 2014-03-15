@@ -9,41 +9,158 @@
 #import "CLAQRCodeReaderViewController.h"
 
 @interface CLAQRCodeReaderViewController ()
+{
+	AVCaptureSession *_session;
+	AVCaptureVideoPreviewLayer *_previewLayer;
+	BOOL _retryReadingQRCode;
+}
+
+-(void)setupAVSession;
 
 @end
 
 @implementation CLAQRCodeReaderViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (void)setupAVSession
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+	_session = [[AVCaptureSession alloc] init];
+	
+	_session.sessionPreset = AVCaptureSessionPresetHigh;
+	
+	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+	
+	NSError *error;
+	
+	AVCaptureDeviceInput *input		= [AVCaptureDeviceInput deviceInputWithDevice:device
+																		error:&error];
+	
+	AVCaptureMetadataOutput *output = [[AVCaptureMetadataOutput alloc] init];
+
+	if (input)
+	{
+		[_session addInput:input];
+		[_session addOutput:output];
+		
+		[output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+		[output setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+		
+		_previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_session];
+
+		_previewLayer.bounds		= [self.view bounds];
+		_previewLayer.videoGravity	= AVLayerVideoGravityResizeAspectFill;
+		_previewLayer.position		= self.view.layer.position;
+		
+		[self.view.layer addSublayer:_previewLayer];
+	}
+	else
+	{
+		NSLog(@"%@", error);
+		
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
+														message:[error localizedDescription]
+													   delegate:nil
+											  cancelButtonTitle:@"Ok"
+											  otherButtonTitles:nil];
+		[alert show];
+		
+	}
 }
 
-- (void)viewDidLoad
+-(void)viewDidLoad
 {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+	[super viewDidLoad];
+
+	[self setupAVSession];
+	
+	[self setupTitleView];
+	
+	[(UILabel *)self.navigationItem.titleView setText:@"QR Reader"];
 }
 
-- (void)didReceiveMemoryWarning
+
+-(void)viewDidAppear:(BOOL)animated
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super viewDidAppear:animated];
+	
+	[_session startRunning];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+-(void)dealloc
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+	[[[_session outputs] firstObject] setMetadataObjectsDelegate:nil queue:nil];
 }
-*/
+
+#pragma mark AVCaptureMetadataOutputObjectsDelegate
+
+-(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection
+{
+	for (AVMetadataObject *metaData in metadataObjects)
+	{
+		if ([metaData.type isEqualToString:AVMetadataObjectTypeQRCode])
+		{
+			[_session stopRunning];
+	
+			AVMetadataMachineReadableCodeObject *readableMetaData = (AVMetadataMachineReadableCodeObject *)metaData;
+			
+			NSString *decodedString =[readableMetaData stringValue];
+			
+			NSDataDetector *dataDetector = [[NSDataDetector alloc] initWithTypes:NSTextCheckingTypeLink error:nil];
+			
+			NSRange linkRange = NSMakeRange(0, decodedString.length);
+			
+			if (1 == [dataDetector numberOfMatchesInString:decodedString options:0 range:linkRange])
+			{
+				UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+				
+				if (![decodedString hasPrefix:@"http"] && ![decodedString hasPrefix:@"https"])
+				{
+					decodedString = [@"http://" stringByAppendingString:decodedString];
+				}
+				
+				NSURL *decodedURL = [NSURL URLWithString:decodedString];
+				NSURLRequest *request = [NSURLRequest requestWithURL:decodedURL];
+				
+				[webView loadRequest:request];
+				
+				[UIView transitionFromView:self.view
+									toView:webView
+								  duration:0.2
+								   options:UIViewAnimationOptionTransitionFlipFromRight
+								completion:^(BOOL finished)
+				{
+					self.view = webView;
+					
+					[(UILabel *)self.navigationItem.titleView setText:[decodedURL host]];
+				}];
+				
+			}
+			else
+			{
+
+				_retryReadingQRCode = YES;
+				NSString *error = [NSString stringWithFormat:@"%@ non è un URL corretto!", decodedString];
+				UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
+																message:error
+															   delegate:self
+													  cancelButtonTitle:@"Ok"
+													  otherButtonTitles:nil];
+				[alert show];
+			}
+			
+			break;
+		}
+	}
+}
+
+#pragma mark UIAlerViewDelegate
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if (_retryReadingQRCode)
+	{
+		_retryReadingQRCode = NO;
+		[_session startRunning];
+	}
+}
 
 @end
