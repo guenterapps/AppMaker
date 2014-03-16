@@ -196,7 +196,9 @@ typedef NSArray * (^ParseHandler)(NSData *jsonData, NSError **error);
 		[self preLoadLocalesAsCache:YES];
 	};
 	
-	shouldContinue = [self loadAndParseApiRequest:LOCALES
+	NSString *apiCall = [NSString stringWithFormat:@"%@?%@=%@", LOCALES, LOCALE, _languageCode];
+	
+	shouldContinue = [self loadAndParseApiRequest:apiCall
 										  eTagKey:CLALocalesEtagKey
 									cachedHandler:cachedLocales
 								completionHandler:^BOOL(NSData *response)
@@ -249,7 +251,7 @@ typedef NSArray * (^ParseHandler)(NSData *jsonData, NSError **error);
 		[self preLoadTopicsAsCache:YES];
 	};
 	
-	NSString *apiCall = [NSString stringWithFormat:@"%@?%@=%@", CATEGORIES, LOCALE, _languageCode];
+	apiCall = [NSString stringWithFormat:@"%@?%@=%@", CATEGORIES, LOCALE, _languageCode];
 	
 	shouldContinue =	[self loadAndParseApiRequest:apiCall
 										  eTagKey:CLATopicEtagKey
