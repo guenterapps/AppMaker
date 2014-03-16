@@ -8,7 +8,7 @@
 
 #import "CLAPreferences.h"
 
-#define DEFAULT_LANG @"en_EN"
+#define DEFAULT_LANG @"en"
 
 NSString *const CLAPreferredLanguageCodeKey	= @"CLAPreferredLanguageCodeKey";
 NSString *const CLADefaultLanguageCodeKey	= @"CLADefaultLanguageCodeKey";
@@ -28,7 +28,7 @@ NSString *const CLADefaultLanguageCodeKey	= @"CLADefaultLanguageCodeKey";
 	{
 		if (!value)
 		{
-			value = [[NSLocale currentLocale] localeIdentifier];
+			value = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
 		}
 	}
 	
