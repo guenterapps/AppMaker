@@ -34,6 +34,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	
 	UISearchDisplayController *searchController;
 	NSIndexPath *_indexPathSelectedFromSearch;
+	BOOL _isSearching;
 }
 
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification;
@@ -255,6 +256,11 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		
 		[searchController setActive:NO animated:YES];
 		
+		[UIView animateWithDuration:0.2 animations:^()
+		 {
+			 self.searchDisplayController.navigationItem.rightBarButtonItems = [self searchBarSpacer];
+		 }];
+		
 		return;
 	}
 	
@@ -444,10 +450,10 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	{
 		[self.appMaker.mainTableViewController setQueryString:searchString];
 		
-		return YES;
+		return _isSearching = YES;
 	}
 	
-	return NO;
+	return _isSearching = NO;
 }
 
 #pragma mark - UISearchBarDelegate
@@ -461,10 +467,13 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar
 {
-	[UIView animateWithDuration:0.2 animations:^()
-	 {
-		 self.searchDisplayController.navigationItem.rightBarButtonItems = [self searchBarSpacer];
-	 }];
+	if (!_isSearching)
+	{
+		[UIView animateWithDuration:0.2 animations:^()
+		 {
+			 self.searchDisplayController.navigationItem.rightBarButtonItems = [self searchBarSpacer];
+		 }];
+	}
 	
 	return YES;
 }
