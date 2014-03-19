@@ -253,6 +253,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	if (tableView != self.tableView)
 	{
 		_indexPathSelectedFromSearch = indexPath;
+		_isSearching = NO;
 		
 		[searchController setActive:NO animated:YES];
 		
