@@ -317,8 +317,8 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	MKPolylineRenderer *poly = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
 	
 	[poly setLineWidth:4.0];
-	[poly setStrokeColor:[self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey]];
-	
+	//[poly setStrokeColor:[self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey]];
+	[poly setStrokeColor:[UIColor blueColor]];
 	return poly;
 }
 
