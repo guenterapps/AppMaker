@@ -195,7 +195,7 @@
 		
 		[SVProgressHUD showWithStatus:loading maskType:SVProgressHUDMaskTypeGradient];
 		
-		[self.store fetchRemoteDataWithTimeout:0];
+		[self.store fetchRemoteDataWithTimeout:0 skipCaching:YES];
 	}
 }
 

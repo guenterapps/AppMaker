@@ -71,7 +71,7 @@ extern NSString *const CLAAppDataStoreFetchErrorKey;
 
 -(void)preFetchData;
 
--(void)fetchRemoteDataWithTimeout:(NSTimeInterval)timeout;
+-(void)fetchRemoteDataWithTimeout:(NSTimeInterval)timeout skipCaching:(BOOL)skip;
 -(void)fetchRemoteDataForSingleContent:(NSString *)contentId withTimeout:(NSTimeInterval)timeout;
 
 -(void)save:(NSError **)error;

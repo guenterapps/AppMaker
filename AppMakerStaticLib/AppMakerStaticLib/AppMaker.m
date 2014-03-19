@@ -570,7 +570,7 @@ static id appMaker = nil;
 	}
 	else
 	{
-		[self.store fetchRemoteDataWithTimeout:TIMEOUT];
+		[self.store fetchRemoteDataWithTimeout:TIMEOUT skipCaching:NO];
 	}
 
 }

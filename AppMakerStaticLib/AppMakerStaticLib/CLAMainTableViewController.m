@@ -500,7 +500,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 													  name:CLAAppDataStoreDidFailToFetchNewData
 													object:self.store];
 
-		 [self.store fetchRemoteDataWithTimeout:TIMEOUT];
+		 [self.store fetchRemoteDataWithTimeout:TIMEOUT skipCaching:NO];
 	 }];
 	
 	[self.tableView.pullToRefreshView setTitle:@"Carico i dati..." forState:SVPullToRefreshStateLoading];

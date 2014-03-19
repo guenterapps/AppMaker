@@ -549,12 +549,12 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	[queue addOperation:fetchManager];
 }
 
--(void)fetchRemoteDataWithTimeout:(NSTimeInterval)timeout
+-(void)fetchRemoteDataWithTimeout:(NSTimeInterval)timeout skipCaching:(BOOL)skip;
 {
 
 	NSDate *now = [NSDate date];
 	
-	if (ABS([self.lastSyncDate timeIntervalSinceDate:now]) < self.cacheTimeout)
+	if (!skip && ABS([self.lastSyncDate timeIntervalSinceDate:now]) < self.cacheTimeout)
 	{
 		double delayInSeconds = 1.0;
 
