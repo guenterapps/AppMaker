@@ -21,6 +21,9 @@ typedef enum
 	
 } CLACellShadowMask;
 
+extern NSString *const CLAAppDataStoreUIDirectionsColorKey;
+extern NSString *const CLAAppDataStoreUIDirectionsTextColorKey;
+
 extern NSString *const CLAAppDataStoreUIBackgroundColorKey;
 extern NSString *const CLAAppDataStoreUIForegroundColorKey;
 extern NSString *const CLAAppDataStoreUISplashTintColorKey;

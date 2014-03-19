@@ -160,13 +160,13 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 		
 		navigateControl = [[UIButton alloc] initWithFrame:CGRectMake(0.0, 0.0, buttonBackground.size.width, buttonBackground.size.height)];
 		
-		navigateControl.tintColor = [self.store userInterface][CLAAppDataStoreUIHeaderColorKey];
+		navigateControl.tintColor = [self.store userInterface][CLAAppDataStoreUIDirectionsColorKey];
 		
 		NSString *getDirections = [self.localizedStrings localizedStringForString:@"Get Directions"];
 		
 		[navigateControl setBackgroundImage:buttonBackground forState:UIControlStateNormal];
 		[navigateControl setTitle:getDirections forState:UIControlStateNormal];
-		[navigateControl setTitleColor:[self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey]
+		[navigateControl setTitleColor:[self.store userInterface][CLAAppDataStoreUIDirectionsTextColorKey]
 							  forState:UIControlStateNormal];
 
 		[navigateControl addTarget:self action:@selector(openNavigationMap:) forControlEvents:UIControlEventTouchUpInside];
