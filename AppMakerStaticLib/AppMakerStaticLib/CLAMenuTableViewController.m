@@ -179,6 +179,26 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CLAMenuTableViewCellIdentifier forIndexPath:indexPath];
+	
+	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
+	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
+	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
+	UILabel *label		= [cell valueForKey:@"_title"];
+	
+	label.font					= [UIFont fontWithName:fontName size:fontSize];
+	label.textColor				= fontColor;
+	label.highlightedTextColor	= fontColor;
+	
+	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
+	
+	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
+	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
+	
+	UIView *selectedView = [[UIView alloc] initWithFrame:CGRectZero];
+	[selectedView setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuSelectedColorKey]];
+	
+	cell.backgroundView			= backGroundview;
+	cell.selectedBackgroundView	= selectedView;
 
     NSAssert([cell isKindOfClass:[CLAMenuTableViewCell class]], @"Wrong cell class!");
 	
@@ -202,31 +222,31 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 #pragma mark - Delegate Methods
 
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	if (tableView != self.tableView)
-		return;
-	
-	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
-	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
-	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
-	UILabel *label		= [cell valueForKey:@"_title"];
-	
-	label.font			= [UIFont fontWithName:fontName size:fontSize];
-	label.textColor		= fontColor;
-	
-	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
-	
-	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
-	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
-	
-	UIView *selectedView = [[UIView alloc] initWithFrame:CGRectZero];
-	[selectedView setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuSelectedColorKey]];
-
-	cell.backgroundView			= backGroundview;
-	cell.selectedBackgroundView	= selectedView;
-
-}
+//-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//	if (tableView != self.tableView)
+//		return;
+//	
+//	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
+//	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
+//	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
+//	UILabel *label		= [cell valueForKey:@"_title"];
+//	
+//	label.font			= [UIFont fontWithName:fontName size:fontSize];
+//	label.textColor		= fontColor;
+//	
+//	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
+//	
+//	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
+//	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
+//	
+//	UIView *selectedView = [[UIView alloc] initWithFrame:CGRectZero];
+//	[selectedView setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuSelectedColorKey]];
+//
+//	cell.backgroundView			= backGroundview;
+//	cell.selectedBackgroundView	= selectedView;
+//
+//}
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
