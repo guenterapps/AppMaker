@@ -180,6 +180,10 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 {
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CLAMenuTableViewCellIdentifier forIndexPath:indexPath];
 	
+	//fixed a strange: the selected cell is covered by the selectedbacgroundview
+	//when it's scrolled until disappears and then reappears. This solved...
+	[cell setSelected:NO];
+	
 	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
 	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
 	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
