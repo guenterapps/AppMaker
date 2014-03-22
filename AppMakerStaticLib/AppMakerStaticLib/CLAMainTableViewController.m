@@ -92,13 +92,10 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 -(void)setTopic:(id<CLATopic>)topic
 {
 	//NSParameterAssert(topic);
-
-	_topic = topic;
 	
-	if (![[_topic topicCode] isEqualToString:self.lastTopicCode])
-	{
-		_scrolledHeight		= self.tableView.frame.size.height;
-	}
+	BOOL topicHasChanged = ![[topic topicCode] isEqualToString:self.lastTopicCode];
+	
+	_topic = topic;
 	
 	self.lastTopicCode	= [[topic topicCode] copy];
 	self.items			= [[self.store contentsForTopic:topic] copy];
@@ -113,6 +110,14 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	else
 	{
 		self.navigationItem.rightBarButtonItems = nil;
+	}
+	
+	if (topicHasChanged)
+	{
+		_scrolledHeight		= self.tableView.frame.size.height;
+		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
+							  atScrollPosition:UITableViewScrollPositionTop
+									  animated:NO];
 	}
 	
 	[self.tableView reloadData];
