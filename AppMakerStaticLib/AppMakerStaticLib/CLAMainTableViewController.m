@@ -112,7 +112,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		self.navigationItem.rightBarButtonItems = nil;
 	}
 	
-	if (topicHasChanged)
+	if (topicHasChanged && _topic)
 	{
 		_scrolledHeight		= self.tableView.frame.size.height;
 		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
