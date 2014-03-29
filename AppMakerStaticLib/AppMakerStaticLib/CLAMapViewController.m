@@ -32,6 +32,10 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 -(void)openNavigationMap:(id)sender;
 -(void)showAnnotationsForTopic:(id <CLATopic>)topic animated:(BOOL)animated;
 -(MKCoordinateRegion)regionForPois:(NSArray *)pois;
+- (void)calculateDirectionsFromSourceLocation:(MKMapItem *)sourceLocation
+						toDestinationLocation:(MKMapItem *)destinationLocation
+									setRegion:(BOOL)set;
+-(void)showDirectionsForItinerary:(id <CLATopic>)topic;
 
 @end
 
@@ -87,6 +91,8 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	[(UILabel *)self.navigationItem.titleView setText:[self.topic title]];
 
 	[self showAnnotationsForTopic:self.topic animated:YES];
+	
+	[self showDirectionsForItinerary:self.topic];
 }
 
 #pragma mark - View-related methods
@@ -122,6 +128,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 												 selector:@selector(reloadContentsForNewTopic:)
 													 name:CLAAppDataStoreDidInvalidateCache
 												   object:nil];
+
 	}
 	else
 	{
@@ -192,6 +199,120 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 }
 
 #pragma mark - private methods
+
+-(void)showDirectionsForItinerary:(id <CLATopic>)topic
+{
+	NSArray *items = [self.store poisForTopic:topic];
+	
+	for (NSInteger i = 1; i < [items count]; ++i)
+	{
+		id <CLAItem> source			= (id <CLAItem>)items[i - 1];
+		id <CLAItem> destination	= (id <CLAItem>)items[i];
+		
+		MKPlacemark *sourcePlacemark = [[MKPlacemark alloc] initWithCoordinate:[source coordinate]
+															 addressDictionary:nil];
+		MKPlacemark *destinationPlacemark = [[MKPlacemark alloc] initWithCoordinate:[destination coordinate] addressDictionary:nil];
+		
+		
+		[self calculateDirectionsFromSourceLocation:[[MKMapItem alloc] initWithPlacemark:sourcePlacemark]
+							  toDestinationLocation:[[MKMapItem alloc] initWithPlacemark:destinationPlacemark]
+																			   setRegion:NO];
+		
+
+	}
+}
+
+- (void)calculateDirectionsFromSourceLocation:(MKMapItem *)sourceLocation toDestinationLocation:(MKMapItem *)destinationLocation setRegion:(BOOL)set
+{
+	MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
+	[request setSource:sourceLocation];
+	[request setDestination:destinationLocation];
+	
+	MKDirections *direction = [[MKDirections alloc] initWithRequest:request];
+	
+	[direction calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *err)
+	 {
+		 if (err)
+		 {
+			 [self.mapView setShowsUserLocation:NO];
+			 NSLog(@"%@", [err localizedDescription]);
+			 
+			 UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
+														  message:@"Non è stato trovato alcun percorso!"
+														 delegate:nil
+												cancelButtonTitle:@"Annulla"
+												otherButtonTitles:nil];
+			 [av show];
+			 
+			 return;
+		 }
+		 
+		 MKRoute *route;
+		 
+		 if ((route = [[response routes] firstObject]))
+		 {
+			 if (set)
+			 {
+				 MKCoordinateRegion region;
+				 MKCoordinateSpan span;
+				 CLLocationCoordinate2D coordinateToCenter;
+				 
+				 CLLocationCoordinate2D minimumCoordinate = CLLocationCoordinate2DMake(90, 180);
+				 CLLocationCoordinate2D maximumCoordinate = CLLocationCoordinate2DMake(-90, -180);
+				 
+				 for (MKPlacemark *placemark in @[sourceLocation.placemark, destinationLocation.placemark])
+				 {
+					 if (placemark.coordinate.latitude > maximumCoordinate.latitude)
+					 {
+						 maximumCoordinate.latitude = placemark.coordinate.latitude;
+					 }
+					 
+					 if (placemark.coordinate.longitude > maximumCoordinate.longitude)
+					 {
+						 maximumCoordinate.longitude = placemark.coordinate.longitude;
+					 }
+					 
+					 if (placemark.coordinate.latitude < minimumCoordinate.latitude)
+					 {
+						 minimumCoordinate.latitude = placemark.coordinate.latitude;
+					 }
+					 
+					 if (placemark.coordinate.longitude < minimumCoordinate.longitude)
+					 {
+						 minimumCoordinate.longitude = placemark.coordinate.longitude;
+					 }
+				 }
+				 
+				 coordinateToCenter.latitude		= (maximumCoordinate.latitude + minimumCoordinate.latitude) / 2.0;
+				 coordinateToCenter.longitude	= (maximumCoordinate.longitude + minimumCoordinate.longitude) / 2.0;
+				 
+				 span.latitudeDelta	= (maximumCoordinate.latitude - minimumCoordinate.latitude) * 1.5;
+				 span.longitudeDelta	= (maximumCoordinate.longitude - minimumCoordinate.longitude) * 1.5;
+				 
+				 region = MKCoordinateRegionMake(coordinateToCenter, span);
+				 
+				 [self.mapView setRegion:region animated:YES];
+			 }
+
+			 [self.mapView addOverlay:[route polyline]];
+		 }
+		 else
+		 {
+			 NSString *errorMsg = @"Non è stato trovato alcun percorso!";
+			 NSLog(@"%@", errorMsg);
+			 
+			 [self.mapView setShowsUserLocation:NO];
+			 
+			 UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
+														  message:errorMsg
+														 delegate:nil
+												cancelButtonTitle:@"Annulla"
+												otherButtonTitles:nil];
+			 [av show];
+		 }
+		 
+	 }];
+}
 
 - (MKCoordinateRegion)regionForPois:(NSArray *)pois
 {
@@ -348,91 +469,9 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	MKMapItem *destinationLocation	= [[MKMapItem alloc] initWithPlacemark:placeMark];
 	
 	
-	MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
-	[request setSource:sourceLocation];
-	[request setDestination:destinationLocation];
-	
-	MKDirections *direction = [[MKDirections alloc] initWithRequest:request];
-	
-	[direction calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *err)
-	 {
-		 if (err)
-		 {
-			 [self.mapView setShowsUserLocation:NO];
-			 NSLog(@"%@", [err localizedDescription]);
-
-			 UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
-														  message:@"Non è stato trovato alcun percorso!"
-														 delegate:nil
-												cancelButtonTitle:@"Annulla"
-												otherButtonTitles:nil];
-			 [av show];
-			 
-			 return;
-		 }
-		 
-		 MKRoute *route;
-		 
-		 if ((route = [[response routes] firstObject]))
-		 {
-			 MKCoordinateRegion region;
-			 MKCoordinateSpan span;
-			 CLLocationCoordinate2D coordinateToCenter;
-			 
-			 CLLocationCoordinate2D minimumCoordinate = CLLocationCoordinate2DMake(90, 180);
-			 CLLocationCoordinate2D maximumCoordinate = CLLocationCoordinate2DMake(-90, -180);
-			 
-			 for (MKPlacemark *placemark in @[sourceLocation.placemark, destinationLocation.placemark])
-			 {
-				 if (placemark.coordinate.latitude > maximumCoordinate.latitude)
-				 {
-					 maximumCoordinate.latitude = placemark.coordinate.latitude;
-				 }
-				 
-				 if (placemark.coordinate.longitude > maximumCoordinate.longitude)
-				 {
-					 maximumCoordinate.longitude = placemark.coordinate.longitude;
-				 }
-				 
-				 if (placemark.coordinate.latitude < minimumCoordinate.latitude)
-				 {
-					 minimumCoordinate.latitude = placemark.coordinate.latitude;
-				 }
-				 
-				 if (placemark.coordinate.longitude < minimumCoordinate.longitude)
-				 {
-					 minimumCoordinate.longitude = placemark.coordinate.longitude;
-				 }
-			 }
-			 
-			 coordinateToCenter.latitude		= (maximumCoordinate.latitude + minimumCoordinate.latitude) / 2.0;
-			 coordinateToCenter.longitude	= (maximumCoordinate.longitude + minimumCoordinate.longitude) / 2.0;
-			 
-			 span.latitudeDelta	= (maximumCoordinate.latitude - minimumCoordinate.latitude) * 1.5;
-			 span.longitudeDelta	= (maximumCoordinate.longitude - minimumCoordinate.longitude) * 1.5;
-			 
-			 region = MKCoordinateRegionMake(coordinateToCenter, span);
-			 
-			 [self.mapView setRegion:region animated:YES];
-			 
-			 [self.mapView addOverlay:[route polyline]];
-		 }
-		 else
-		 {
-			 NSString *errorMsg = @"Non è stato trovato alcun percorso!";
-			 NSLog(@"%@", errorMsg);
-			 
-			 [self.mapView setShowsUserLocation:NO];
-
-			 UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
-														  message:errorMsg
-														 delegate:nil
-												cancelButtonTitle:@"Annulla"
-												otherButtonTitles:nil];
-			 [av show];
-		 }
-		 
-	 }];
+	[self calculateDirectionsFromSourceLocation:sourceLocation
+						  toDestinationLocation:destinationLocation
+									  setRegion:YES];
 
 }
 
