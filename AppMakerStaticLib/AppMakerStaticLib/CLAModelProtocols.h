@@ -48,6 +48,7 @@
 @property (nonatomic) NSString *topicCode;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSSet *items;
+@property (nonatomic) NSString *sortOrder;
 
 @end
 

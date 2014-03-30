@@ -14,6 +14,7 @@
 
 #define kLATITUDE_SPAN 1500.0
 #define kLONGITUDE_SPAN 1500.0
+#define ITINERARI	@"position"
 
 static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReuseIdentifier";
 
@@ -92,7 +93,15 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 
 	[self showAnnotationsForTopic:self.topic animated:YES];
 	
-	[self showDirectionsForItinerary:self.topic];
+	if (NSOrderedSame == [ITINERARI compare:[self.topic sortOrder] options:NSCaseInsensitiveSearch])
+	{
+		[self showDirectionsForItinerary:self.topic];
+	}
+	else
+	{
+		[self.mapView removeOverlays:self.mapView.overlays];
+	}
+
 }
 
 #pragma mark - View-related methods
@@ -436,10 +445,14 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 -(MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay
 {
 	MKPolylineRenderer *poly = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
+	UIColor *polyColor = [self.store userInterface][CLAAppDataStoreUIDirectionsPolylineColorKey];
+	
+	if (!polyColor)
+		polyColor = [UIColor blueColor];
 	
 	[poly setLineWidth:4.0];
-	//[poly setStrokeColor:[self.store userInterface][CLAAppDataStoreUIHeaderFontColorKey]];
-	[poly setStrokeColor:[UIColor blueColor]];
+	[poly setStrokeColor:polyColor];
+	
 	return poly;
 }
 
