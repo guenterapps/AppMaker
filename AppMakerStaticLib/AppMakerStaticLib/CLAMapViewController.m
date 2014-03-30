@@ -224,13 +224,18 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	{
 		UIImage *(^pinMapDrawer)(UIImage *) = ^(UIImage *flag)
 		{
-			UIGraphicsBeginImageContext(CGSizeMake(pinMap.size.width + flag.size.width * 0.5, pinMap.size.height));
+			CGFloat scale = 1.0;//[[UIScreen mainScreen] scale];
 			
-			[pinMap drawInRect:CGRectMake(0., 0., pinMap.size.width, pinMap.size.height)];
-			[flag drawInRect:CGRectMake(pinMap.size.width * 0.415, 10., flag.size.width, flag.size.height)];
+			CGSize pinSize	= CGSizeMake(pinMap.size.width * scale, pinMap.size.height * scale);
+			CGSize flagSize	= CGSizeMake(flag.size.width * scale, flag.size.height * scale);
+			
+			UIGraphicsBeginImageContextWithOptions(CGSizeMake(pinSize.width + flagSize.width * 0.5, pinSize.height), NO, 2.0);
+			
+			[pinMap drawInRect:CGRectMake(0., 0., pinSize.width, pinSize.height)];
+			[flag drawInRect:CGRectMake(pinSize.width * 0.425, 10., flagSize.width, flagSize.height)];
 			
 			UIImage *compositeImage = UIGraphicsGetImageFromCurrentImageContext();
-			
+
 			UIGraphicsEndImageContext();
 			
 			return compositeImage;
