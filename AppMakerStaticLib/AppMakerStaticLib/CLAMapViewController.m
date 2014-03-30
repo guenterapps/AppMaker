@@ -23,6 +23,8 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	BOOL _isDetailMap;
 	NSString *_lastTopic;
 	UIButton *navigateControl;
+	
+	BOOL _isItinerary;
 
 	id animator;
 	id attachment;
@@ -37,6 +39,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 						toDestinationLocation:(MKMapItem *)destinationLocation
 									setRegion:(BOOL)set;
 -(void)showDirectionsForItinerary:(id <CLATopic>)topic;
+-(UIImage *)pinMapForItem:(id <CLAItem>)item;
 
 @end
 
@@ -95,10 +98,12 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	
 	if (NSOrderedSame == [ITINERARI compare:[self.topic sortOrder] options:NSCaseInsensitiveSearch])
 	{
+		_isItinerary = YES;
 		[self showDirectionsForItinerary:self.topic];
 	}
 	else
 	{
+		_isItinerary = NO;
 		[self.mapView removeOverlays:self.mapView.overlays];
 	}
 
@@ -208,6 +213,41 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 }
 
 #pragma mark - private methods
+
+-(UIImage *)pinMapForItem:(id<CLAItem>)item
+{
+	UIImage *pinMap = [item pinMap];
+	UIImage *start	= [UIImage imageNamed:@"start"];
+	UIImage *end	= [UIImage imageNamed:@"end"];
+	
+	if (_isItinerary)
+	{
+		UIImage *(^pinMapDrawer)(UIImage *) = ^(UIImage *flag)
+		{
+			UIGraphicsBeginImageContext(CGSizeMake(pinMap.size.width + flag.size.width * 0.5, pinMap.size.height));
+			
+			[pinMap drawInRect:CGRectMake(0., 0., pinMap.size.width, pinMap.size.height)];
+			[flag drawInRect:CGRectMake(pinMap.size.width * 0.415, 10., flag.size.width, flag.size.height)];
+			
+			UIImage *compositeImage = UIGraphicsGetImageFromCurrentImageContext();
+			
+			UIGraphicsEndImageContext();
+			
+			return compositeImage;
+		};
+		
+		if (0 == [[item ordering] integerValue])
+		{
+			pinMap = pinMapDrawer(start);
+		}
+		else if ((NSInteger)([[self.store poisForTopic:self.topic] count] - 1) == [[item ordering] integerValue])
+		{
+			pinMap = pinMapDrawer(end);
+		}
+	}
+	
+	return pinMap;
+}
 
 -(void)showDirectionsForItinerary:(id <CLATopic>)topic
 {
@@ -502,7 +542,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 		return nil;
 	}
 
-	[annotationView setImage:[(id <CLAItem>)annotation pinMap]];
+	[annotationView setImage:[self pinMapForItem:(id <CLAItem>)annotation]];
 	
 	annotationView.enabled = YES;
 	annotationView.canShowCallout = YES;
