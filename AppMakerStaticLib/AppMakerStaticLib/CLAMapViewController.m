@@ -93,8 +93,9 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	self.items	= [self.store poisForTopic:self.topic];
 	
 	[(UILabel *)self.navigationItem.titleView setText:[self.topic title]];
-
-	[self showAnnotationsForTopic:self.topic animated:YES];
+	
+	[self.mapView removeAnnotations:[self.mapView annotations]];
+	[self.mapView removeOverlays:[self.mapView overlays]];
 	
 	if (NSOrderedSame == [ITINERARI compare:[self.topic sortOrder] options:NSCaseInsensitiveSearch])
 	{
@@ -106,6 +107,8 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 		_isItinerary = NO;
 		[self.mapView removeOverlays:self.mapView.overlays];
 	}
+	
+	[self showAnnotationsForTopic:self.topic animated:YES];
 
 }
 
@@ -426,8 +429,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 		
 		region = MKCoordinateRegionMakeWithDistance(coordinateToCenter, kLATITUDE_SPAN, kLONGITUDE_SPAN);
 	}
-
-	[self.mapView removeAnnotations:[self.mapView annotations]];
+	
 	[self.mapView addAnnotations:pois];
 
 	[self.mapView setRegion:region animated:animated];
