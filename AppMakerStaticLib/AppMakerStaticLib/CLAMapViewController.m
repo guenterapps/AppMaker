@@ -40,6 +40,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 									setRegion:(BOOL)set;
 -(void)showDirectionsForItinerary:(id <CLATopic>)topic;
 -(UIImage *)pinMapForItem:(id <CLAItem>)item;
+-(void)showDirectionToPoi;
 
 @end
 
@@ -151,6 +152,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	{
 		[(UILabel *)self.navigationItem.titleView setText:[[self.items lastObject] title]];
 		[self.mapView addAnnotations:self.items];
+		[self showDirectionToPoi];
 	}
 	
 //	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -257,6 +259,11 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	return pinMap;
 }
 
+-(void)showDirectionToPoi
+{
+	[self.mapView setShowsUserLocation:YES];
+}
+
 -(void)showDirectionsForItinerary:(id <CLATopic>)topic
 {
 	NSArray *items = [self.store poisForTopic:topic];
@@ -344,7 +351,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 				 coordinateToCenter.longitude	= (maximumCoordinate.longitude + minimumCoordinate.longitude) / 2.0;
 				 
 				 span.latitudeDelta	= (maximumCoordinate.latitude - minimumCoordinate.latitude) * 1.5;
-				 span.longitudeDelta	= (maximumCoordinate.longitude - minimumCoordinate.longitude) * 1.5;
+				 span.longitudeDelta	= (maximumCoordinate.longitude - minimumCoordinate.longitude) * 1.8;
 				 
 				 region = MKCoordinateRegionMake(coordinateToCenter, span);
 				 
@@ -445,45 +452,44 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	MKMapItem *destinationLocation	= [[MKMapItem alloc] initWithPlacemark:placeMark];
 
 	
-	if ([self iOS7Running])
-	{
-		[self.mapView setShowsUserLocation:YES];
-		
-		animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.mapView];
-		
-		UIGravityBehavior *gravityBehaviour = [[UIGravityBehavior alloc] initWithItems:@[navigateControl]];
+//	if ([self iOS7Running])
+//	{
+//		[self.mapView setShowsUserLocation:YES];
+//		
+//		animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.mapView];
+//		
+//		UIGravityBehavior *gravityBehaviour = [[UIGravityBehavior alloc] initWithItems:@[navigateControl]];
+//
+//		gravityBehaviour.magnitude = 2.0;
+//		
+//		CGFloat xAttachment = CGRectGetMaxX(navigateControl.frame);
+//		CGFloat yAttachment	= CGRectGetMaxY(navigateControl.frame);
+//		CGFloat xOffset		= CGRectGetWidth(navigateControl.frame) / 2.0;
+//		CGFloat yOffset		= CGRectGetHeight(navigateControl.frame) / 2.0;
+//		
+//		attachment = [[UIAttachmentBehavior alloc] initWithItem:navigateControl offsetFromCenter:UIOffsetMake(xOffset, yOffset) attachedToAnchor:CGPointMake(xAttachment, yAttachment)];
+//		
+//		
+//		UICollisionBehavior *collisionBehaviour = [[UICollisionBehavior alloc] initWithItems:@[navigateControl]];
+//		
+//		[collisionBehaviour setCollisionDelegate:self];
+//		
+//		CGSize screen = [[UIScreen mainScreen] bounds].size;
+//
+//#define SCREEN_OFFSET 40
+//		
+//		[collisionBehaviour addBoundaryWithIdentifier:@"CLAFloorBoundary" fromPoint:CGPointMake(0., screen.height + SCREEN_OFFSET) toPoint:CGPointMake(screen.width, screen.height + SCREEN_OFFSET)];
+//		
+//		[animator addBehavior:collisionBehaviour];
+//		[animator addBehavior:gravityBehaviour];
+//		[animator addBehavior:attachment];
+//
+//	}
 
-		gravityBehaviour.magnitude = 2.0;
-		
-		CGFloat xAttachment = CGRectGetMaxX(navigateControl.frame);
-		CGFloat yAttachment	= CGRectGetMaxY(navigateControl.frame);
-		CGFloat xOffset		= CGRectGetWidth(navigateControl.frame) / 2.0;
-		CGFloat yOffset		= CGRectGetHeight(navigateControl.frame) / 2.0;
-		
-		attachment = [[UIAttachmentBehavior alloc] initWithItem:navigateControl offsetFromCenter:UIOffsetMake(xOffset, yOffset) attachedToAnchor:CGPointMake(xAttachment, yAttachment)];
-		
-		
-		UICollisionBehavior *collisionBehaviour = [[UICollisionBehavior alloc] initWithItems:@[navigateControl]];
-		
-		[collisionBehaviour setCollisionDelegate:self];
-		
-		CGSize screen = [[UIScreen mainScreen] bounds].size;
+	NSDictionary *options = @{MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking};
 
-#define SCREEN_OFFSET 40
-		
-		[collisionBehaviour addBoundaryWithIdentifier:@"CLAFloorBoundary" fromPoint:CGPointMake(0., screen.height + SCREEN_OFFSET) toPoint:CGPointMake(screen.width, screen.height + SCREEN_OFFSET)];
-		
-		[animator addBehavior:collisionBehaviour];
-		[animator addBehavior:gravityBehaviour];
-		[animator addBehavior:attachment];
+	[MKMapItem openMapsWithItems:@[destinationLocation] launchOptions:options];
 
-	}
-	else
-	{
-		NSDictionary *options = @{MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking};
-
-		[MKMapItem openMapsWithItems:@[destinationLocation] launchOptions:options];
-	}
 
 }
 
@@ -499,6 +505,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	
 	[poly setLineWidth:4.0];
 	[poly setStrokeColor:polyColor];
+	[poly setAlpha:0.6];
 	
 	return poly;
 }
