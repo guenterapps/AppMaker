@@ -369,14 +369,18 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(NSArray *)buildTopics
 {
-	for (id <CLATopic> parentTopic in [_openParentTopics copy])
+	NSMutableArray *collectedTopics = [NSMutableArray arrayWithArray:[[self.store topics] copy]];
+	
+	for (NSString *parentTopicCode in [_openParentTopics copy])
 	{
+		NSAssert([parentTopicCode isKindOfClass:[NSString class]], @"topic code should be a NSString");
+
 		NSUInteger index = [[self.store topics] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
 		{
 			BOOL found = NO;
 			id <CLATopic> topic = (id <CLATopic>)obj;
 			
-			if ([[topic topicCode] isEqualToString:[parentTopic topicCode]])
+			if ([[topic topicCode] isEqualToString:parentTopicCode])
 				found = YES;
 
 			return found;
@@ -385,12 +389,18 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		
 		if (NSNotFound == index)
 		{
-			[_openParentTopics removeObject:parentTopic];
+			[_openParentTopics removeObject:parentTopicCode];
 		}
-		
+		else
+		{
+			NSArray *childTopics		= [self.store topicsWithParentTopicCode:parentTopicCode];
+			NSIndexSet *childIndexSet	= [[NSIndexSet alloc] initWithIndexesInRange:NSMakeRange(index + 1, [childTopics count])];
+	
+			[collectedTopics insertObjects:childTopics atIndexes:childIndexSet];
+		}
 	}
 	
-	return [[self.store topics] copy];
+	return [NSArray arrayWithArray:collectedTopics];
 }
 
 -(NSArray *)searchBarSpacer
