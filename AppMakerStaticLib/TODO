@@ -17,10 +17,10 @@ X (NSArray *)buildTopics (check for deleted topics)
 	- reloadForNewContents
 
 - willSelectCellAtIndexpath
-	- skip selection for parent categories
+	X skip selection for parent categories
 	
-- trigger insertion/deletion of new cells:
-- add/remove topic id to set
+	- trigger insertion/deletion of new cells:
+	- add/remove topic id to set
 
 - didSelectCell
 

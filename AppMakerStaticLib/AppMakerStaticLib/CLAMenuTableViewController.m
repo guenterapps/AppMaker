@@ -232,31 +232,6 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 #pragma mark - Delegate Methods
 
-//-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//	if (tableView != self.tableView)
-//		return;
-//	
-//	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
-//	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
-//	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
-//	UILabel *label		= [cell valueForKey:@"_title"];
-//	
-//	label.font			= [UIFont fontWithName:fontName size:fontSize];
-//	label.textColor		= fontColor;
-//	
-//	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
-//	
-//	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
-//	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
-//	
-//	UIView *selectedView = [[UIView alloc] initWithFrame:CGRectZero];
-//	[selectedView setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuSelectedColorKey]];
-//
-//	cell.backgroundView			= backGroundview;
-//	cell.selectedBackgroundView	= selectedView;
-//
-//}
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -264,10 +239,54 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	{
 		_previousSelection = [tableView indexPathForSelectedRow];
 		
-		NSAssert(_previousSelection, @"There should always be a selection!");
+		if (!_previousSelection)
+			_previousSelection = [NSIndexPath indexPathForRow:0 inSection:0];
+
+		//NSAssert(_previousSelection, @"There should always be a selection!");
 		
 		if (indexPath.row < (NSInteger)[self.items count] - 1)
 		{
+			id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
+			
+			if ([[selectedTopic childTopics] count] > 0)
+			{
+				NSString *topicCode = [[selectedTopic topicCode] copy];
+				
+				NSArray *(^subTopicsHandler)(NSString *) = ^NSArray *(NSString *topicCode)
+				{
+					self.items = [self buildTopics];
+					
+					NSArray *subTopics		= [self.store topicsWithParentTopicCode:topicCode];
+					
+					NSMutableArray *indexPaths = [NSMutableArray array];
+					
+					NSIndexSet *subIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(indexPath.row + 1, [subTopics count])];
+					
+					[subIndexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop)
+					 {
+						 [indexPaths addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+					 }];
+					
+					return indexPaths;
+					
+				};
+				
+				if ([_openParentTopics containsObject:topicCode])
+				{
+					[_openParentTopics removeObject:topicCode];
+					[self.tableView deleteRowsAtIndexPaths:subTopicsHandler(topicCode)
+										  withRowAnimation:UITableViewRowAnimationBottom];
+				}
+				else
+				{
+					[_openParentTopics addObject:topicCode];
+					[self.tableView insertRowsAtIndexPaths:subTopicsHandler(topicCode)
+										  withRowAnimation:UITableViewRowAnimationTop];
+				}
+				
+				return nil;
+			}
+			
 			if (![self.delegate menuViewControllerShouldSelectTopic:[self.items objectAtIndex:indexPath.row]])
 			{
 				return _previousSelection;
@@ -394,6 +413,9 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		else
 		{
 			NSArray *childTopics		= [self.store topicsWithParentTopicCode:parentTopicCode];
+			
+			NSAssert([childTopics count] > 0, @"should have child topics");
+			
 			NSIndexSet *childIndexSet	= [[NSIndexSet alloc] initWithIndexesInRange:NSMakeRange(index + 1, [childTopics count])];
 	
 			[collectedTopics insertObjects:childTopics atIndexes:childIndexSet];
