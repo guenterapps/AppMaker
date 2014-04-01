@@ -97,6 +97,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	NSPredicate *_poisPredicate;
 }
 
+-(NSArray *)_topics;
+
 -(NSArray *)fetchObjectsInEntity:(NSString *)entity;
 
 -(NSOperationQueue *)operationQueue;
@@ -733,38 +735,30 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 -(NSArray *)topics
 {
-	if (!_topics)
+	static NSPredicate *_parentCategories;
+	
+	if (!_parentCategories)
 	{
-		_topics = [self fetchObjectsInEntity:@"Topic"];
-		
-		NSPredicate *_notEmptyTopics = [NSPredicate predicateWithFormat:@"items.@count > 0"];
-		
-		_topics = [_topics filteredArrayUsingPredicate:_notEmptyTopics];
-		
-		_topics = [_topics sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-				  {
-					  id <CLATopic>topic1 = (id <CLATopic>)obj1;
-					  id <CLATopic>topic2	= (id <CLATopic>)obj2;
-					  
-					  
-					  NSComparisonResult result = NSOrderedSame;
-					  
-					  if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
-					  {
-						  result = NSOrderedDescending;
-					  }
-					  else if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic2.title])
-					  {
-						  result = NSOrderedAscending;
-					  }
-					  
-					  return result;
-					  
-				  }];
+		_parentCategories = [NSPredicate predicateWithFormat:@"parentTopic == nil"];
 	}
 	
-	return _topics;
+	return [[self _topics] filteredArrayUsingPredicate:_parentCategories];
 }
+
+-(NSArray *)topicsWithParentTopicCode:(NSString *)code
+{
+	NSParameterAssert(code);
+	
+	static NSPredicate *_childTopics;
+	
+	if (!_childTopics)
+	{
+		_childTopics = [NSPredicate predicateWithFormat:@"parentTopic.topicCode == %@", code];
+	}
+	
+	return [[self _topics] filteredArrayUsingPredicate:_childTopics];
+}
+
 
 -(id <CLAItem>)contentWithIdentifier:(NSString *)identifier
 {
@@ -926,27 +920,40 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 #pragma mark - private methods
 
-//- (void)fetchImageURL:(NSURL *)imageURL completion:(void (^)(NSError *, NSData *, NSManagedObjectID *))block
-//{
-////	if ([_imageLoadRequestIds containsObject:image.objectID])
-////		return;
-////	
-////	[_imageLoadRequestIds addObject:image.objectID];
-////	
-////	CLAImageFetch *imageFetch = [[CLAImageFetch alloc] initWithURL:[image imageURL]
-////														 forObject:[image objectID]
-////												   completionBlock:block];
-////	imageFetch.coordinator = self.coordinator;
-////	
-////	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mergeObjects:) name:NSManagedObjectContextDidSaveNotification object:imageFetch];
-////	
-////	[[self operationQueue] addOperation:imageFetch];
-//	
-//	NSError *error;
-//	NSData *imageData= [NSData dataWithContentsOfURL:imageURL options:0 error:&error];
-//	
-//	block(error, imageData, );
-//}
+-(NSArray *)_topics
+{
+	if (!_topics)
+	{
+		_topics = [self fetchObjectsInEntity:@"Topic"];
+		
+		NSPredicate *_notEmptyTopics = [NSPredicate predicateWithFormat:@"items.@count > 0"];
+		
+		_topics = [_topics filteredArrayUsingPredicate:_notEmptyTopics];
+		
+		_topics = [_topics sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+				   {
+					   id <CLATopic>topic1 = (id <CLATopic>)obj1;
+					   id <CLATopic>topic2	= (id <CLATopic>)obj2;
+					   
+					   
+					   NSComparisonResult result = NSOrderedSame;
+					   
+					   if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
+					   {
+						   result = NSOrderedDescending;
+					   }
+					   else if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic2.title])
+					   {
+						   result = NSOrderedAscending;
+					   }
+					   
+					   return result;
+					   
+				   }];
+	}
+	
+	return _topics;
+}
 
 -(void)mergeObjects:(NSNotification *)notification
 {

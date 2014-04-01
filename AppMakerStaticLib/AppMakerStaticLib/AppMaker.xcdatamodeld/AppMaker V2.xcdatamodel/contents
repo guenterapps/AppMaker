@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5063" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Image" representedClassName="Image" syncable="YES">
+        <attribute name="created" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hidden" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="image" optional="YES" transient="YES" syncable="YES"/>
+        <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="ordering" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="primary" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="type" attributeType="String" syncable="YES"/>
+        <attribute name="videoURL" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="images" inverseEntity="Item" syncable="YES"/>
+    </entity>
+    <entity name="Item" representedClassName="Item" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="coordinate" optional="YES" transient="YES" syncable="YES"/>
+        <attribute name="created" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="detailText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="eMailAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hidden" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isEvent" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="mainImage" optional="YES" transient="YES" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="ordering" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="phoneNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pinMap" optional="YES" transient="YES" syncable="YES"/>
+        <attribute name="pinMapData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="subType" attributeType="String" syncable="YES"/>
+        <attribute name="title" attributeType="String" defaultValueString="title" indexed="YES" syncable="YES"/>
+        <attribute name="type" attributeType="String" syncable="YES"/>
+        <attribute name="urlAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="zipcode" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Image" inverseName="item" inverseEntity="Image" syncable="YES"/>
+        <relationship name="topic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Topic" inverseName="items" inverseEntity="Topic" syncable="YES"/>
+    </entity>
+    <entity name="Locale" representedClassName="Locale" syncable="YES">
+        <attribute name="hidden" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="languageCode" attributeType="String" syncable="YES"/>
+        <attribute name="languageDescription" attributeType="String" syncable="YES"/>
+        <attribute name="ordering" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="Topic" representedClassName="Topic" syncable="YES">
+        <attribute name="created" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="hidden" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="ordering" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="sortOrder" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" attributeType="String" defaultValueString="Topic" indexed="YES" syncable="YES"/>
+        <attribute name="topicCode" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="childTopics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Topic" inverseName="parentTopic" inverseEntity="Topic" syncable="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="topic" inverseEntity="Item" syncable="YES"/>
+        <relationship name="parentTopic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Topic" inverseName="childTopics" inverseEntity="Topic" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Image" positionX="0" positionY="0" width="128" height="225"/>
+        <element name="Item" positionX="0" positionY="0" width="128" height="420"/>
+        <element name="Locale" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="Topic" positionX="0" positionY="0" width="128" height="193"/>
+    </elements>
+</model>

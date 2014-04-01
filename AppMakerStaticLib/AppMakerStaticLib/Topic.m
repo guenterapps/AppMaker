@@ -19,5 +19,7 @@
 @dynamic ordering;
 @dynamic created;
 @dynamic sortOrder;
+@dynamic childTopics;
+@dynamic parentTopic;
 
 @end
