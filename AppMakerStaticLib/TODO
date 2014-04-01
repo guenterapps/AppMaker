@@ -5,15 +5,15 @@ Subcategories:
 X new Model
 
 X mod api: topics: only with parent = null;
- new api: topicsWithParentTopic:();
+X new api: topicsWithParentTopic:();
 
 - new mutableSet with open/closed categories
 
 - two new method to build topic lists:
-- (NSArray *)buildTopics (check for deleted topics)
+X (NSArray *)buildTopics (check for deleted topics)
 - (NSMutableArray *)topicsByAddingSubTopic:(NSString *)
-- invoked viewWIllAppear
-- reloadForNewContents
+	- invoked viewWIllAppear
+	- reloadForNewContents
 
 - willSelectCellAtIndexpath
 - skip selection for parent categories

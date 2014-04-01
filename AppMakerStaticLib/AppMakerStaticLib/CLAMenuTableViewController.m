@@ -35,10 +35,14 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	UISearchDisplayController *searchController;
 	NSIndexPath *_indexPathSelectedFromSearch;
 	BOOL _isSearching;
+	
+	NSMutableSet *_openParentTopics;
 }
 
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification;
 -(NSArray *)searchBarSpacer;
+
+-(NSArray *)buildTopics;
 
 @end
 
@@ -58,6 +62,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	
+	_openParentTopics = [NSMutableSet set];
 	
 	BOOL showSearchBar = [[self.store userInterface][CLAAppDataStoreUIShowSearchBar] boolValue];
 	
@@ -117,7 +123,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 {
 	[super viewWillAppear:animated];
 	
-	self.items = [self.store.topics copy];
+	self.items = [self buildTopics];
 	
 //	if (!_previousSelection)
 //	{
@@ -361,6 +367,32 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 #pragma mark - Private Methods
 
+-(NSArray *)buildTopics
+{
+	for (id <CLATopic> parentTopic in [_openParentTopics copy])
+	{
+		NSUInteger index = [[self.store topics] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+		{
+			BOOL found = NO;
+			id <CLATopic> topic = (id <CLATopic>)obj;
+			
+			if ([[topic topicCode] isEqualToString:[parentTopic topicCode]])
+				found = YES;
+
+			return found;
+			
+		}];
+		
+		if (NSNotFound == index)
+		{
+			[_openParentTopics removeObject:parentTopic];
+		}
+		
+	}
+	
+	return [[self.store topics] copy];
+}
+
 -(NSArray *)searchBarSpacer
 {
 	
@@ -374,8 +406,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification
 {
-	self.items = [self.store.topics copy];
-	
+	self.items = [self buildTopics];
+
 	NSIndexPath *indexPathToSelect;
 	
 	if ([self.items count] > 0)
