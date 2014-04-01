@@ -733,6 +733,41 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	return _locales;
 }
 
+-(NSArray *)_topics
+{
+	if (!_topics)
+	{
+		_topics = [self fetchObjectsInEntity:@"Topic"];
+		
+		NSPredicate *_notEmptyTopics = [NSPredicate predicateWithFormat:@"items.@count > 0 OR childTopics.@count > 0"];
+		
+		_topics = [_topics filteredArrayUsingPredicate:_notEmptyTopics];
+		
+		_topics = [_topics sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+				   {
+					   id <CLATopic>topic1 = (id <CLATopic>)obj1;
+					   id <CLATopic>topic2	= (id <CLATopic>)obj2;
+					   
+					   
+					   NSComparisonResult result = NSOrderedSame;
+					   
+					   if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
+					   {
+						   result = NSOrderedDescending;
+					   }
+					   else if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic2.title])
+					   {
+						   result = NSOrderedAscending;
+					   }
+					   
+					   return result;
+					   
+				   }];
+	}
+	
+	return _topics;
+}
+
 -(NSArray *)topics
 {
 	static NSPredicate *_parentCategories;
@@ -919,41 +954,6 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 }
 
 #pragma mark - private methods
-
--(NSArray *)_topics
-{
-	if (!_topics)
-	{
-		_topics = [self fetchObjectsInEntity:@"Topic"];
-		
-		NSPredicate *_notEmptyTopics = [NSPredicate predicateWithFormat:@"items.@count > 0"];
-		
-		_topics = [_topics filteredArrayUsingPredicate:_notEmptyTopics];
-		
-		_topics = [_topics sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-				   {
-					   id <CLATopic>topic1 = (id <CLATopic>)obj1;
-					   id <CLATopic>topic2	= (id <CLATopic>)obj2;
-					   
-					   
-					   NSComparisonResult result = NSOrderedSame;
-					   
-					   if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
-					   {
-						   result = NSOrderedDescending;
-					   }
-					   else if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic2.title])
-					   {
-						   result = NSOrderedAscending;
-					   }
-					   
-					   return result;
-					   
-				   }];
-	}
-	
-	return _topics;
-}
 
 -(void)mergeObjects:(NSNotification *)notification
 {

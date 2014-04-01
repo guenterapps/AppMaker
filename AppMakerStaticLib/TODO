@@ -7,7 +7,8 @@ X new Model
 X mod api: topics: only with parent = null;
 X new api: topicsWithParentTopic:();
 
-- new mutableSet with open/closed categories
+X new mutableSet with open/closed categories
+X fetch logic
 
 - two new method to build topic lists:
 X (NSArray *)buildTopics (check for deleted topics)

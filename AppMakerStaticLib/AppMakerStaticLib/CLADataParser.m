@@ -120,6 +120,17 @@ static NSDateFormatter *dateFormatter;
 			
 			[topic setValue:[NSNumber numberWithInteger:ordering++]
 								 forKey:@"ordering"];
+			
+			NSDictionary *_parentDictionary;
+			
+			if ((_parentDictionary = topicDictionary[@"parent"]))
+			{
+				NSObject *parentTopic = (NSObject *)[self.delegate topicObjectForTopicCode:_parentDictionary[@"code"]];
+				
+				NSAssert(parentTopic, @"Should return a parent topic!");
+				
+				[topic setValue:parentTopic forKey:@"parentTopic"];
+			}
 
 			for (NSString *key in topicMap)
 			{
