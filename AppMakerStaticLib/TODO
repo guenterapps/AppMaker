@@ -10,17 +10,17 @@ X new api: topicsWithParentTopic:();
 X new mutableSet with open/closed categories
 X fetch logic
 
-- two new method to build topic lists:
+X two new method to build topic lists:
 X (NSArray *)buildTopics (check for deleted topics)
-- (NSMutableArray *)topicsByAddingSubTopic:(NSString *)
-	- invoked viewWIllAppear
-	- reloadForNewContents
+	(invoked viewWIllAppear)
+	(reloadForNewContents)
 
 - willSelectCellAtIndexpath
 	X skip selection for parent categories
-	
-	- trigger insertion/deletion of new cells:
-	- add/remove topic id to set
+	X trigger insertion/deletion of new cells:
+	X add/remove topic id to set
+	- bug: on select/deselect handle ivar _previuousSelection
+	- bug: on pulltorefresh crashes
 
 - didSelectCell
 

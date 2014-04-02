@@ -43,6 +43,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 -(NSArray *)searchBarSpacer;
 
 -(NSArray *)buildTopics;
+-(BOOL)isParentTopic:(NSIndexPath *)indexPath;
 
 @end
 
@@ -190,6 +191,15 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	//when it's scrolled until disappears and then reappears. This solved...
 	[cell setSelected:NO];
 	
+	if ([self isParentTopic:indexPath])
+	{
+		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+	}
+	else
+	{
+		[cell setSelectionStyle:UITableViewCellSelectionStyleDefault];
+	}
+	
 	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
 	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
 	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
@@ -244,12 +254,12 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 		//NSAssert(_previousSelection, @"There should always be a selection!");
 		
-		if (indexPath.row < (NSInteger)[self.items count] - 1)
+		if (indexPath.row <= (NSInteger)[self.items count] - 1)
 		{
-			id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
-			
-			if ([[selectedTopic childTopics] count] > 0)
+			if ([self isParentTopic:indexPath])
 			{
+				id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
+				
 				NSString *topicCode = [[selectedTopic topicCode] copy];
 				
 				NSArray *(^subTopicsHandler)(NSString *) = ^NSArray *(NSString *topicCode)
@@ -273,9 +283,17 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 				
 				if ([_openParentTopics containsObject:topicCode])
 				{
+					NSArray *indexPaths				= subTopicsHandler(topicCode);
+					NSIndexPath *selectedIndexPath	= [tableView indexPathForSelectedRow];
+					
+					if ([indexPaths containsObject:selectedIndexPath])
+					{
+						[tableView deselectRowAtIndexPath:selectedIndexPath animated:NO];
+					}
+					
 					[_openParentTopics removeObject:topicCode];
 					[self.tableView deleteRowsAtIndexPaths:subTopicsHandler(topicCode)
-										  withRowAnimation:UITableViewRowAnimationBottom];
+											  withRowAnimation:UITableViewRowAnimationRight];
 				}
 				else
 				{
@@ -385,6 +403,21 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 }
 
 #pragma mark - Private Methods
+
+-(BOOL)isParentTopic:(NSIndexPath *)indexPath
+{
+	BOOL isParent = NO;
+	
+	if (indexPath.row <= (NSInteger)[self.items count] - 1)
+	{
+		id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
+		
+		isParent = [[selectedTopic childTopics] count] > 0;
+		
+	}
+	
+	return isParent;
+}
 
 -(NSArray *)buildTopics
 {
