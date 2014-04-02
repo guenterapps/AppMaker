@@ -150,6 +150,7 @@
 		AA549FBA1870859700A4D4CC /* credits.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credits.plist; sourceTree = "<group>"; };
 		AA6AAF6D18B7FAAC00012DC0 /* CLAAppDataStoreUIComponentKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CLAAppDataStoreUIComponentKeys.h; path = AppMakerStaticLib/CLAAppDataStoreUIComponentKeys.h; sourceTree = "<group>"; };
 		AA874F2718EAB1BA00E98724 /* AppMaker V2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppMaker V2.xcdatamodel"; sourceTree = "<group>"; };
+		AA874F3018EC268F00E98724 /* CLASubMenuTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CLASubMenuTableViewCell.xib; path = Cells/CLASubMenuTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		AA8D43821869856A00633BA1 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		AA8D7E16186368B0004AB346 /* UIColor-Expanded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor-Expanded.h"; sourceTree = "<group>"; };
 		AA8D7E17186368B0004AB346 /* UIColor-Expanded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor-Expanded.m"; sourceTree = "<group>"; };
@@ -422,6 +423,7 @@
 		AAB7F79F1853757C00AEC2FA /* Menu and Main TableView */ = {
 			isa = PBXGroup;
 			children = (
+				AA874F3018EC268F00E98724 /* CLASubMenuTableViewCell.xib */,
 				AAB7F7F418548FA400AEC2FA /* CLAMainTableViewCell.h */,
 				AAB7F7F518548FA400AEC2FA /* CLAMainTableViewCell.m */,
 				AA2184C7188327AE00FF0B4D /* CLAEventTableViewCell.h */,

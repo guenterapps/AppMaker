@@ -1,6 +1,6 @@
 Subcategories:
 
-- new Cell
+X new Cell
 
 X new Model
 
@@ -23,7 +23,7 @@ X willSelectCellAtIndexpath
 	X bug: on pulltorefresh crashes
 
 
-- cellForRowAtIndexPath:
+X cellForRowAtIndexPath:
 	check for category/subcategory, return appropriate cell
 	
 - handle first page

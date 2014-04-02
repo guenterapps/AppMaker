@@ -25,6 +25,7 @@ NSString *const CLAMenuControllerSelectedIndexPathKey			= @"CLAMenuControllerSel
 
 
 static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
+static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableViewCell";
 
 @interface CLAMenuTableViewController ()
 {
@@ -44,6 +45,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(NSArray *)buildTopics;
 -(BOOL)isParentTopic:(NSIndexPath *)indexPath;
+-(BOOL)isSubTopic:(NSIndexPath *)indexPath;
 
 @end
 
@@ -76,6 +78,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 
 	[self setupTableView:self.tableView withCellIdentifier:CLAMenuTableViewCellIdentifier];
+	[self setupTableView:self.tableView withCellIdentifier:CLASubMenuTableViewCellIdentifier];
 	
 	if (YES == showSearchBar)
 	{
@@ -185,11 +188,32 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CLAMenuTableViewCellIdentifier forIndexPath:indexPath];
+	UITableViewCell *cell;
+	BOOL isSubTopic = [self isSubTopic:indexPath];
+	
+	if (isSubTopic)
+	{
+		cell = [tableView dequeueReusableCellWithIdentifier:CLASubMenuTableViewCellIdentifier forIndexPath:indexPath];
+	}
+	else
+	{
+		cell = [tableView dequeueReusableCellWithIdentifier:CLAMenuTableViewCellIdentifier forIndexPath:indexPath];
+	}
 	
 	//fixed a strange: the selected cell is covered by the selectedbacgroundview
 	//when it's scrolled until disappears and then reappears. This solved...
 	[cell setSelected:NO];
+	
+	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
+	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
+	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
+	
+	if (isSubTopic)
+	{
+		fontSize -= 2.;
+	}
+	
+	UILabel *label		= [cell valueForKey:@"_title"];
 	
 	if ([self isParentTopic:indexPath])
 	{
@@ -199,11 +223,6 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	{
 		[cell setSelectionStyle:UITableViewCellSelectionStyleDefault];
 	}
-	
-	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
-	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
-	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
-	UILabel *label		= [cell valueForKey:@"_title"];
 	
 	label.font					= [UIFont fontWithName:fontName size:fontSize];
 	label.textColor				= fontColor;
@@ -242,6 +261,16 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 #pragma mark - Delegate Methods
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	
+	if ([self isSubTopic:indexPath])
+	{
+		return 35.0;
+	}
+	
+	return 44.0;
+}
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -445,6 +474,21 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
 		
 		isParent = [[selectedTopic childTopics] count] > 0;
+		
+	}
+	
+	return isParent;
+}
+
+-(BOOL)isSubTopic:(NSIndexPath *)indexPath
+{
+	BOOL isParent = NO;
+	
+	if (indexPath.row <= (NSInteger)[self.items count] - 1)
+	{
+		id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
+		
+		isParent = [selectedTopic parentTopic] != nil;
 		
 	}
 	
