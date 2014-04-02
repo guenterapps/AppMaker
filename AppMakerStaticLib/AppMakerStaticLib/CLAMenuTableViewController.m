@@ -298,8 +298,40 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 				else
 				{
 					[_openParentTopics addObject:topicCode];
+					
+					NSArray *indexPaths				= subTopicsHandler(topicCode);
 					[self.tableView insertRowsAtIndexPaths:subTopicsHandler(topicCode)
 										  withRowAnimation:UITableViewRowAnimationTop];
+					
+					if (![tableView indexPathForSelectedRow])
+					{
+						NSUInteger lastTopicIndex = [self.items indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+						{
+							BOOL found = NO;
+							id <CLATopic> _topic = (id <CLATopic>)obj;
+							
+							if ([_lastTopicCode isEqualToString:[_topic topicCode]])
+							{
+								found = YES;
+							}
+							
+							return found;
+						}];
+						
+						if (NSNotFound != lastTopicIndex)
+						{
+							NSIndexPath *lastTopicIndexPath = [NSIndexPath indexPathForRow:lastTopicIndex inSection:0];
+							
+							if ([indexPaths containsObject:lastTopicIndexPath])
+							{
+								dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+									[tableView selectRowAtIndexPath:lastTopicIndexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+								});
+								
+							}
+						}
+					}
+
 				}
 				
 				return nil;
