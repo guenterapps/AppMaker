@@ -421,13 +421,13 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(NSArray *)buildTopics
 {
-	NSMutableArray *collectedTopics = [NSMutableArray arrayWithArray:[[self.store topics] copy]];
+	NSMutableArray *collectedTopics = [NSMutableArray arrayWithArray:[[self.store mainTopics] copy]];
 	
 	for (NSString *parentTopicCode in [_openParentTopics copy])
 	{
 		NSAssert([parentTopicCode isKindOfClass:[NSString class]], @"topic code should be a NSString");
 
-		NSUInteger index = [[self.store topics] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+		NSUInteger index = [[self.store mainTopics] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
 		{
 			BOOL found = NO;
 			id <CLATopic> topic = (id <CLATopic>)obj;

@@ -97,8 +97,6 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	NSPredicate *_poisPredicate;
 }
 
--(NSArray *)_topics;
-
 -(NSArray *)fetchObjectsInEntity:(NSString *)entity;
 
 -(NSOperationQueue *)operationQueue;
@@ -733,7 +731,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	return _locales;
 }
 
--(NSArray *)_topics
+-(NSArray *)topics
 {
 	if (!_topics)
 	{
@@ -768,7 +766,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	return _topics;
 }
 
--(NSArray *)topics
+-(NSArray *)mainTopics
 {
 	static NSPredicate *_parentCategories;
 	
@@ -777,7 +775,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		_parentCategories = [NSPredicate predicateWithFormat:@"parentTopic == nil"];
 	}
 	
-	return [[self _topics] filteredArrayUsingPredicate:_parentCategories];
+	return [[self topics] filteredArrayUsingPredicate:_parentCategories];
 }
 
 -(NSArray *)topicsWithParentTopicCode:(NSString *)code
@@ -791,7 +789,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		_childTopics = [NSPredicate predicateWithFormat:@"parentTopic.topicCode == %@", code];
 	}
 	
-	return [[self _topics] filteredArrayUsingPredicate:_childTopics];
+	return [[self topics] filteredArrayUsingPredicate:_childTopics];
 }
 
 

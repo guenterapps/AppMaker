@@ -15,16 +15,15 @@ X (NSArray *)buildTopics (check for deleted topics)
 	(invoked viewWIllAppear)
 	(reloadForNewContents)
 
-- willSelectCellAtIndexpath
+X willSelectCellAtIndexpath
 	X skip selection for parent categories
 	X trigger insertion/deletion of new cells:
 	X add/remove topic id to set
-	- bug: on select/deselect handle ivar _previuousSelection
-	- bug: on pulltorefresh crashes
+	X bug: on select/deselect handle ivar _previuousSelection
+	X bug: on pulltorefresh crashes
 
-- didSelectCell
 
 - cellForRowAtIndexPath:
-- check for category/subcategory, return appropriate cell
+	check for category/subcategory, return appropriate cell
 
 

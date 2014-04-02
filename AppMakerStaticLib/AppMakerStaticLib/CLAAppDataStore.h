@@ -65,6 +65,7 @@ extern NSString *const CLAAppDataStoreFetchErrorKey;
 -(NSArray *)pois;
 -(NSArray *)poisForTopic:(id <CLATopic>)topic;
 -(NSArray *)topics;
+-(NSArray *)mainTopics;
 -(NSArray *)topicsWithParentTopicCode:(NSString *)code;
 -(NSArray *)locales;
 
