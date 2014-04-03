@@ -79,6 +79,7 @@ extern NSString *const CLAAppDataStoreFetchErrorKey;
 #pragma mark - Image Fetching
 
 -(void)fetchMainImagesWithCompletionBlock:(void (^)(NSError *))block;
+-(void)preFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block;
 -(void)asyncFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block;
 
 -(void)fetchMainImagesForTopic:(id <CLATopic>)topic completion:(void (^)(NSError *))block;

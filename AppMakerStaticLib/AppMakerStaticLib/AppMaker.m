@@ -482,8 +482,6 @@ static id appMaker = nil;
 #ifdef DEBUG
 	NSLog(@"Presenting next view controller..");
 #endif
-
-#warning handle error: if first time, load seed data, else show message.
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 
@@ -518,7 +516,7 @@ static id appMaker = nil;
 	}
 	
 
-	[self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
+	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *error)
 	 {
 
 		 if (error)

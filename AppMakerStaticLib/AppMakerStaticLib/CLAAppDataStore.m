@@ -19,6 +19,9 @@
 
 #endif
 
+#define PREFETCHCOUNT 3
+#define ORDERBY_POSITION @"distance"
+
 NSString *const CLAAppDataStoreWillFetchImages			= @"CLAAppDataStoreWillFetchImages";
 NSString *const CLAAppDataStoreDidFetchImage			= @"CLAAppDataStoreDidFetchImage";
 NSString *const CLATotalImagesToFetchKey				= @"CLATotalImagesToFetchKey";
@@ -240,13 +243,14 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 - (void)fetchImagesForObjects:(NSMutableArray *)objectIDs urls:(NSMutableArray *)urls block:(void (^)(NSError *))block
 {
 	__block NSError *error;
-	NSInteger imagesToFetch = [objectIDs count];
+//	NSInteger imagesToFetch = [objectIDs count];
 	
-	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+//	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
 	
-	dispatch_apply(imagesToFetch, queue, ^(size_t iteration)
+	//dispatch_apply(imagesToFetch, queue, ^(size_t iteration)
+	for (NSInteger index = 0; index < [objectIDs count]; ++index)
 	{
-		NSInteger index = (NSInteger)iteration;
+		//NSInteger index = (NSInteger)iteration;
 
 #ifdef DEBUG
 		NSLog(@"Fetching image at url: %@", urls[index]);
@@ -276,7 +280,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 			[item generatePinMapFromMainImage];
 		});
 
-	});
+	};
 
 	dispatch_async(dispatch_get_main_queue(), ^()
 	{
@@ -366,6 +370,32 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	[self fetchMainImagesForItems:items dispatch:dispatch completion:block];
 }
 
+-(void)preFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block
+{
+	static NSPredicate *nilImages;
+	
+	if (!nilImages)
+	{
+		nilImages = [NSPredicate predicateWithFormat:@"%K == nil", @"mainImage"];
+	}
+	
+	NSMutableArray *items = [NSMutableArray array];
+	
+	for (Topic *topic in self.topics)
+	{
+		NSArray *preFetchedArray	= [self contentsForTopic:topic];
+		NSRange preFetchRange		= NSMakeRange(0, MIN([preFetchedArray count], PREFETCHCOUNT));
+		preFetchedArray				= [[preFetchedArray subarrayWithRange:preFetchRange] filteredArrayUsingPredicate:nilImages];
+		
+		[items addObjectsFromArray:preFetchedArray];
+	}
+	
+	void (*dispatch)(dispatch_queue_t, dispatch_block_t) = &dispatch_sync;
+	
+	[self fetchMainImagesForItems:items dispatch:dispatch completion:block];
+	
+}
+
 -(void)fetchMainImagesWithCompletionBlock:(void (^)(NSError *))block
 {
 	static NSPredicate *nilImages;
@@ -379,7 +409,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 	for (Topic *topic in self.topics)
 	{
-		[items addObjectsFromArray:[[[topic items] allObjects] filteredArrayUsingPredicate:nilImages]];
+		[items addObjectsFromArray:[[self contentsForTopic:topic] filteredArrayUsingPredicate:nilImages]];
 	}
 	
 	void (*dispatch)(dispatch_queue_t, dispatch_block_t) = &dispatch_sync;
@@ -796,9 +826,43 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 -(NSArray *)contentsForTopic:(id <CLATopic>)topic
 {
-	NSSortDescriptor *defaultOrdering = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
+	NSParameterAssert(topic);
 	
-	return [[[topic items] allObjects] sortedArrayUsingDescriptors:@[defaultOrdering]];
+	NSArray *items = [[topic items] allObjects];
+	
+	if ([ORDERBY_POSITION isEqualToString:[(Topic *)topic sortOrder]])
+	{
+		items	= [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+				   {
+					   Item *item1	= (Item *)obj1;
+					   Item *item2	= (Item *)obj2;
+					   
+					   CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
+					   
+					   CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
+					   
+					   CLLocationDistance distance1 = [location1 distanceFromLocation:self.lastPosition];
+					   CLLocationDistance distance2 = [location2 distanceFromLocation:self.lastPosition];
+					   
+					   NSComparisonResult result;
+					   
+					   if (distance1 > distance2)
+						   result = NSOrderedDescending;
+					   else if (distance2 > distance1)
+						   result = NSOrderedAscending;
+					   else
+						   result = NSOrderedSame;
+					   
+					   return result;
+				   }];
+	}
+	else
+	{
+		NSSortDescriptor *defaultOrdering = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
+		items = [items sortedArrayUsingDescriptors:@[defaultOrdering]];
+	}
+	
+	return items;
 }
 
 -(NSArray *)poisForTopic:(id<CLATopic>)topic

@@ -56,37 +56,37 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	return self;
 }
 
--(void)setItems:(NSArray *)items
-{
-	if ([ORDERBY_POSITION isEqualToString:[(Topic *)self.topic sortOrder]])
-	{
-		items	= [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-		{
-			Item *item1	= (Item *)obj1;
-			Item *item2	= (Item *)obj2;
-
-			CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
-
-			CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
-
-			CLLocationDistance distance1 = [location1 distanceFromLocation:self.store.lastPosition];
-			CLLocationDistance distance2 = [location2 distanceFromLocation:self.store.lastPosition];
-
-			NSComparisonResult result;
-
-			if (distance1 > distance2)
-				result = NSOrderedDescending;
-			else if (distance2 > distance1)
-				result = NSOrderedAscending;
-			else
-				result = NSOrderedSame;
-
-			return result;
-		}];
-	}
-	
-	_items = items;
-}
+//-(void)setItems:(NSArray *)items
+//{
+//	if ([ORDERBY_POSITION isEqualToString:[(Topic *)self.topic sortOrder]])
+//	{
+//		items	= [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+//		{
+//			Item *item1	= (Item *)obj1;
+//			Item *item2	= (Item *)obj2;
+//
+//			CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
+//
+//			CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
+//
+//			CLLocationDistance distance1 = [location1 distanceFromLocation:self.store.lastPosition];
+//			CLLocationDistance distance2 = [location2 distanceFromLocation:self.store.lastPosition];
+//
+//			NSComparisonResult result;
+//
+//			if (distance1 > distance2)
+//				result = NSOrderedDescending;
+//			else if (distance2 > distance1)
+//				result = NSOrderedAscending;
+//			else
+//				result = NSOrderedSame;
+//
+//			return result;
+//		}];
+//	}
+//	
+//	_items = items;
+//}
 
 
 -(void)setTopic:(id<CLATopic>)topic
@@ -181,7 +181,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	UIStatusBarStyle style = [[self.store userInterface][CLAAppDataStoreUIStatusBarStyleKey] integerValue];
 	
-	NSAssert(style >= 0 && style <= 1, @"Invalid status bar style %d", style);
+	NSAssert(style >= 0 && style <= 1, @"Invalid status bar style %ld", style);
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:style];
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
