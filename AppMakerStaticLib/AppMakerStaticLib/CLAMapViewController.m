@@ -291,6 +291,7 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
 	[request setSource:sourceLocation];
 	[request setDestination:destinationLocation];
+	[request setTransportType:MKDirectionsTransportTypeWalking];
 	
 	MKDirections *direction = [[MKDirections alloc] initWithRequest:request];
 	
