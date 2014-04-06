@@ -21,7 +21,8 @@ static NSDateFormatter *dateFormatter;
 					 @"name"		: @"title",
 					 @"updated_at"	: @"lastUpdated",
 					 @"created_at"	: @"created",
-					 @"sort"		: @"sortOrder"
+					 @"sort"		: @"sortOrder",
+					 @"position"	: @"ordering"
 					 };
 		
 		itemMap = @{@"name"			: @"title",
@@ -36,7 +37,8 @@ static NSDateFormatter *dateFormatter;
 					@"created_at"	: @"created",
 					@"date"			: @"date",
 					@"website"		: @"urlAddress",
-					@"phone"		: @"phoneNumber"
+					@"phone"		: @"phoneNumber",
+					@"position"		: @"ordering"
 					};
 		
 		mediaMap = @{@"type"		: @"type",
@@ -49,7 +51,7 @@ static NSDateFormatter *dateFormatter;
 			[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss+SSSS"];
 		}
 	}
-
+	
 	return self;
 }
 
@@ -59,12 +61,12 @@ static NSDateFormatter *dateFormatter;
 	
 	NSDictionary *locales = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:localesData
 																			options:0
-																			error:error];
+																			  error:error];
 	NSArray *allLocales;
 	
 	if (locales)
 	{
-
+		
 		NSAssert([locales isKindOfClass:[NSDictionary class]], @"Should be a dictionary");
 		
 		NSMutableArray *collectedLocales = [NSMutableArray array];
@@ -86,7 +88,7 @@ static NSDateFormatter *dateFormatter;
 	}
 	
 	return allLocales;
-
+	
 }
 
 -(NSArray *)parseTopics:(NSData *)topicsData error:(NSError *__autoreleasing *)error
@@ -97,8 +99,8 @@ static NSDateFormatter *dateFormatter;
 												options:0
 												  error:error];
 	NSMutableArray *collectedTopics;
-	NSInteger ordering = 0;
-
+	//	NSInteger ordering = 0;
+	
 	if (topics)
 	{
 		NSAssert([topics isKindOfClass:[NSArray class]], @"We should get an array of Topics!\n");
@@ -115,12 +117,12 @@ static NSDateFormatter *dateFormatter;
 			}
 			
 			NSObject *topic = (NSObject *)[self.delegate topicObjectForTopicCode:code];
-
+			
 			[collectedTopics addObject:topic];
 			
-			[topic setValue:[NSNumber numberWithInteger:ordering++]
-								 forKey:@"ordering"];
-
+			//			[topic setValue:[NSNumber numberWithInteger:ordering++]
+			//								 forKey:@"ordering"];
+			
 			for (NSString *key in topicMap)
 			{
 				if ([@"updated_at" isEqualToString:key])
@@ -129,7 +131,7 @@ static NSDateFormatter *dateFormatter;
 					[topic setValue:lastUpdate forKey:topicMap[key]];
 					
 					continue;
-
+					
 				}
 				else if ([@"created_at" isEqualToString:key])
 				{
@@ -155,17 +157,17 @@ static NSDateFormatter *dateFormatter;
 	NSAssert(self.delegate, @"Cannot parse without my delegate!\n");
 	
 	id contents = [NSJSONSerialization JSONObjectWithData:contentsData
-														options:0
-														  error:error];
+												  options:0
+													error:error];
 	NSMutableArray *collectedObjects;
-	NSInteger ordering = 0;
+	//	NSInteger ordering = 0;
 	
 	if (contents)
 	{
 		NSAssert([contents isKindOfClass:[NSArray class]], @"We should get an array of Contents!\n");
 		
 		collectedObjects = [[NSMutableArray alloc] init];
-
+		
 		for (NSDictionary *contentDictionary in contents)
 		{
 			id topic		= contentDictionary[@"category"][@"code"];
@@ -187,7 +189,7 @@ static NSDateFormatter *dateFormatter;
 			
 			[collectedObjects addObject:content];
 			
-			[content setValue:[NSNumber numberWithInteger:ordering++] forKey:@"ordering"];
+			//			[content setValue:[NSNumber numberWithInteger:ordering++] forKey:@"ordering"];
 			
 			double latitude		= [contentDictionary[@"latitude"] doubleValue];
 			double longitude	= [contentDictionary[@"longitude"] doubleValue];
@@ -197,7 +199,7 @@ static NSDateFormatter *dateFormatter;
 				CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
 				[(id <CLAItem>)content setCoordinate:coordinate];
 			}
-
+			
 			for (NSString *key in itemMap)
 			{
 				if ([@"updated_at" isEqualToString:key])
@@ -231,8 +233,8 @@ static NSDateFormatter *dateFormatter;
 					continue;
 					
 				}
-					
-					
+				
+				
 				
 				[content setValue:contentDictionary[key] forKey:itemMap[key]];
 				
@@ -245,7 +247,7 @@ static NSDateFormatter *dateFormatter;
 				NSParameterAssert([medias isKindOfClass:[NSArray class]]);
 				
 				NSInteger mediaOrdering = 0;
-
+				
 				for (NSDictionary *mediaDictionary in medias)
 				{
 					NSString *code;
@@ -273,7 +275,7 @@ static NSDateFormatter *dateFormatter;
 					}
 					
 					code = [code stringByAppendingString:@"?w=600&h=400"];
-
+					
 					NSObject *media = (NSObject *)[self.delegate imageObjectForImageCode:code forItem:(id <CLAItem>)content];
 					
 					if (mediaOrdering == 0)
@@ -304,15 +306,15 @@ static NSDateFormatter *dateFormatter;
 							continue;
 							
 						}
-
+						
 						[media setValue:mediaDictionary[key] forKey:mediaMap[key]];
 					}
-
+					
 				}
 				
 			}
 			
-
+			
 		}
 	}
 	

@@ -35,7 +35,7 @@
 	{
 		NSData *imageData = [self primitiveValueForKey:@"imageData"];
 		
-		primitiveValue = [UIImage imageWithData:imageData];
+		primitiveValue = [UIImage imageWithData:imageData scale:[[UIScreen mainScreen] scale]];
 		
 		[self setPrimitiveValue:primitiveValue forKey:@"image"];
 	}

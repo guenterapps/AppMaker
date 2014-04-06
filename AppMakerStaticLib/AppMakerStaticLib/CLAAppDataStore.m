@@ -37,8 +37,9 @@ NSString *const CLAAppDataStoreFetchErrorKey			= @"CLAAppDataStoreFetchErrorKey"
 
 #pragma mark User Interface Keys
 
-NSString *const CLAAppDataStoreUIDirectionsColorKey		= @"CLAAppDataStoreUIDirectionsColorKey";
-NSString *const CLAAppDataStoreUIDirectionsTextColorKey	= @"CLAAppDataStoreUIDirectionsTextColorKey";
+NSString *const CLAAppDataStoreUIDirectionsColorKey			= @"CLAAppDataStoreUIDirectionsColorKey";
+NSString *const CLAAppDataStoreUIDirectionsTextColorKey		= @"CLAAppDataStoreUIDirectionsTextColorKey";
+NSString *const CLAAppDataStoreUIDirectionsPolylineColorKey = @"CLAAppDataStoreUIDirectionsPolylineColorKey";
 
 NSString *const CLAAppDataStoreUIBackgroundColorKey		= @"CLAAppDataStoreUIBackgroundColorKey";
 NSString *const CLAAppDataStoreUIForegroundColorKey		= @"CLAAppDataStoreUIForegroundColorKey";

@@ -43,6 +43,8 @@ static NSString *const CLALastAPNTokenKey		= @"CLALastAPNTokenKey";
 @property (nonatomic) BOOL serverPushEnabled;
 @property (nonatomic) NSDictionary *notifPayload;
 
+@property (nonatomic) BOOL lockPresentApplication;
+
 -(void)setupViewControllers;
 -(id)setupViewControllerOfClass:(Class)class;
 -(void)dismissSplashScreen;
@@ -379,7 +381,7 @@ static id appMaker = nil;
 
 			 if (error)
 			 {
-				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
+				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
 				 
 				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																	 message:alertMessage
@@ -521,7 +523,9 @@ static id appMaker = nil;
 
 		 if (error)
 		 {
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
+			 self.lockPresentApplication = YES;
+
+			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
 			 
 			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																 message:alertMessage
@@ -529,10 +533,6 @@ static id appMaker = nil;
 													   cancelButtonTitle:@"Continua"
 													   otherButtonTitles:nil];
 			 [alertView show];
-		 }
-		 else
-		 {
-			// [self presentApplication];
 		 }
 		 
 	 }];
@@ -682,8 +682,11 @@ static id appMaker = nil;
 
 -(void)splashScreenDidShowFullProgressPercentage
 {
-	[self presentApplication];
-	[self getAPNToken];
+	if (!self.lockPresentApplication)
+	{
+		[self presentApplication];
+		[self getAPNToken];
+	}
 }
 
 #pragma mark - Push Notification Methods
@@ -828,7 +831,7 @@ static id appMaker = nil;
 		}
 		else if (200 != httpResponse.statusCode)
 		{
-			NSLog(@"App&Map could not register APN token for server response: %i - %@", httpResponse.statusCode, [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+			NSLog(@"App&Map could not register APN token for server response: %li - %@", (long)httpResponse.statusCode, [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
 		}
 		else
 		{
