@@ -96,6 +96,7 @@
 		AAC5A9D1187855BA0073FF6C /* CLAProgressManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC5A9D0187855BA0073FF6C /* CLAProgressManager.m */; };
 		AACE5439185E06BE00C6E7CD /* CLAImageFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE5438185E06BE00C6E7CD /* CLAImageFetch.m */; };
 		AACE543A185E06BE00C6E7CD /* CLAImageFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE5438185E06BE00C6E7CD /* CLAImageFetch.m */; };
+		AAD56CBD18F16BFA0092C976 /* CLAHomeCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD56CBC18F16BFA0092C976 /* CLAHomeCategory.m */; };
 		AADC92981849336A00917AAB /* CLAAppDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = AADC92971849336A00917AAB /* CLAAppDataStore.m */; };
 		AADC92991849336A00917AAB /* CLAAppDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = AADC92971849336A00917AAB /* CLAAppDataStore.m */; };
 		AADC92A7184938F000917AAB /* AppMaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AADC92A5184938F000917AAB /* AppMaker.xcdatamodeld */; };
@@ -251,6 +252,8 @@
 		AAC5A9D0187855BA0073FF6C /* CLAProgressManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAProgressManager.m; sourceTree = "<group>"; };
 		AACE5437185E06BE00C6E7CD /* CLAImageFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAImageFetch.h; sourceTree = "<group>"; };
 		AACE5438185E06BE00C6E7CD /* CLAImageFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAImageFetch.m; sourceTree = "<group>"; };
+		AAD56CBB18F16BFA0092C976 /* CLAHomeCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAHomeCategory.h; sourceTree = "<group>"; };
+		AAD56CBC18F16BFA0092C976 /* CLAHomeCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAHomeCategory.m; sourceTree = "<group>"; };
 		AADC929518492FCC00917AAB /* CLAModelProtocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CLAModelProtocols.h; path = AppMakerStaticLib/CLAModelProtocols.h; sourceTree = "<group>"; };
 		AADC92961849336A00917AAB /* CLAAppDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLAAppDataStore.h; path = AppMakerStaticLib/CLAAppDataStore.h; sourceTree = "<group>"; };
 		AADC92971849336A00917AAB /* CLAAppDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAAppDataStore.m; sourceTree = "<group>"; };
@@ -603,6 +606,8 @@
 				AAA790E5184BA49B00E0027C /* Utils */,
 				AAA790E3184BA48800E0027C /* Model */,
 				AADC92971849336A00917AAB /* CLAAppDataStore.m */,
+				AAD56CBB18F16BFA0092C976 /* CLAHomeCategory.h */,
+				AAD56CBC18F16BFA0092C976 /* CLAHomeCategory.m */,
 				AAB1287D18A16C3E002799B5 /* CLAPreferences.m */,
 				AAF02B2718A7C3BB007AA4C5 /* CLALocalizedStringsStore.m */,
 			);
@@ -718,6 +723,7 @@
 				AAA790D9184BA47700E0027C /* CLAMainTableViewController.m in Sources */,
 				AADC92A7184938F000917AAB /* AppMaker.xcdatamodeld in Sources */,
 				AAB7F7FE18548FA400AEC2FA /* CLAHeaderDetailCell.m in Sources */,
+				AAD56CBD18F16BFA0092C976 /* CLAHomeCategory.m in Sources */,
 				AAC5A9801873229D0073FF6C /* CLAMenuViewControllerDelegate.h in Sources */,
 				AAB7F7FA18548FA400AEC2FA /* CLAAddressDetailCell.m in Sources */,
 				AAC5A9831874B2EB0073FF6C /* UITextView+Utilities.m in Sources */,

@@ -7,7 +7,6 @@
 //
 
 #define TIMEOUT 10.0
-#define ORDERBY_POSITION @"distance"
 
 #import "CLAMainTableViewController.h"
 #import "CLAMapViewController.h"
@@ -112,16 +111,21 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		self.navigationItem.rightBarButtonItems = nil;
 	}
 	
+	[self.tableView reloadData];
+	
 	if (topicHasChanged && _topic)
 	{
 		_scrolledHeight		= self.tableView.frame.size.height;
-		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
-							  atScrollPosition:UITableViewScrollPositionTop
-									  animated:NO];
-	}
-	
-	[self.tableView reloadData];
+		
+		if ([self.items count] > 0 )
+		{
 
+			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
+								  atScrollPosition:UITableViewScrollPositionTop
+										  animated:NO];
+
+		}
+	}
 }
 
 -(void)toggleViewController

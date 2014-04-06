@@ -206,6 +206,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
     NSAssert([cell isKindOfClass:[CLAMenuTableViewCell class]], @"Wrong cell class!");
 	
+	
 	if (indexPath.row < [self.items count])
 	{
 		id <CLATopic> item = [self.items objectAtIndex:indexPath.row];
@@ -360,6 +361,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 }
 
 #pragma mark - Private Methods
+
 
 -(NSArray *)searchBarSpacer
 {

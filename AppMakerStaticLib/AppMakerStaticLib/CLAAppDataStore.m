@@ -12,6 +12,7 @@
 #import "Image.h"
 #import "Item.h"
 #import "UIColor-Expanded.h"
+#import "CLAHomeCategory.h"
 
 #ifdef DEBUG
 
@@ -86,6 +87,9 @@ NSString *const CLAAppDataStoreUIShareIconKey			= @"CLAAppDataStoreUIShareIconKe
 
 NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearchBar";
 
+NSString *const CLAAppDataStoreUIHomePoisRadius			= @"CLAAppDataStoreUIHomePoisRadius";
+NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHomeCategory";
+
 @interface CLAAppDataStore ()
 {
 	NSOperationQueue *_queue;
@@ -105,6 +109,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 -(void)mergeObjects:(NSNotification *)notification;
 
 -(void)fetchMainImagesForItems:(NSArray *)items dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
+
+-(NSArray *)_contentsForHomeCategory;
 
 @property (nonatomic) NSUserDefaults *userDefaults;
 @property (nonatomic) CLLocationManager *locationManager;
@@ -762,6 +768,13 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 					  return result;
 					  
 				  }];
+		
+		if ([[self userInterface][CLAAppDataStoreUIShowHomeCategory] boolValue])
+		{
+			NSMutableArray *_tempTopics = [NSMutableArray arrayWithArray:_topics];
+			[_tempTopics insertObject:[CLAHomeCategory homeCategory] atIndex:0];
+			_topics = [NSArray arrayWithArray:_tempTopics];
+		}
 	}
 	
 	return _topics;
@@ -796,8 +809,12 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 -(NSArray *)contentsForTopic:(id <CLATopic>)topic
 {
-	NSSortDescriptor *defaultOrdering = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
+	if (NSOrderedSame == [@"home" caseInsensitiveCompare:[topic title]])
+	{
+		return [self _contentsForHomeCategory];
+	}
 	
+	NSSortDescriptor *defaultOrdering = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
 	return [[[topic items] allObjects] sortedArrayUsingDescriptors:@[defaultOrdering]];
 }
 
@@ -948,6 +965,32 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 //	
 //	block(error, imageData, );
 //}
+
+-(NSArray *)_contentsForHomeCategory
+{
+	NSMutableArray *_contentsForHome = [NSMutableArray array];
+	NSInteger poisRadius;
+	
+	if ((poisRadius = [[self userInterface][CLAAppDataStoreUIHomePoisRadius] integerValue]) == 0)
+		poisRadius = 500;
+	
+	[[self pois] enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop)
+	{
+		id <CLAItem> item = (id <CLAItem>)obj;
+		
+		if (NSOrderedSame == [[[item topic] title] caseInsensitiveCompare:@"credits"])
+			return;
+		
+		CLLocation *itemLocation = [[CLLocation alloc] initWithLatitude:[item coordinate].latitude
+															  longitude:[item coordinate].longitude];
+		if ([itemLocation distanceFromLocation:self.lastPosition] <= poisRadius)
+			[_contentsForHome addObject:item];
+		
+	}];
+	
+	
+	return [NSArray arrayWithArray:_contentsForHome];
+}
 
 -(void)mergeObjects:(NSNotification *)notification
 {
