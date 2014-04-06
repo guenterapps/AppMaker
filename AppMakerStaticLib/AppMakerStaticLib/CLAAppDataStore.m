@@ -845,8 +845,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		NSError *error;
 		
 		NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption	: @YES,
-										NSInferMappingModelAutomaticallyOption	: @YES};
-		
+									  NSInferMappingModelAutomaticallyOption	: @YES};
+			
 		NSPersistentStore *store = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
 															  configuration:nil
 																		URL:storeUrl
@@ -858,6 +858,18 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 			
 			abort();
 		}
+		
+		[storeUrl setResourceValue:@(YES)
+							forKey:NSURLIsExcludedFromBackupKey
+							 error:&error];
+		
+		if (error)
+		{
+			NSLog(@"%@", error);
+			
+			abort();
+		}
+
 	}
 	
 	return _coordinator;
