@@ -18,6 +18,7 @@
 	NSInteger _countStep;
 	NSInteger _countTotal;
 	CLAProgressManager *_progressManager;
+	UIButton *stopLoading;
 }
 
 -(void)setupCounter:(NSNotification *)notification;
@@ -39,8 +40,9 @@
 {
     [super viewDidLoad];
 	
-	CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-	UIColor *tintColor = [self.store userInterface][CLAAppDataStoreUISplashTintColorKey];
+	CGSize screenSize	= [[UIScreen mainScreen] bounds].size;
+	UIColor *tintColor	= [self.store userInterface][CLAAppDataStoreUISplashTintColorKey];
+	UIFont *font		= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:[[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue]];
 
 	self.view.backgroundColor = [UIColor blackColor];
 	
@@ -63,17 +65,48 @@
 	
 	UILabel *progress	= [[UILabel alloc] initWithFrame:CGRectMake(0., 0., 200., 50)];
 	
-	progress.font		= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:[[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue]];
+	progress.font		= font;
 	
 	progress.textColor = tintColor;
 	progress.textAlignment	= NSTextAlignmentCenter;
-	progress.center = CGPointMake(screenSize.width / 2., (screenSize.height / 10.0) * 9.0);
+	//progress.center = CGPointMake(screenSize.width / 2., (screenSize.height / 10.0) * 9.0);
 	
 	[self.view addSubview:progress];
 	
 	_progressManager = [[CLAProgressManager alloc] initWithMessage:@"Aggiornamento"];
 	_progressManager.progressLabel = progress;
 	[_progressManager resetCounter];
+	
+	stopLoading = [UIButton buttonWithType:UIButtonTypeSystem];
+	[stopLoading setTintColor:tintColor];
+	[stopLoading.titleLabel setFont:font];
+	[stopLoading setTitle:@"Stop Loading" forState:UIControlStateNormal];
+	[stopLoading addTarget:self.store action:@selector(skipImageLoading) forControlEvents:UIControlEventTouchUpInside];
+	
+	stopLoading.enabled = NO;
+	stopLoading.hidden = YES;
+	
+	[self.view addSubview:stopLoading];
+	
+	for (UIView *view in self.view.subviews)
+	{
+		view.translatesAutoresizingMaskIntoConstraints = NO;
+	}
+	
+	NSArray  *constraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[progress]-[stopLoading]-|"
+																	options:NSLayoutFormatAlignAllCenterX
+																	metrics:nil
+																	  views:NSDictionaryOfVariableBindings(progress, stopLoading)];
+	NSLayoutConstraint *center = [NSLayoutConstraint constraintWithItem:self.view
+															  attribute:NSLayoutAttributeCenterX
+															  relatedBy:NSLayoutRelationEqual
+																 toItem:progress
+															  attribute:NSLayoutAttributeCenterX
+															 multiplier:1.0
+															   constant:0.];
+	
+	[self.view addConstraints:constraints];
+	[self.view addConstraint:center];
 	
 }
 
@@ -105,6 +138,18 @@
 -(void)startUpdatingProgress
 {
 	[_progressManager countToDelta:JSONPROGRESS withInterval:0.5];
+}
+
+-(void)enableSkipLoadingButton
+{
+	stopLoading.enabled = YES;
+	
+	[UIView animateWithDuration:0.2 animations:^()
+	{
+		stopLoading.hidden = NO;
+		_progressManager.progressLabel.alpha = 0.5;
+		
+	}];
 }
 
 #pragma mark - private methods

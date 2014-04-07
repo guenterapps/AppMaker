@@ -21,5 +21,6 @@
 @property (nonatomic, weak) id <CLASplashScreenDelegateProtocol> delegate;
 
 -(void)startUpdatingProgress;
+-(void)enableSkipLoadingButton;
 
 @end

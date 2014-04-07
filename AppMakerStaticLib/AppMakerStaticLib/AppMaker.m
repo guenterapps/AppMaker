@@ -38,6 +38,8 @@ static NSString *const CLALastAPNTokenKey		= @"CLALastAPNTokenKey";
 	BOOL reloadData;
 	BOOL _startFromNotification;
 	NSString *_singleContentId;
+	
+	CLASplashScreenViewController *splashScreen;
 }
 
 @property (nonatomic) BOOL serverPushEnabled;
@@ -236,7 +238,7 @@ static id appMaker = nil;
 	
 	_menuTableViewController.delegate = (id <CLAMenuViewControllerDelegate>)_mapViewController;
 
-	CLASplashScreenViewController *splashScreen = [self setupViewControllerOfClass:[CLASplashScreenViewController class]];
+	splashScreen = [self setupViewControllerOfClass:[CLASplashScreenViewController class]];
 
 	splashScreen.delegate = self;
 	
@@ -519,6 +521,8 @@ static id appMaker = nil;
 	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *error)
 	 {
 
+		 [splashScreen enableSkipLoadingButton];
+		 
 		 if (error)
 		 {
 			 self.lockPresentApplication = YES;
@@ -532,6 +536,25 @@ static id appMaker = nil;
 													   otherButtonTitles:nil];
 			 [alertView show];
 		 }
+		 
+		 [self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
+		 {
+			 if (error)
+			 {
+				 self.lockPresentApplication = YES;
+				 
+				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
+				 
+				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
+																	 message:alertMessage
+																	delegate:self
+														   cancelButtonTitle:@"Continua"
+														   otherButtonTitles:nil];
+				 [alertView show];
+			 }
+			 
+		 }];
+		 
 		 
 	 }];
 	
