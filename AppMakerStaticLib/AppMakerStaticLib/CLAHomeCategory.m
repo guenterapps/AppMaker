@@ -38,7 +38,7 @@
 
 		self.created		= now;
 		self.lastUpdated	= now;
-		self.title			= @"Home";
+		self.title			= @"Rosteria";
 		self.topicCode		= @"Home";
 		self.ordering		= @(NSIntegerMax);
 		self.sortOrder		= ORDERBY_POSITION;

@@ -809,7 +809,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 
 -(NSArray *)contentsForTopic:(id <CLATopic>)topic
 {
-	if (NSOrderedSame == [@"home" caseInsensitiveCompare:[topic title]])
+	if (NSOrderedSame == [@"home" caseInsensitiveCompare:[topic topicCode]])
 	{
 		return [self _contentsForHomeCategory];
 	}
