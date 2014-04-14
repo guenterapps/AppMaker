@@ -35,6 +35,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 -(void)reloadContentsForStoreFetchedData:(NSNotification *)notification;
 -(void)setItems:(NSArray *)items;
+-(void)callApi:(NSNotification *)notification;
 
 @end
 
@@ -500,16 +501,11 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	[self.tableView addPullToRefreshWithActionHandler:^()
 	 {
 		 [[NSNotificationCenter defaultCenter] addObserver:self
-												  selector:@selector(reloadContentsForStoreFetchedData:)
-													  name:CLAAppDataStoreDidFetchNewData
+												  selector:@selector(callApi:)
+													  name:CLAAppDataStoreDidStopSeachingPosition
 													object:self.store];
 		 
-		 [[NSNotificationCenter defaultCenter] addObserver:self
-												  selector:@selector(reloadContentsForStoreFetchedData:)
-													  name:CLAAppDataStoreDidFailToFetchNewData
-													object:self.store];
-
-		 [self.store fetchRemoteDataWithTimeout:TIMEOUT skipCaching:NO];
+		 [self.store startUpdatingLocation];
 	 }];
 	
 	[self.tableView.pullToRefreshView setTitle:@"Carico i dati..." forState:SVPullToRefreshStateLoading];
@@ -520,6 +516,25 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	[self.tableView.pullToRefreshView setTextColor:foreGroundColor];
 	[self.tableView.pullToRefreshView setArrowColor:foreGroundColor];
+}
+
+-(void)callApi:(NSNotification *)notification
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self
+													name:CLAAppDataStoreDidStopSeachingPosition
+												  object:self.store];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(reloadContentsForStoreFetchedData:)
+												 name:CLAAppDataStoreDidFetchNewData
+											   object:self.store];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(reloadContentsForStoreFetchedData:)
+												 name:CLAAppDataStoreDidFailToFetchNewData
+											   object:self.store];
+	
+	[self.store fetchRemoteDataWithTimeout:TIMEOUT skipCaching:NO];
 }
 
 @end
