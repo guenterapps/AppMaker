@@ -990,6 +990,9 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	{
 		id <CLAItem> item = (id <CLAItem>)obj;
 		
+		if ([@"53" isEqualToString:[[item topic] topicCode]]) //to be extended!
+			return;
+		
 		if (NSOrderedSame == [[[item topic] title] caseInsensitiveCompare:@"credits"])
 			return;
 		
