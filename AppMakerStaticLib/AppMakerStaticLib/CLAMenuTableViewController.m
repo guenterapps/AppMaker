@@ -89,7 +89,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		
 		searchBar.barTintColor		= [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 		searchBar.tintColor			= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
-		searchBar.searchBarStyle	= UISearchBarStyleMinimal;
+		//searchBar.searchBarStyle	= UISearchBarStyleMinimal;
 		searchBar.translucent		= NO;
 		
 		searchController.searchResultsTableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
