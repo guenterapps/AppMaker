@@ -498,7 +498,7 @@ static id appMaker = nil;
 		
 		if (!reloadData)
 		{
-			alertMessage = @"Sembra che tu non sia connesso, ma niente paura: potrai navigare l'App offline anche se con qualche limitazione!";
+			alertMessage = @"Sembra che tu non sia connesso: potrai comunque navigare l'App senza accedere agli strumenti online.";
 			buttonMessage = @"Continua";
 		}
 		else
@@ -507,7 +507,7 @@ static id appMaker = nil;
 			buttonMessage	= @"Riprova";
 		}
 
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Modalità offline"
 														message:alertMessage
 													   delegate:self
 											  cancelButtonTitle:buttonMessage
