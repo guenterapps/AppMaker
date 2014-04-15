@@ -913,8 +913,8 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 
 -(CLLocation *)lastPosition
 {
-	if (!_lastPosition)
-	{
+	//if (!_lastPosition)
+	//{
 		NSNumber *latitude	= [[self userDefaults] objectForKey:CLALastPositionLatitudeKey];
 		NSNumber *longitude	= [[self userDefaults] objectForKey:CLALastPositionLongitudeKey];
 		
@@ -926,7 +926,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 													   longitude:[longitude doubleValue]];
 		}
 		
-	}
+	//}
 	
 	return _lastPosition;
 	
