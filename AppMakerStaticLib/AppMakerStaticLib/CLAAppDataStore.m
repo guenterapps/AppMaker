@@ -160,7 +160,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 
 		self.locationManager.delegate = self;
 		self.locationManager.distanceFilter = 500.0;
-		self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+		self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 		[self.locationManager startUpdatingLocation];
 	}
 	else
