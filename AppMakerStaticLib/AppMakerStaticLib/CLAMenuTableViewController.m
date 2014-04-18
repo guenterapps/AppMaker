@@ -18,6 +18,7 @@
 #import "CLAPanelViewController.h"
 #import "CLAMainTableViewController.h"
 #import "CLAQRCodeReaderViewController.h"
+#import "CLAWebViewController.h"
 
 NSString *const CLAMenuControllerDidSelectItemNotificationKey	= @"CLAMenuControllerDidSelectItemNotificationKey";
 NSString *const CLAMenuControllerSelectedItemKey				= @"CLAMenuControllerSelectedItemKey";
@@ -188,7 +189,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	
-	return [self.items count] + 1 + (self.appMaker.useQRReader ? 1 : 0);
+	return [self.items count] + 2 + (self.appMaker.useQRReader ? 1 : 0);
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -239,8 +240,16 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	{
 		if (indexPath.row == [self.items count] && self.appMaker.useQRReader)
 			[(CLAMenuTableViewCell *)cell setTitle:@"QR Reader"];
-		else
+		else if (indexPath.row == [self.tableView numberOfRowsInSection:0] - 2)
+		{
+			[(CLAMenuTableViewCell *)cell setTitle:@"NovaraWifi"];
+		}
+		else if (indexPath.row == [self.tableView numberOfRowsInSection:0] - 1)
 			[(CLAMenuTableViewCell *)cell setTitle:[self.localizedStrings localizedStringForString:@"Preferences"]];
+		else
+		{
+			NSAssert(NO, @"invalid indexpath: %li", indexPath.row);
+		}
 	}
 
 
@@ -365,6 +374,29 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 			qrReader.appMaker = self.appMaker;
 			qrReader.store	= self.store;
 			[navController setViewControllers:@[qrReader]];
+		}
+		else if (indexPath.row == [self.tableView numberOfRowsInSection:0] - 2)
+		{
+			UINavigationController *navController = (UINavigationController *)self.sidePanelController.centerPanel;
+			
+			if (!lastSelectedViewController)
+			{
+				lastSelectedViewController = self.appMaker.mainTableViewController;
+			}
+			
+			CLAWebViewController *webViewController = [[CLAWebViewController alloc] init];
+			webViewController.appMaker		= self.appMaker;
+			webViewController.store			= self.store;
+			webViewController.headerTitle	= @"www.novaragov.it";
+
+			webViewController.webView.scalesPageToFit = YES;
+			
+			NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.novaragov.it/wifi/"]];
+			
+			[webViewController.webView loadRequest:request];
+			webViewController.navigationItem.leftBarButtonItems = nil;
+
+			[navController setViewControllers:@[webViewController]];
 		}
 		else
 		{
