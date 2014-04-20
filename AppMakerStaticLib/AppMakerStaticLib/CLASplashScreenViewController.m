@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
-#define JSONPROGRESS 50
+#define JSONPROGRESS 20
 
 #import "CLASplashScreenViewController.h"
 #import "CLAAppDataStore.h"
@@ -218,6 +218,8 @@
 
 -(void)skipImageLoading
 {
+	stopLoading.enabled = NO;
+
 	[self.store skipImageLoading];
 	
 	double delayInSeconds = 0.2;
