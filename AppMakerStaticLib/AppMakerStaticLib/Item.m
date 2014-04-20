@@ -96,7 +96,7 @@
 	{
 		NSData *pinMapData = [self primitiveValueForKey:@"pinMapData"];
 		
-		primitiveValue = [UIImage imageWithData:pinMapData scale:2.0];
+		primitiveValue = [UIImage imageWithData:pinMapData scale:SCALE];
 		
 		[self setPrimitiveValue:primitiveValue forKey:@"pinMap"];
 	}
