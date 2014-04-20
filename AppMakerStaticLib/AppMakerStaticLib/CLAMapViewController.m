@@ -83,7 +83,9 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 					   options:UIViewAnimationOptionTransitionFlipFromLeft
 					completion:^(BOOL finished)
 	 {
-		 
+		 [self.mapView removeAnnotations:[self.mapView annotations]];
+		 [self.mapView removeOverlays:[self.mapView overlays]];
+
 		 [self.navigationController setViewControllers:@[mainTableViewController]];
 		 mainTableViewController.skipAnimation = NO;
 		 
