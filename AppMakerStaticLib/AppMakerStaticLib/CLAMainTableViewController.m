@@ -36,6 +36,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 -(void)reloadContentsForStoreFetchedData:(NSNotification *)notification;
 -(void)setItems:(NSArray *)items;
 -(void)callApi:(NSNotification *)notification;
+-(UIImage *)mainImageForItem:(id <CLAItem>)item;
 
 @end
 
@@ -186,7 +187,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	UIStatusBarStyle style = [[self.store userInterface][CLAAppDataStoreUIStatusBarStyleKey] integerValue];
 	
-	NSAssert(style >= 0 && style <= 1, @"Invalid status bar style %ld", style);
+	NSAssert(style >= 0 && style <= 1, @"Invalid status bar style %d", style);
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:style];
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
@@ -275,7 +276,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		eventCell.dayLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIMainListFontColorKey];
 		
 		[eventCell setTitle:item.title];
-		[eventCell setImage:[item mainImage]];
+		[eventCell setImage:[self mainImageForItem:item]];
 
 		
 		eventCell.monthLabel.text = [[monthFormatter stringFromDate:item.date] uppercaseString];
@@ -289,7 +290,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		
 		[mainCell setTitle:item.title];
 		
-		[mainCell setImage:[item mainImage]];
+		[mainCell setImage:[self mainImageForItem:item]];
 		
 		cell = (UITableViewCell *)mainCell;
 	}
@@ -418,6 +419,22 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 }
 
 #pragma mark - Private Methods
+
+-(UIImage *)mainImageForItem:(id <CLAItem>)item
+{
+	NSParameterAssert(item);
+	
+	UIImage *mainImage = [item mainImage];
+	
+	if (!mainImage)
+	{
+		return [UIImage imageNamed:@"noImage"];
+	}
+	
+	return mainImage;
+}
+
+
 #pragma mark Data handling
 
 -(void)reloadContentsForStoreFetchedData:(NSNotification *)notification

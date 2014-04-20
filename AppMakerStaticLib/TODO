@@ -3,7 +3,7 @@ X CLAPreferencesViewController.m --> change to prefetchImages
 
 X reset self.skipEtc on datastore
 
--- add default images in main and detail
+X add default images in main and detail
 
 -- ad default image in mapview
 
