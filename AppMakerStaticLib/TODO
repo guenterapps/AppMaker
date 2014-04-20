@@ -11,6 +11,8 @@ X add default images in main and detail
 
 -- memory handling for large import (seems to increase)
 
+-- aspect ratio
+
 -- codice su mainTableViewController/AppDatastore per get main image --> check se la cell è ancora quella che mi serve o se sto già scaricando l'immagine.
 
 

@@ -10,7 +10,7 @@
 #import "Topic.h"
 
 #define SCALE [[UIScreen mainScreen] scale]
-#define BORDER 2.0 * SCALE
+#define BORDER 2.0
 
 @implementation Item
 
@@ -114,10 +114,9 @@
 	UIImage *pinMap		= [UIImage imageNamed:@"pin"];
 	NSData * pinMapData;
 	
-	CGSize pinSize = CGSizeMake(pinMap.size.width * SCALE, pinMap.size.height * SCALE
-								);
+	CGSize pinSize = CGSizeMake(pinMap.size.width, pinMap.size.height);
 		
-	UIGraphicsBeginImageContext(pinSize);
+	UIGraphicsBeginImageContextWithOptions(pinSize, NO, SCALE);
 		
 	[pinMap drawInRect:CGRectMake(0.0, 0.0, pinSize.width, pinSize.height)];
 	[mainImage drawInRect:CGRectMake(BORDER, BORDER, pinSize.width - 2 * BORDER, pinSize.width - 2 * BORDER)];
