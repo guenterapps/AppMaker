@@ -246,173 +246,12 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 
 #pragma mark - Data Fetch
 
-#pragma mark Remote data
-
 -(void)skipImageLoading
 {
 	self.skipFetching = YES;
 }
 
-- (void)fetchImagesForObjects:(NSMutableArray *)objectIDs urls:(NSMutableArray *)urls block:(void (^)(NSError *))block
-{
-	__block NSError *error;
-//	NSInteger imagesToFetch = [objectIDs count];
-	
-//	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-	
-	//dispatch_apply(imagesToFetch, queue, ^(size_t iteration)
-	for (NSInteger index = 0; index < [objectIDs count]; ++index)
-	{
-		//NSInteger index = (NSInteger)iteration;
-		
-		if (self.skipFetching)
-		{
-			self.skipFetching = NO;
-			break;
-		}
-
-#ifdef DEBUG
-		NSLog(@"Fetching image at url: %@", urls[index]);
-#endif
-
-		NSError *internalError;
-		NSURL *url			= [NSURL URLWithString:urls[index]];
-		NSData *imageData	= [NSData dataWithContentsOfURL:url options:0 error:&internalError];
-
-		if (internalError)
-		{
-			error = internalError;
-			NSLog(@"%@", internalError);
-		}
-
-		dispatch_async(dispatch_get_main_queue(), ^()
-		{
-			if (!internalError)
-			{
-				[[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreDidFetchImage object:self userInfo:nil];
-			}
-
-			Item *item = (Item *)[self.context objectWithID:objectIDs[index]];
-
-			[(NSManagedObject *)[item mainImageObject] setValue:imageData forKey:@"imageData"];
-
-			[item generatePinMapFromMainImage];
-		});
-
-	};
-
-	dispatch_async(dispatch_get_main_queue(), ^()
-	{
-		NSError *saveError;
-
-		[self save:&saveError];
-		
-		if (saveError)
-		{
-			NSLog(@"Error saving after fetching images: %@", saveError);
-			abort();
-		}
-		
-		[self invalidateCache];
-
-		if (block)
-		{
-			block(error);
-		}
-	
-
-	});
-
-}
-
--(void)fetchMainImagesForItems:(NSArray *)items ofTotalItems:(NSArray *)total skipStartNotification:(BOOL)skip dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
-{
-	NSMutableArray *objectIDs	= [NSMutableArray array];
-	NSMutableArray *urls		= [NSMutableArray array];
-	
-	if (([items count]) > 0)
-	{
-		__block NSUInteger totalCount = 0;
-		
-		[total enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
-		{
-			Item *item		= (Item *)obj;
-			id <CLAImage> mainImage = [item mainImageObject];
-			
-			if ([mainImage imageURL])
-				++totalCount;
-
-			
-		}];
-		
-		for (Item *item in items)
-		{
-			id <CLAImage> mainImage = [item mainImageObject];
-			
-			if (![mainImage imageURL])
-			{
-				continue;
-			}
-			
-			[objectIDs	addObject:[item objectID]];
-			[urls		addObject:[(id <CLAImage>)mainImage imageURL]];
-		}
-
-		if (!skip)
-		{
-			dispatch_async(dispatch_get_main_queue(), ^()
-						   {
-							   NSDictionary *userInfo = @{CLATotalImagesToFetchKey : @(totalCount)};
-							   
-							   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreWillFetchImages object:self userInfo:userInfo];
-						   });
-		}
-
-	
-		dispatch(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^()
-		{
-			[self fetchImagesForObjects:objectIDs urls:urls block:block];
-
-		});
-	}
-	else
-	{
-		NSLog(@"Requested to fetch images for empty array!");
-		dispatch_async(dispatch_get_main_queue(), ^()
-					   {
-						   NSDictionary *userInfo = @{CLATotalImagesToFetchKey : @(0)};
-						   
-						   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreWillFetchImages object:self userInfo:userInfo];
-					   });
-		block(nil);
-	}
-
-}
-
--(void)asyncFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block
-{
-	static NSPredicate *nilImages;
-	
-	if (!nilImages)
-	{
-		nilImages = [NSPredicate predicateWithFormat:@"%K == nil", @"mainImage"];
-	}
-	
-	NSMutableArray *items = [NSMutableArray array];
-	
-	for (Topic *topic in self.topics)
-	{
-		[items addObjectsFromArray:[[[topic items] allObjects] filteredArrayUsingPredicate:nilImages]];
-	}
-	
-	void (*dispatch)(dispatch_queue_t, dispatch_block_t) = &dispatch_async;
-	
-	[self fetchMainImagesForItems:items
-					 ofTotalItems:items
-			skipStartNotification:NO
-						 dispatch:dispatch
-					   completion:block];
-}
+#pragma mark Image loading
 
 -(void)preFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block
 {
@@ -429,7 +268,6 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	for (Topic *topic in self.topics)
 	{
 		NSArray *preFetchedArray	= [self contentsForTopic:topic];
-//		preFetchedArray				= [[preFetchedArray subarrayWithRange:preFetchRange] filteredArrayUsingPredicate:nilImages];
 		
 		preFetchedArray			= [preFetchedArray filteredArrayUsingPredicate:nilImages];
 		NSRange preFetchRange	= NSMakeRange(0, MIN([preFetchedArray count], PREFETCHCOUNT));
@@ -476,6 +314,27 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 						 dispatch:dispatch
 					   completion:block];
 
+}
+
+-(void)fetchMainImageForItem:(id<CLAItem>)item completionBlock:(void (^)(NSError *))block
+{
+	
+	static NSPredicate *primary;
+	
+	if (!primary)
+	{
+		primary = [NSPredicate predicateWithFormat:@"%K == %@", @"primary", [NSNumber numberWithBool:YES]];
+	}
+	
+	Image *image = [[[item images] filteredSetUsingPredicate:primary] anyObject];
+	
+	if (!image)
+	{
+		return;
+	}
+	
+	//[self fetchImageForImageObject:image completion:block];
+	
 }
 
 //-(void)fetchMainImagesForTopic:(id <CLATopic>)topic completion:(void (^)(NSError *))block
@@ -599,33 +458,144 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	
 }
 
+#pragma mark Image loading - Internal Methods
 
+- (void)fetchMainImagesForObjectIDs:(NSMutableArray *)objectIDs urls:(NSMutableArray *)urls block:(void (^)(NSError *))block
+{
+	__block NSError *error;
+	//	NSInteger imagesToFetch = [objectIDs count];
+	
+	//	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+	
+	//dispatch_apply(imagesToFetch, queue, ^(size_t iteration)
+	for (NSInteger index = 0; index < [objectIDs count]; ++index)
+	{
+		//NSInteger index = (NSInteger)iteration;
+		
+		if (self.skipFetching)
+		{
+			self.skipFetching = NO;
+			break;
+		}
+		
+#ifdef DEBUG
+		NSLog(@"Fetching image at url: %@", urls[index]);
+#endif
+		
+		NSError *internalError;
+		NSURL *url			= [NSURL URLWithString:urls[index]];
+		NSData *imageData	= [NSData dataWithContentsOfURL:url options:0 error:&internalError];
+		
+		if (internalError)
+		{
+			error = internalError;
+			NSLog(@"%@", internalError);
+		}
+		
+		dispatch_async(dispatch_get_main_queue(), ^()
+		{
+			if (!internalError)
+			{
+			   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreDidFetchImage object:self userInfo:nil];
+			}
 
-//-(void)fetchMainImageForItem:(id<CLAItem>)item completionBlock:(void (^)(NSError *))block
-//{
-//
-//	static NSPredicate *primary;
-//	
-//	if (!primary)
-//	{
-//		primary = [NSPredicate predicateWithFormat:@"%K == %@", @"primary", [NSNumber numberWithBool:YES]];
-//	}
-//	
-//	Image *image = [[[item images] filteredSetUsingPredicate:primary] anyObject];
-//#warning no image;
-//	if (!image)
-//	{
-//		return;
-//	}
-//	
-//	NSAssert(image, @"Item should have a primary image!");
-//	
-//	
-//	[self fetchImageForImageObject:image completion:block];
-//
-//}
+			Item *item = (Item *)[self.context objectWithID:objectIDs[index]];
 
+			[(NSManagedObject *)[item mainImageObject] setValue:imageData forKey:@"imageData"];
 
+			[item generatePinMapFromMainImage];
+		});
+		
+	};
+	
+	dispatch_async(dispatch_get_main_queue(), ^()
+	{
+		NSError *saveError;
+
+		[self save:&saveError];
+
+		if (saveError)
+		{
+		   NSLog(@"Error saving after fetching images: %@", saveError);
+		   abort();
+		}
+
+		[self invalidateCache];
+
+		if (block)
+		{
+		   block(error);
+		}
+
+	});
+	
+}
+
+-(void)fetchMainImagesForItems:(NSArray *)items ofTotalItems:(NSArray *)total skipStartNotification:(BOOL)skip dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
+{
+	NSMutableArray *objectIDs	= [NSMutableArray array];
+	NSMutableArray *urls		= [NSMutableArray array];
+	
+	if (([items count]) > 0)
+	{
+		__block NSUInteger totalCount = 0;
+		
+		[total enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+		 {
+			 Item *item		= (Item *)obj;
+			 id <CLAImage> mainImage = [item mainImageObject];
+			 
+			 if ([mainImage imageURL])
+				 ++totalCount;
+			 
+			 
+		 }];
+		
+		for (Item *item in items)
+		{
+			id <CLAImage> mainImage = [item mainImageObject];
+			
+			if (![mainImage imageURL])
+			{
+				continue;
+			}
+			
+			[objectIDs	addObject:[item objectID]];
+			[urls		addObject:[(id <CLAImage>)mainImage imageURL]];
+		}
+		
+		if (!skip)
+		{
+			dispatch_async(dispatch_get_main_queue(), ^()
+						   {
+							   NSDictionary *userInfo = @{CLATotalImagesToFetchKey : @(totalCount)};
+							   
+							   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreWillFetchImages object:self userInfo:userInfo];
+						   });
+		}
+		
+		
+		dispatch(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^()
+				 {
+					 [self fetchMainImagesForObjectIDs:objectIDs urls:urls block:block];
+					 
+				 });
+	}
+	else
+	{
+		NSLog(@"Requested to fetch images for empty array!");
+		dispatch_async(dispatch_get_main_queue(), ^()
+					   {
+						   NSDictionary *userInfo = @{CLATotalImagesToFetchKey : @(0)};
+						   
+						   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreWillFetchImages object:self userInfo:userInfo];
+					   });
+		block(nil);
+	}
+	
+}
+
+#pragma mark JSON Fetching
 
 -(void)fetchRemoteDataForSingleContent:(NSString *)contentId withTimeout:(NSTimeInterval)timeout
 {

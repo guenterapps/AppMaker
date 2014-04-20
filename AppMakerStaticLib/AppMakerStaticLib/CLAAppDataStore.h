@@ -81,12 +81,8 @@ extern NSString *const CLAAppDataStoreFetchErrorKey;
 -(void)skipImageLoading;
 -(void)fetchMainImagesWithCompletionBlock:(void (^)(NSError *))block;
 -(void)preFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block;
--(void)asyncFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block;
-
--(void)fetchMainImagesForTopic:(id <CLATopic>)topic completion:(void (^)(NSError *))block;
 -(void)fetchImagesForImageObjects:(NSArray *)items completion:(void (^)(NSError *))block;
-																
-//-(void)fetchImageForImageObject:(Image *)image completion:(void (^)(NSError *, NSData *))block;
+
 
 -(void)invalidateCache;
 
