@@ -433,6 +433,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	
 	void (*dispatch)(dispatch_queue_t, dispatch_block_t) = &dispatch_async;
 	
+	self.skipFetching = NO;
+	
 	[self fetchMainImagesForItems:items
 					 ofTotalItems:totalItems
 			skipStartNotification:NO
@@ -458,6 +460,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	}
 	
 	void (*dispatch)(dispatch_queue_t, dispatch_block_t) = &dispatch_async;
+	
+	self.skipFetching = NO;
 	
 	[self fetchMainImagesForItems:items
 					 ofTotalItems:items
