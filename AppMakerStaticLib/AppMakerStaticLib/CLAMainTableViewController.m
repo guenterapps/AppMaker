@@ -389,6 +389,9 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 		[self.store fetchMainImageForItem:item completionBlock:^(NSError *error)
 		{
+			if (![item mainImage])
+				return;
+			
 			NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
 			
 			if (cellIndexPath && (cellIndexPath.row < [self.items count]))

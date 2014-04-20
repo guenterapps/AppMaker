@@ -123,10 +123,10 @@
 		
 	pinMap		= UIGraphicsGetImageFromCurrentImageContext();
 	pinMapData	= UIImagePNGRepresentation(pinMap);
-		
-	[self setValue:pinMapData forKey:@"pinMapData"];
-		
+	
 	UIGraphicsEndImageContext();
+	
+	[self setValue:pinMapData forKey:@"pinMapData"];
 
 }
 
