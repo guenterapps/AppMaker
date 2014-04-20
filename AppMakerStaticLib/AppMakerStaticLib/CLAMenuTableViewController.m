@@ -35,10 +35,14 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	UISearchDisplayController *searchController;
 	NSIndexPath *_indexPathSelectedFromSearch;
 	BOOL _isSearching;
+	
+	UIImage *_backgroundImage;
+
 }
 
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification;
 -(NSArray *)searchBarSpacer;
+-(BOOL)useBackgroundImage;
 
 @end
 
@@ -62,11 +66,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	BOOL showSearchBar = [[self.store userInterface][CLAAppDataStoreUIShowSearchBar] boolValue];
 	
 	UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
-	self.tableView.backgroundView = backView;
 
-	self.tableView.backgroundView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
-	
-	self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+	backView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 
 	[self setupTableView:self.tableView withCellIdentifier:CLAMenuTableViewCellIdentifier];
 	
@@ -88,7 +89,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		
 		searchBar.barTintColor		= [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 		searchBar.tintColor			= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
-		searchBar.searchBarStyle	= UISearchBarStyleMinimal;
+		//searchBar.searchBarStyle	= UISearchBarStyleMinimal;
 		searchBar.translucent		= NO;
 		
 		searchController.searchResultsTableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
@@ -111,6 +112,20 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 		self.tableView.contentInset = UIEdgeInsetsMake(20.0, 0., 0., 0.);
 	}
 
+	
+	if ([self useBackgroundImage])
+	{
+		UIImage  *backgroundImage = [_backgroundImage resizableImageWithCapInsets:UIEdgeInsetsZero
+														  resizingMode:UIImageResizingModeTile];
+
+		self.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+	}
+	else
+	{
+		self.tableView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+		self.tableView.backgroundView	= backView;
+	}
+	
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -193,18 +208,26 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	label.textColor				= fontColor;
 	label.highlightedTextColor	= fontColor;
 	
-	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
-	
 	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
 	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
 	
 	UIView *selectedView = [[UIView alloc] initWithFrame:CGRectZero];
 	[selectedView setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuSelectedColorKey]];
 	
-	cell.backgroundView			= backGroundview;
+	if ([self useBackgroundImage])
+	{
+		[cell setBackgroundColor:[UIColor clearColor]];
+	}
+	else
+	{
+		[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
+		cell.backgroundView			= backGroundview;
+	}
+
 	cell.selectedBackgroundView	= selectedView;
 
     NSAssert([cell isKindOfClass:[CLAMenuTableViewCell class]], @"Wrong cell class!");
+	
 	
 	if (indexPath.row < [self.items count])
 	{
@@ -360,6 +383,13 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 }
 
 #pragma mark - Private Methods
+
+-(BOOL)useBackgroundImage
+{
+	_backgroundImage = [UIImage imageNamed:@"menuBackground"];
+	
+	return _backgroundImage != nil;
+}
 
 -(NSArray *)searchBarSpacer
 {

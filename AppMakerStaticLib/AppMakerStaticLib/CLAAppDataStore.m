@@ -12,6 +12,7 @@
 #import "Image.h"
 #import "Item.h"
 #import "UIColor-Expanded.h"
+#import "CLAHomeCategory.h"
 
 #ifdef DEBUG
 
@@ -89,6 +90,9 @@ NSString *const CLAAppDataStoreUIShareIconKey			= @"CLAAppDataStoreUIShareIconKe
 
 NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearchBar";
 
+NSString *const CLAAppDataStoreUIHomePoisRadius			= @"CLAAppDataStoreUIHomePoisRadius";
+NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHomeCategory";
+
 @interface CLAAppDataStore ()
 {
 	NSOperationQueue *_queue;
@@ -108,6 +112,9 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 -(void)mergeObjects:(NSNotification *)notification;
 
 -(void)fetchMainImagesForItems:(NSArray *)items ofTotalItems:(NSArray *)total skipStartNotification:(BOOL)skip dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
+
+-(NSArray *)_contentsForHomeCategory;
+-(NSArray *)sortItemsByPosition:(NSArray *)items;
 
 @property (atomic) BOOL skipFetching;
 @property (nonatomic) NSUserDefaults *userDefaults;
@@ -158,7 +165,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 		self.locationManager.delegate = self;
 		self.locationManager.distanceFilter = 500.0;
-		self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+		self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 		[self.locationManager startUpdatingLocation];
 	}
 	else
@@ -845,6 +852,13 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 					  return result;
 					  
 				  }];
+		
+		if ([[self userInterface][CLAAppDataStoreUIShowHomeCategory] boolValue])
+		{
+			NSMutableArray *_tempTopics = [NSMutableArray arrayWithArray:_topics];
+			[_tempTopics insertObject:[CLAHomeCategory homeCategory] atIndex:0];
+			_topics = [NSArray arrayWithArray:_tempTopics];
+		}
 	}
 	
 	return _topics;
@@ -879,35 +893,16 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 -(NSArray *)contentsForTopic:(id <CLATopic>)topic
 {
-	NSParameterAssert(topic);
+	if (NSOrderedSame == [@"home" caseInsensitiveCompare:[topic topicCode]])
+	{
+		return [self _contentsForHomeCategory];
+	}
 	
 	NSArray *items = [[topic items] allObjects];
 	
 	if ([ORDERBY_POSITION isEqualToString:[(Topic *)topic sortOrder]])
 	{
-		items	= [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-				   {
-					   Item *item1	= (Item *)obj1;
-					   Item *item2	= (Item *)obj2;
-					   
-					   CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
-					   
-					   CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
-					   
-					   CLLocationDistance distance1 = [location1 distanceFromLocation:self.lastPosition];
-					   CLLocationDistance distance2 = [location2 distanceFromLocation:self.lastPosition];
-					   
-					   NSComparisonResult result;
-					   
-					   if (distance1 > distance2)
-						   result = NSOrderedDescending;
-					   else if (distance2 > distance1)
-						   result = NSOrderedAscending;
-					   else
-						   result = NSOrderedSame;
-					   
-					   return result;
-				   }];
+		items	= [self sortItemsByPosition:items];
 	}
 	else
 	{
@@ -963,8 +958,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		NSError *error;
 		
 		NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption	: @YES,
-										NSInferMappingModelAutomaticallyOption	: @YES};
-		
+									  NSInferMappingModelAutomaticallyOption	: @YES};
+			
 		NSPersistentStore *store = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
 															  configuration:nil
 																		URL:storeUrl
@@ -976,6 +971,18 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 			
 			abort();
 		}
+		
+		[storeUrl setResourceValue:@(YES)
+							forKey:NSURLIsExcludedFromBackupKey
+							 error:&error];
+		
+		if (error)
+		{
+			NSLog(@"%@", error);
+			
+			abort();
+		}
+
 	}
 	
 	return _coordinator;
@@ -1001,8 +1008,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 -(CLLocation *)lastPosition
 {
-	if (!_lastPosition)
-	{
+	//if (!_lastPosition)
+	//{
 		NSNumber *latitude	= [[self userDefaults] objectForKey:CLALastPositionLatitudeKey];
 		NSNumber *longitude	= [[self userDefaults] objectForKey:CLALastPositionLongitudeKey];
 		
@@ -1014,7 +1021,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 													   longitude:[longitude doubleValue]];
 		}
 		
-	}
+	//}
 	
 	return _lastPosition;
 	
@@ -1065,6 +1072,64 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 //	
 //	block(error, imageData, );
 //}
+
+-(NSArray *)sortItemsByPosition:(NSArray *)items
+{
+	NSParameterAssert(items);
+
+	return	[items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+			{
+				Item *item1	= (Item *)obj1;
+				Item *item2	= (Item *)obj2;
+
+				CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
+
+				CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
+
+				CLLocationDistance distance1 = [location1 distanceFromLocation:self.lastPosition];
+				CLLocationDistance distance2 = [location2 distanceFromLocation:self.lastPosition];
+
+				NSComparisonResult result;
+
+				if (distance1 > distance2)
+				   result = NSOrderedDescending;
+				else if (distance2 > distance1)
+				   result = NSOrderedAscending;
+				else
+				   result = NSOrderedSame;
+
+				return result;
+			}];
+}
+
+-(NSArray *)_contentsForHomeCategory
+{
+	NSMutableArray *_contentsForHome = [NSMutableArray array];
+	NSInteger poisRadius;
+	
+	if ((poisRadius = [[self userInterface][CLAAppDataStoreUIHomePoisRadius] integerValue]) == 0)
+		poisRadius = 500;
+	
+	[[self pois] enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop)
+	{
+		id <CLAItem> item = (id <CLAItem>)obj;
+		
+		if ([@"53" isEqualToString:[[item topic] topicCode]]) //to be extended!
+			return;
+		
+		if (NSOrderedSame == [[[item topic] title] caseInsensitiveCompare:@"credits"])
+			return;
+		
+		CLLocation *itemLocation = [[CLLocation alloc] initWithLatitude:[item coordinate].latitude
+															  longitude:[item coordinate].longitude];
+		if ([itemLocation distanceFromLocation:self.lastPosition] <= poisRadius)
+			[_contentsForHome addObject:item];
+		
+	}];
+	
+	
+	return [self sortItemsByPosition:[NSArray arrayWithArray:_contentsForHome]];
+}
 
 -(void)mergeObjects:(NSNotification *)notification
 {

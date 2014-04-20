@@ -16,7 +16,12 @@
 #define kLONGITUDE_SPAN 1500.0
 #define ITINERARI	@"position"
 
+#define WALKING_DISTANCE 3000
+
 static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReuseIdentifier";
+
+static NSString *const CLADirectionsTransportTypeKey = @"CLADirectionsTransportTypeKey";
+static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDirectionsModeKey";
 
 @interface CLAMapViewController ()
 {
@@ -41,6 +46,8 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 -(void)showDirectionsForItinerary:(id <CLATopic>)topic;
 -(UIImage *)pinMapForItem:(id <CLAItem>)item;
 -(void)showDirectionToPoi;
+
+-(NSDictionary *)suggestedTransportTypeFromItem:(MKMapItem *)from toItem:(MKMapItem *)to;
 
 @end
 
@@ -219,6 +226,31 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 
 #pragma mark - private methods
 
+-(NSDictionary *)suggestedTransportTypeFromItem:(MKMapItem *)from toItem:(MKMapItem *)to
+{
+	CLLocation *fromLocation	= from.placemark.location;
+	CLLocation *toLocation		= to.placemark.location;
+	
+	CLLocationDistance distance = [fromLocation distanceFromLocation:toLocation];
+	
+	NSString *launchOptionMode;
+	NSUInteger directionTransportType;
+	
+	if (ABS(distance > WALKING_DISTANCE))
+	{
+		launchOptionMode		= MKLaunchOptionsDirectionsModeDriving;
+		directionTransportType	= MKDirectionsTransportTypeAutomobile;
+	}
+	else
+	{
+		launchOptionMode		= MKLaunchOptionsDirectionsModeWalking;
+		directionTransportType	= MKDirectionsTransportTypeWalking;
+	}
+	
+	return @{CLALaunchOptionsDirectionsModeKey	: launchOptionMode,
+			 CLADirectionsTransportTypeKey		: @(directionTransportType)};
+}
+
 -(UIImage *)pinMapForItem:(id<CLAItem>)item
 {
 	UIImage *pinMap = [item pinMap];
@@ -229,18 +261,18 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	{
 		UIImage *(^pinMapDrawer)(UIImage *) = ^(UIImage *flag)
 		{
-			CGFloat scale = 1.0;//[[UIScreen mainScreen] scale];
+			CGFloat scale = [[UIScreen mainScreen] scale];
 			
-			CGSize pinSize	= CGSizeMake(pinMap.size.width * scale, pinMap.size.height * scale);
-			CGSize flagSize	= CGSizeMake(flag.size.width * scale, flag.size.height * scale);
+			CGSize pinSize	= CGSizeMake(pinMap.size.width, pinMap.size.height);
+			CGSize flagSize	= CGSizeMake(flag.size.width, flag.size.height);
 			
-			UIGraphicsBeginImageContextWithOptions(CGSizeMake(pinSize.width + flagSize.width * 0.5, pinSize.height), NO, 2.0);
+			UIGraphicsBeginImageContextWithOptions(CGSizeMake(pinSize.width + flagSize.width * 0.5, pinSize.height), NO, scale);
 			
 			[pinMap drawInRect:CGRectMake(0., 0., pinSize.width, pinSize.height)];
 			[flag drawInRect:CGRectMake(pinSize.width * 0.425, 10., flagSize.width, flagSize.height)];
 			
 			UIImage *compositeImage = UIGraphicsGetImageFromCurrentImageContext();
-
+			
 			UIGraphicsEndImageContext();
 			
 			return compositeImage;
@@ -288,9 +320,12 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 
 - (void)calculateDirectionsFromSourceLocation:(MKMapItem *)sourceLocation toDestinationLocation:(MKMapItem *)destinationLocation setRegion:(BOOL)set
 {
-	MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
+	MKDirectionsRequest *request	= [[MKDirectionsRequest alloc] init];
+	NSDictionary *suggestedOptions	= [self suggestedTransportTypeFromItem:sourceLocation toItem:destinationLocation];
+	
 	[request setSource:sourceLocation];
 	[request setDestination:destinationLocation];
+	[request setTransportType:[suggestedOptions[CLADirectionsTransportTypeKey] integerValue]];
 	
 	MKDirections *direction = [[MKDirections alloc] initWithRequest:request];
 	
@@ -451,6 +486,11 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 	MKPlacemark *placeMark			= [[MKPlacemark alloc] initWithCoordinate:placemarkCoordinate addressDictionary:nil];
 	MKMapItem *destinationLocation	= [[MKMapItem alloc] initWithPlacemark:placeMark];
 
+	MKPlacemark *fromPlacemark		= [[MKPlacemark alloc] initWithCoordinate:self.mapView.userLocation.coordinate
+															addressDictionary:nil];
+	
+	MKMapItem *sourceLocation		= [[MKMapItem alloc] initWithPlacemark:fromPlacemark];
+
 	
 //	if ([self iOS7Running])
 //	{
@@ -486,7 +526,10 @@ static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReu
 //
 //	}
 
-	NSDictionary *options = @{MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking};
+	NSDictionary *suggestedOptions = [self suggestedTransportTypeFromItem:sourceLocation
+																   toItem:destinationLocation];
+	
+	NSDictionary *options = @{MKLaunchOptionsDirectionsModeKey: suggestedOptions[CLALaunchOptionsDirectionsModeKey]};
 
 	[MKMapItem openMapsWithItems:@[destinationLocation] launchOptions:options];
 
