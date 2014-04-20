@@ -261,18 +261,18 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	{
 		UIImage *(^pinMapDrawer)(UIImage *) = ^(UIImage *flag)
 		{
-			CGFloat scale = 1.0;//[[UIScreen mainScreen] scale];
+			CGFloat scale = [[UIScreen mainScreen] scale];
 			
-			CGSize pinSize	= CGSizeMake(pinMap.size.width * scale, pinMap.size.height * scale);
-			CGSize flagSize	= CGSizeMake(flag.size.width * scale, flag.size.height * scale);
+			CGSize pinSize	= CGSizeMake(pinMap.size.width, pinMap.size.height);
+			CGSize flagSize	= CGSizeMake(flag.size.width, flag.size.height);
 			
-			UIGraphicsBeginImageContextWithOptions(CGSizeMake(pinSize.width + flagSize.width * 0.5, pinSize.height), NO, 2.0);
+			UIGraphicsBeginImageContextWithOptions(CGSizeMake(pinSize.width + flagSize.width * 0.5, pinSize.height), NO, scale);
 			
 			[pinMap drawInRect:CGRectMake(0., 0., pinSize.width, pinSize.height)];
 			[flag drawInRect:CGRectMake(pinSize.width * 0.425, 10., flagSize.width, flagSize.height)];
 			
 			UIImage *compositeImage = UIGraphicsGetImageFromCurrentImageContext();
-
+			
 			UIGraphicsEndImageContext();
 			
 			return compositeImage;
