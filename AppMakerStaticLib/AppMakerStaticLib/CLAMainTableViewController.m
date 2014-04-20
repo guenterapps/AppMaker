@@ -442,7 +442,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 	}
 	
-	[self.store asyncFetchMainImagesWithCompletionBlock:^(NSError *error)
+	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *error)
 	 {
 		 if (error)
 		 {

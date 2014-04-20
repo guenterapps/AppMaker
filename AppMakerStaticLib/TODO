@@ -1,7 +1,15 @@
--- CLAMainTableViewController.m --> change to prefetchImages
--- CLAPreferencesViewController.m --> change to prefetchImages
+X CLAMainTableViewController.m --> change to prefetchImages
+X CLAPreferencesViewController.m --> change to prefetchImages
 
 X reset self.skipEtc on datastore
+
+-- add default images in main and detail
+
+-- ad default image in mapview
+
+-- remove fetch funtion unused
+
+-- memory handling for large import (seems to increase)
 
 -- codice su mainTableViewController/AppDatastore per get main image --> check se la cell è ancora quella che mi serve o se sto già scaricando l'immagine.
 

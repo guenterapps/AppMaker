@@ -220,7 +220,7 @@
 		
 	}
 	
-	[self.store asyncFetchMainImagesWithCompletionBlock:^(NSError *error)
+	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *error)
 	 {
 		 [self reloadContents];
 

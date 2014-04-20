@@ -138,14 +138,14 @@
 
 -(void)startUpdatingProgress
 {
-	[_progressManager countToDelta:JSONPROGRESS withInterval:1.5];
+	[_progressManager countToDelta:JSONPROGRESS withInterval:2.0];
 }
 
 -(void)enableSkipLoadingButton
 {
 	stopLoading.enabled = YES;
 	
-	[UIView animateWithDuration:0.2 animations:^()
+	[UIView animateWithDuration:0.4 animations:^()
 	{
 		stopLoading.hidden = NO;
 		_progressManager.progressLabel.alpha = 0.5;
