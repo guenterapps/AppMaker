@@ -72,14 +72,13 @@
 -(void)updateCounter:(NSTimer *)timer
 {
 	_progress++;
+	self.progressLabel.text = [NSString stringWithFormat:@"%@ %i%%", self.progressMessage, _progress];
 	
-	if (_progress > _target)
+	if (_progress >= _target || _progress >= 100)
 	{
 		[timer invalidate];
 		return;
 	}
-	
-	self.progressLabel.text = [NSString stringWithFormat:@"%@ %i%%", self.progressMessage, _progress];
 }
 
 @end

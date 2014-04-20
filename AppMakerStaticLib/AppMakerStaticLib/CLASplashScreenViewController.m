@@ -17,6 +17,7 @@
 {
 	NSInteger _countStep;
 	NSInteger _countTotal;
+	NSInteger _countTarget;
 	CLAProgressManager *_progressManager;
 	UIButton *stopLoading;
 }
@@ -81,7 +82,7 @@
 	[stopLoading setTintColor:tintColor];
 	[stopLoading.titleLabel setFont:font];
 	[stopLoading setTitle:@"Stop Loading" forState:UIControlStateNormal];
-	[stopLoading addTarget:self.store action:@selector(skipImageLoading) forControlEvents:UIControlEventTouchUpInside];
+	[stopLoading addTarget:self action:@selector(skipImageLoading) forControlEvents:UIControlEventTouchUpInside];
 	
 	stopLoading.enabled = NO;
 	stopLoading.hidden = YES;
@@ -137,7 +138,7 @@
 
 -(void)startUpdatingProgress
 {
-	[_progressManager countToDelta:JSONPROGRESS withInterval:0.5];
+	[_progressManager countToDelta:JSONPROGRESS withInterval:1.5];
 }
 
 -(void)enableSkipLoadingButton
@@ -160,16 +161,11 @@
 	
 	if ([total integerValue] > 0)
 	{
-		float_t imagesProgress = (float_t)(100 - JSONPROGRESS);
+		_countTarget = [total integerValue];
+		_countStep	 = JSONPROGRESS;
+		_countTotal	 = 0;
 		
-		NSAssert(imagesProgress > 0, @"Cannot have 0 progress for image fetching");
-		
-		float_t totalFloat		= (float_t)[total integerValue];
-	
-		_countStep				= (NSInteger)ceilf(imagesProgress/totalFloat);
-		_countTotal				= MIN(100, JSONPROGRESS);
-		
-		[_progressManager countToDelta:_countTotal withInterval:0.1];
+		[_progressManager countToDelta:MIN(100, JSONPROGRESS) withInterval:0.2];
 	}
 	else
 	{
@@ -192,11 +188,23 @@
 		return;
 	}
 
-	_countTotal = MIN(100, _countTotal + _countStep);
-
-	[_progressManager countToDelta:_countTotal withInterval:0.1];
+	_countTotal++;
 	
-	if (_countTotal == 100)
+	NSInteger delta		= (NSInteger)((100 - JSONPROGRESS) * _countTotal/(float_t)_countTarget) + JSONPROGRESS;
+	
+	BOOL targetReached	= _countTotal == _countTarget;
+
+	if (ABS(delta - _countStep) > 0)
+	{
+		if (targetReached)
+			delta = 100;
+		
+		_countStep = delta;
+
+		[_progressManager countToDelta:delta withInterval:0.1];
+	}
+
+	if (targetReached)
 	{
 		skip = YES;
 
@@ -206,6 +214,17 @@
 			[self.delegate splashScreenDidShowFullProgressPercentage];
 		});
 	}
+}
+
+-(void)skipImageLoading
+{
+	[self.store skipImageLoading];
+	
+	double delayInSeconds = 0.2;
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		[self.delegate splashScreenDidShowFullProgressPercentage];
+	});
 }
 
 @end

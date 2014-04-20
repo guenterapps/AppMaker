@@ -518,32 +518,34 @@ static id appMaker = nil;
 	}
 	
 
-	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *error)
+	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *preFetcherror)
 	 {
 
 		 [splashScreen enableSkipLoadingButton];
 		 
-		 if (error)
-		 {
-			 self.lockPresentApplication = YES;
-
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
-			 
-			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-																 message:alertMessage
-																delegate:self
-													   cancelButtonTitle:@"Continua"
-													   otherButtonTitles:nil];
-			 [alertView show];
-		 }
+//		 if (error)
+//		 {
+//			 self.lockPresentApplication = YES;
+//
+//			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
+//			 
+//			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
+//																 message:alertMessage
+//																delegate:self
+//													   cancelButtonTitle:@"Continua"
+//													   otherButtonTitles:nil];
+//			 [alertView show];
+//		 }
 		 
 		 [self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
 		 {
-			 if (error)
+			 NSError *presentingError = preFetcherror ? preFetcherror : error;
+			 
+			 if (presentingError)
 			 {
 				 self.lockPresentApplication = YES;
 				 
-				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
+				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)presentingError.code];
 				 
 				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																	 message:alertMessage

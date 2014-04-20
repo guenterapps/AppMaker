@@ -22,5 +22,6 @@
 
 -(void)startUpdatingProgress;
 -(void)enableSkipLoadingButton;
+-(void)skipImageLoading;
 
 @end
