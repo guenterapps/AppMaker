@@ -90,16 +90,9 @@
 {
 	[self willAccessValueForKey:@"pinMap"];
 	
-	UIImage *primitiveValue = [self primitiveValueForKey:@"pinMap"];
+	NSData *pinMapData = [self primitiveValueForKey:@"pinMapData"];
 	
-	if (!primitiveValue)
-	{
-		NSData *pinMapData = [self primitiveValueForKey:@"pinMapData"];
-		
-		primitiveValue = [UIImage imageWithData:pinMapData scale:SCALE];
-		
-		[self setPrimitiveValue:primitiveValue forKey:@"pinMap"];
-	}
+	UIImage * primitiveValue = [UIImage imageWithData:pinMapData scale:SCALE];
 	
 	[self didAccessValueForKey:@"pinMap"];
 	
