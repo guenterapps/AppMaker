@@ -8,13 +8,14 @@
 
 #define TIMEOUT 10.0
 
+#import <CoreLocation/CoreLocation.h>
+
 #import "CLAMainTableViewController.h"
 #import "CLAMapViewController.h"
 #import "CLAMainTableViewCell.h"
 #import "CLAMenuTableViewController.h"
 #import "CLADetailViewController.h"
 #import "CLAEventTableViewCell.h"
-#import <CoreLocation/CoreLocation.h>
 #import "Item.h"
 #import "Topic.h"
 #import "UITableViewCell+Common.h"
@@ -36,7 +37,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 -(void)reloadContentsForStoreFetchedData:(NSNotification *)notification;
 -(void)setItems:(NSArray *)items;
 -(void)callApi:(NSNotification *)notification;
--(UIImage *)mainImageForItem:(id <CLAItem>)item;
+-(UIImage *)mainImageForItem:(id <CLAItem>)item onCell:(UITableViewCell *)cell;
 
 @end
 
@@ -276,7 +277,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		eventCell.dayLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIMainListFontColorKey];
 		
 		[eventCell setTitle:item.title];
-		[eventCell setImage:[self mainImageForItem:item]];
+		[eventCell setImage:[self mainImageForItem:item onCell:eventCell]];
 
 		
 		eventCell.monthLabel.text = [[monthFormatter stringFromDate:item.date] uppercaseString];
@@ -290,7 +291,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		
 		[mainCell setTitle:item.title];
 		
-		[mainCell setImage:[self mainImageForItem:item]];
+		[mainCell setImage:[self mainImageForItem:item onCell:mainCell]];
 		
 		cell = (UITableViewCell *)mainCell;
 	}
@@ -307,50 +308,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	if (shadowMask & CLACellShadowMaskMainCell)
 		[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
 
-	
     return cell;
-
-//	else
-//	{
-//		[self.store fetchMainImageForItem:item completionBlock:^(NSError *error)
-//		{
-//			if (error)
-//			{
-//				
-//				NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
-//
-//				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-//																	message:alertMessage
-//																   delegate:nil
-//														  cancelButtonTitle:@"Continua"
-//														  otherButtonTitles:nil];
-//				[alertView show];
-//				
-//				return;
-//				
-//			}
-//
-//			if ([item mainImage]) //check to avoid infinite requesting!
-//			{
-//				[(Item *)item generatePinMapFromMainImage];
-//				
-//				NSError *err;
-//				[self.store save:&err];
-//				
-//				if (err)
-//				{
-//					UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
-//																 message:[NSString stringWithFormat:@"Errore nel salvataggio dei dati! (Code: %i)", [err code]]
-//																delegate:nil
-//													   cancelButtonTitle:@"Continua"
-//													   otherButtonTitles:nil];
-//					[av show];
-//				}
-//				
-//				[self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//			}
-//		}];
-//	}
 
 }
 
@@ -420,7 +378,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 #pragma mark - Private Methods
 
--(UIImage *)mainImageForItem:(id <CLAItem>)item
+-(UIImage *)mainImageForItem:(id <CLAItem>)item onCell:(UITableViewCell *)cell;
 {
 	NSParameterAssert(item);
 	
@@ -428,6 +386,29 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	if (!mainImage)
 	{
+
+		[self.store fetchMainImageForItem:item completionBlock:^(NSError *error)
+		{
+			NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
+			
+			if (cellIndexPath && (cellIndexPath.row < [self.items count]))
+			{
+				id <CLAItem> cellItem = [self.items objectAtIndex:cellIndexPath.row];
+				
+				if ([cellItem isEqual:item])
+				{
+					CATransition *fade = [CATransition animation];
+					
+					[fade setType:kCATransitionFade];
+					
+					[cell.layer addAnimation:fade forKey:nil];
+					
+					[(CLAMainTableViewCell *)cell setImage:[item mainImage]];
+				}
+			}
+			
+		}];
+	
 		return [UIImage imageNamed:@"noImage"];
 	}
 	

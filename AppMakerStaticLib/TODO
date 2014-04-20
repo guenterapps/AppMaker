@@ -13,7 +13,7 @@ X add default images in main and detail
 
 -- aspect ratio
 
--- codice su mainTableViewController/AppDatastore per get main image --> check se la cell è ancora quella che mi serve o se sto già scaricando l'immagine.
+X codice su mainTableViewController/AppDatastore per get main image --> check se la cell è ancora quella che mi serve o se sto già scaricando l'immagine.
 
 
 

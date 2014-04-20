@@ -330,11 +330,58 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	
 	if (!image)
 	{
+
+#ifdef DEBUG
+		NSLog(@"Could not find main image object for item %@", item);
+#endif
 		return;
 	}
 	
-	//[self fetchImageForImageObject:image completion:block];
+	id <CLAImage> mainImage = [(Item *)item mainImageObject];
 	
+	if (![mainImage imageURL])
+	{
+#ifdef DEBUG
+		NSLog(@"Could not find main image url for item %@", item);
+#endif
+		return;
+	}
+	
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^()
+	{
+		
+		__block NSError *error;
+		
+		NSURL *imageURL =  [NSURL URLWithString:[mainImage imageURL]];
+		
+#ifdef DEBUG
+		NSLog(@"Fetching image at url: %@", imageURL);
+#endif
+		NSData *imageData	= [NSData dataWithContentsOfURL:imageURL
+													options:0
+													error:&error];
+		if (!imageData)
+		{
+			NSLog(@"%@", error);
+			
+			dispatch_async(dispatch_get_main_queue(), ^(){ block(error); });
+		}
+		else
+		{
+			dispatch_async(dispatch_get_main_queue(), ^()
+			{
+				[(NSManagedObject *)[(Item *)item mainImageObject] setValue:imageData forKey:@"imageData"];
+
+				[(Item *)item generatePinMapFromMainImage];
+				
+				[self save:&error];
+
+				block(error);
+
+			});
+		}
+	});
+
 }
 
 //-(void)fetchMainImagesForTopic:(id <CLATopic>)topic completion:(void (^)(NSError *))block
@@ -463,15 +510,9 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 - (void)fetchMainImagesForObjectIDs:(NSMutableArray *)objectIDs urls:(NSMutableArray *)urls block:(void (^)(NSError *))block
 {
 	__block NSError *error;
-	//	NSInteger imagesToFetch = [objectIDs count];
-	
-	//	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-	
-	//dispatch_apply(imagesToFetch, queue, ^(size_t iteration)
+
 	for (NSInteger index = 0; index < [objectIDs count]; ++index)
 	{
-		//NSInteger index = (NSInteger)iteration;
-		
 		if (self.skipFetching)
 		{
 			self.skipFetching = NO;
