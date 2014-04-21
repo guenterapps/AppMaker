@@ -541,6 +541,8 @@ static id appMaker = nil;
 		 {
 			 NSError *presentingError = preFetcherror ? preFetcherror : error;
 			 
+			 [splashScreen disableSkipLoadingButton];
+			 
 			 if (presentingError)
 			 {
 				 self.lockPresentApplication = YES;
