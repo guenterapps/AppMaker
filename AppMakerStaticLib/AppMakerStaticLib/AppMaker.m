@@ -10,6 +10,8 @@
 #define REGISTERKEY @"devices/register"
 #define PUSHANIMATIONKEY @"PUSHANIMATIONKEY"
 
+#import <objc/runtime.h>
+
 #import "AppMaker.h"
 #import "CLAPanelViewController.h"
 #import "CLAMainTableViewController.h"
@@ -232,10 +234,6 @@ static id appMaker = nil;
 	
 	_preferencesViewController.preferences = self.preferences;
 	
-	_preferencesViewController.localizedStrings = self.stringsStore;
-	_menuTableViewController.localizedStrings	= self.stringsStore;
-	_mapViewController.localizedStrings			= self.stringsStore;
-	
 	_menuTableViewController.delegate = (id <CLAMenuViewControllerDelegate>)_mapViewController;
 
 	splashScreen = [self setupViewControllerOfClass:[CLASplashScreenViewController class]];
@@ -293,6 +291,14 @@ static id appMaker = nil;
 	[viewController setValue:self.store forKey:@"store"];
 	[viewController setValue:self forKey:@"appMaker"];
 	
+	
+	objc_property_t localizedStore = class_getProperty(class, "localizedStrings");
+	
+	if (localizedStore != NULL)
+	{
+		[viewController setValue:self.stringsStore forKey:@"localizedStrings"];
+	}
+
 	return viewController;
 }
 

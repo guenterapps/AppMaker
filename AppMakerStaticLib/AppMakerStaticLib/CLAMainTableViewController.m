@@ -19,6 +19,7 @@
 #import "Item.h"
 #import "Topic.h"
 #import "UITableViewCell+Common.h"
+#import "SVProgressHUD.h"
 
 NSString *const CLAMainTableViewCellIdentifier = @"CLAMainTableViewCell";
 NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
@@ -433,7 +434,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	if (error)
 	{
-		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %i)", error.code];
+		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
 														message:alertMessage
 													   delegate:nil
@@ -447,7 +448,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	 {
 		 if (error)
 		 {
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
+			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
 			 
 			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																 message:alertMessage
