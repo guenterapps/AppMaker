@@ -434,6 +434,11 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	if (error)
 	{
+		if ([SVProgressHUD isVisible])
+		{
+			[SVProgressHUD dismiss];
+		}
+
 		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
 														message:alertMessage
@@ -441,6 +446,8 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 											  cancelButtonTitle:@"Continua"
 											  otherButtonTitles:nil];
 		[alert show];
+		
+		return;
 
 	}
 	
@@ -459,6 +466,11 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		 }
 		 
 		 [self.tableView.pullToRefreshView stopAnimating];
+		 
+		 if ([SVProgressHUD isVisible])
+		 {
+			 [SVProgressHUD dismiss];
+		 }
 		 
 		 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"topicCode == %@", self.lastTopicCode];
 		 
@@ -506,6 +518,10 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 												  selector:@selector(callApi:)
 													  name:CLAAppDataStoreDidStopSeachingPosition
 													object:self.store];
+		 
+		 NSString *loading = [self.localizedStrings localizedStringForString:@"Loading..."];
+		 
+		 [SVProgressHUD showWithStatus:loading maskType:SVProgressHUDMaskTypeGradient];
 		 
 		 [self.store startUpdatingLocation];
 	 }];
