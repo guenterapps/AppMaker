@@ -143,14 +143,19 @@
 
 -(void)enableSkipLoadingButton
 {
-	stopLoading.enabled = YES;
-	
 	[UIView animateWithDuration:0.4 animations:^()
 	{
+		stopLoading.enabled = YES;
 		stopLoading.hidden = NO;
 		_progressManager.progressLabel.alpha = 0.5;
 		
 	}];
+}
+
+-(void)disableSkipLoadingButton
+{
+	stopLoading.enabled = NO;
+
 }
 
 #pragma mark - private methods
