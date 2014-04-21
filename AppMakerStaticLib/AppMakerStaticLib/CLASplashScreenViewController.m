@@ -154,8 +154,10 @@
 
 -(void)disableSkipLoadingButton
 {
-	stopLoading.enabled = NO;
-
+	[UIView animateWithDuration:0.2 animations:^()
+	 {
+		 stopLoading.enabled = NO;
+	 }];
 }
 
 #pragma mark - private methods
