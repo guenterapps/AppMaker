@@ -41,6 +41,8 @@ static NSString *const CLALastAPNTokenKey		= @"CLALastAPNTokenKey";
 	BOOL _startFromNotification;
 	NSString *_singleContentId;
 	
+	BOOL _loadApplicationIfNeeded;
+	
 	CLASplashScreenViewController *splashScreen;
 }
 
@@ -53,6 +55,8 @@ static NSString *const CLALastAPNTokenKey		= @"CLALastAPNTokenKey";
 -(id)setupViewControllerOfClass:(Class)class;
 -(void)dismissSplashScreen;
 -(void)setupAppearance;
+
+- (void)handlePresentApplication;
 
 
 //Notification callbacks
@@ -216,6 +220,21 @@ static id appMaker = nil;
 }
 
 #pragma mark - helper methods
+
+-(void)loadApplicationIfNeeded
+{
+	_loadApplicationIfNeeded = YES;
+}
+
+- (void)handlePresentApplication
+{
+	if (!self.lockPresentApplication)
+	{
+		self.lockPresentApplication = YES;
+		[self presentApplication];
+		[self getAPNToken];
+	}
+}
 
 - (void)setupViewControllers
 {
@@ -551,8 +570,7 @@ static id appMaker = nil;
 			 
 			 if (presentingError)
 			 {
-				 self.lockPresentApplication = YES;
-				 
+
 				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)presentingError.code];
 				 
 				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
@@ -561,6 +579,14 @@ static id appMaker = nil;
 														   cancelButtonTitle:@"Continua"
 														   otherButtonTitles:nil];
 				 [alertView show];
+			 }
+			 else if (_loadApplicationIfNeeded)
+			 {
+				 _loadApplicationIfNeeded = NO;
+				 
+				 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+					 [self handlePresentApplication];
+				 });
 			 }
 			 
 		 }];
@@ -702,8 +728,7 @@ static id appMaker = nil;
 
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-			[self presentApplication];
-			[self getAPNToken];
+			[self handlePresentApplication];
 		});
 	}
 	
@@ -711,13 +736,10 @@ static id appMaker = nil;
 }
 #pragma mark - CLASplashScreenDelegateProtocol
 
+
 -(void)splashScreenDidShowFullProgressPercentage
 {
-	if (!self.lockPresentApplication)
-	{
-		[self presentApplication];
-		[self getAPNToken];
-	}
+	[self handlePresentApplication];
 }
 
 #pragma mark - Push Notification Methods

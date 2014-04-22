@@ -17,7 +17,7 @@ X disable button when alertview prompts
 
 X searchbar
 
--- pull to refresh with hud
+X pull to refresh with hud
 
 X codice su mainTableViewController/AppDatastore per get main image --> check se la cell è ancora quella che mi serve o se sto già scaricando l'immagine.
 

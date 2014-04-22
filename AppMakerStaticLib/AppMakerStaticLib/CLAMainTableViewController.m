@@ -526,7 +526,9 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		 [self.store startUpdatingLocation];
 	 }];
 	
-	[self.tableView.pullToRefreshView setTitle:@"Carico i dati..." forState:SVPullToRefreshStateLoading];
+	[self.tableView.pullToRefreshView setTitle:[self.localizedStrings localizedStringForString:@"Loading..."]
+									  forState:SVPullToRefreshStateLoading];
+
 	[self.tableView.pullToRefreshView setTitle:@"Aggiorna!" forState:SVPullToRefreshStateTriggered];
 	[self.tableView.pullToRefreshView setTitle:@"Finito!" forState:SVPullToRefreshStateStopped];
 	
