@@ -256,6 +256,10 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 -(UIImage *)pinMapForItem:(id<CLAItem>)item
 {
 	UIImage *pinMap = [item pinMap];
+	
+	if (!pinMap)
+		pinMap = [UIImage imageNamed:@"pinEmpty"];
+	
 	UIImage *start	= [UIImage imageNamed:@"start"];
 	UIImage *end	= [UIImage imageNamed:@"end"];
 	
