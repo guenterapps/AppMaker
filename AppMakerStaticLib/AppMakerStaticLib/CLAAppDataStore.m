@@ -852,7 +852,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 		
 		NSAssert(_coordinator, @"Could not create NSPersistentStoreCoordinator!\n");
 		
-		NSURL * documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+		NSURL * documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory
 																			inDomains:NSUserDomainMask] lastObject];
 		
 		
@@ -873,17 +873,6 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 		if (!store)
 		{
 			NSLog(@"%@\n", error);
-			
-			abort();
-		}
-		
-		[storeUrl setResourceValue:@(YES)
-							forKey:NSURLIsExcludedFromBackupKey
-							 error:&error];
-		
-		if (error)
-		{
-			NSLog(@"%@", error);
 			
 			abort();
 		}

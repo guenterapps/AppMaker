@@ -423,7 +423,7 @@ typedef NSArray * (^ParseHandler)(NSData *jsonData, NSError **error);
 	{
 		if ([responseData length] > 0)
 		{
-			NSURL *path = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+			NSURL *path = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
 			
 			NSString *lastComponent = [apiRequest lastPathComponent];
 			
