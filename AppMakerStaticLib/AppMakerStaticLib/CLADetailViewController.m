@@ -6,6 +6,11 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
+#import <Social/Social.h>
+#import <Accounts/Accounts.h>
+#import <MapKit/MapKit.h>
+#import <EventKit/EventKit.h>
+
 #import "CLADetailViewController.h"
 #import "CLAHeaderDetailCell.h"
 #import "CLAActionsDetailCell.h"
@@ -13,9 +18,6 @@
 #import "CLAModelProtocols.h"
 #import "CLADescriptionDetailCell.h"
 #import "CLAMapViewController.h"
-#import <Social/Social.h>
-#import <Accounts/Accounts.h>
-#import <MapKit/MapKit.h>
 #import "Image.h"
 #import "UITextView+Utilities.h"
 #import "CLAWebViewController.h"
@@ -91,6 +93,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 -(void)setupAndPostToTwitter;
 -(void)setupAndPostToFacebook;
+-(void)setupAndSaveToCalender;
 
 @end
 
@@ -364,7 +367,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 		 {
 			 if (error)
 			 {
-				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %i)", error.code];
+				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 				 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																 message:alertMessage
 																delegate:nil
@@ -749,7 +752,84 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 					 completion:nil];
 }
 
-#pragma mark - Facebook & Twitter setup
+#pragma mark - EKEventEditViewDelegate
+
+-(void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
+{
+	[self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Social and Calendar share
+
+-(void)setupAndSaveToCalender
+{
+	EKEventStore  *_eventStore	= [[EKEventStore alloc] init];
+
+	NSString *eventTitle		= [self.item title];
+	NSString *location			= [self.item address];
+	NSDate *startDate			= [self.item date];
+	
+	NSDateComponents *duration	= [[NSDateComponents alloc] init];
+	NSCalendar *calendar		= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+	
+	[duration setHour:2];
+	
+	NSDate *endDate				= [calendar dateByAddingComponents:duration
+															toDate:startDate
+															options:0];
+
+	
+	[_eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error)
+	{
+		
+		void (^completionHandler)(NSString *, NSString *) = ^(NSString *title, NSString *message)
+		{
+			dispatch_async(dispatch_get_main_queue(), ^
+			{
+			UIAlertView *av = [[UIAlertView alloc] initWithTitle:title
+														message:message
+													   delegate:nil
+											  cancelButtonTitle:@"OK"
+											  otherButtonTitles:nil];
+			[av show];
+
+			});
+		};
+		
+		if (error)
+		{
+			completionHandler(@"Errore!", [error localizedDescription]);
+		}
+		else if	(granted)
+		{
+			
+			EKEvent *event			= [EKEvent eventWithEventStore:_eventStore];
+			
+			[event setStartDate:startDate];
+			[event setEndDate:endDate];
+			[event setTitle:eventTitle];
+			[event setLocation:location];
+			[event setCalendar:[[_eventStore calendarsForEntityType:EKEntityTypeEvent] firstObject]];
+
+			dispatch_async(dispatch_get_main_queue(), ^()
+			{
+				EKEventEditViewController *eventController = [[EKEventEditViewController alloc] init];
+				
+				[eventController setEvent:event];
+				[eventController setEventStore:_eventStore];
+				[eventController setEditViewDelegate:self];
+	
+				[self presentViewController:eventController
+								   animated:YES
+								 completion:nil];
+			});
+		}
+		else
+		{
+			completionHandler(@"Errore!", @"Devi autorizzare l'accesso al calendario per salvare gli eventi! Vai in Impostazioni/Privacy e abilita l'App!");
+		}
+	}];
+}
 
 -(void)shareOnSocialNetwork:(NSString *)socialNetwork
 {
@@ -1026,7 +1106,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			; //GOOGLE
 		case 3:
 			NSAssert([self showCalendarShareMenu], @"Should show a calendar");
-			
+			[self setupAndSaveToCalender];
 		default:
 			break;
 	}
