@@ -76,7 +76,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 -(void)setupButton:(UIButton *)button withImage:(UIImage *)image selector:(SEL)selector;
 -(BOOL)isPoi;
 -(BOOL)showActions;
--(void)setupCellIdentifies;
+-(void)setupCellIdentifiers;
 -(void)openYoutubeLink:(id)sender;
 -(void)setupShareButton;
 -(void)showShareMenu;
@@ -84,6 +84,8 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 -(void)showAlertWithObject:(id)object;
 
 -(void)shareOnSocialNetwork:(NSString *)socialNetwork;
+
+- (BOOL)showCalendarShareMenu;
 
 //Social
 
@@ -531,7 +533,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	[_headerDetailCell.scrollView setContentOffset:offset animated:YES];
 }
 
-- (void)setupCellIdentifies
+- (void)setupCellIdentifiers
 {
 	//		NSArray *indexes = @[@(kCLAHeaderDetailViewCellIndex), @(kCLAActionsDetailCellIndex), @(kCLAAddressDetailCellIndex), @(kCLADescriptionDetailCellIndex)];
 	//		NSArray *keys	 = @[CLAHeaderDetailCellIdentifier, CLAActionsDetailCellIdentifier, CLAAddressDetailCellIdentifier, CLADescriptionDetailCellIdentifier];
@@ -569,7 +571,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 -(void)registerTableviewNibs
 {
 	
-	[self setupCellIdentifies];
+	[self setupCellIdentifiers];
 	
 	for (NSString *identifier in _cellIndentifiers)
 	{
@@ -631,6 +633,16 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 #pragma mark Utilities
 
+- (BOOL)showCalendarShareMenu
+{
+	BOOL show = NO;
+	
+	if ([@"event" isEqualToString:[self.item subType]])
+		show = YES;
+
+	return show;
+}
+
 -(BOOL)isPoi
 {
 	CLLocationCoordinate2D coordinate = [self.item coordinate];
@@ -666,11 +678,26 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 -(void)showShareMenu
 {
-	UIActionSheet *share = [[UIActionSheet alloc] initWithTitle:nil
-													   delegate:self
-											  cancelButtonTitle:@"Annulla"
-										 destructiveButtonTitle:nil
-											  otherButtonTitles:@"Twitter", @"Facebook", nil];
+	UIActionSheet *share;
+	
+	
+	if ([self showCalendarShareMenu])
+	{
+		share	= [[UIActionSheet alloc] initWithTitle:nil
+											delegate:self
+								   cancelButtonTitle:@"Annulla"
+							  destructiveButtonTitle:nil
+								   otherButtonTitles:@"Twitter", @"Facebook", @"Google+", @"Calendar", nil];
+	}
+	else
+	{
+		share	= [[UIActionSheet alloc] initWithTitle:nil
+											delegate:self
+								   cancelButtonTitle:@"Annulla"
+							  destructiveButtonTitle:nil
+								   otherButtonTitles:@"Twitter", @"Facebook", @"Google+", nil];
+	}
+
 	[share showInView:self.view];
 	
 }
@@ -995,6 +1022,11 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 		case 1:
 			[self setupAndPostToFacebook];
 			break;
+		case 2:
+			; //GOOGLE
+		case 3:
+			NSAssert([self showCalendarShareMenu], @"Should show a calendar");
+			
 		default:
 			break;
 	}
