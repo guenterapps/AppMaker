@@ -93,6 +93,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 -(void)setupAndPostToTwitter;
 -(void)setupAndPostToFacebook;
+-(void)setupAndPostToGooglePlus;
 -(void)setupAndSaveToCalender;
 
 @end
@@ -759,7 +760,38 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - Google GPPSignInDelegate
+
+- (void)finishedWithAuth: (GTMOAuth2Authentication *)auth
+                   error: (NSError *) error
+{
+	
+	///put share logic here!
+	
+    NSLog(@"Received error %@ and auth object %@",error, auth);
+}
+
 #pragma mark - Social and Calendar share
+
+-(void)setupAndPostToGooglePlus
+{
+	GPPSignIn *signIn = [GPPSignIn sharedInstance];
+	signIn.shouldFetchGooglePlusUser = YES;
+	//signIn.shouldFetchGoogleUserEmail = YES;  // Uncomment to get the user's email
+	
+	// You previously set kClientId in the "Initialize the Google+ client" step
+	signIn.clientID = self.appMaker.googlePlusID;
+	
+	// Uncomment one of these two statements for the scope you chose in the previous step
+	signIn.scopes = @[ kGTLAuthScopePlusLogin ];  // "https://www.googleapis.com/auth/plus.login" scope
+	//signIn.scopes = @[ @"profile" ];            // "profile" scope
+	
+	// Optional: declare signIn.actions, see "app activities"
+	signIn.delegate = self;
+	
+	[signIn authenticate];
+	
+}
 
 -(void)setupAndSaveToCalender
 {
@@ -1103,10 +1135,12 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			[self setupAndPostToFacebook];
 			break;
 		case 2:
-			; //GOOGLE
+			[self setupAndPostToGooglePlus];
+			break;
 		case 3:
 			NSAssert([self showCalendarShareMenu], @"Should show a calendar");
 			[self setupAndSaveToCalender];
+			break;
 		default:
 			break;
 	}

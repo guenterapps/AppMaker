@@ -86,7 +86,10 @@ extern NSString *const CLAMenuControllerSelectedIndexPathKey;
 @property (nonatomic, readonly) BOOL serverPushEnabled;
 @property (nonatomic) NSData *lastAPNToken;
 
+#pragma mark - Share Properties
+
 @property (nonatomic, copy) ShareHandler shareHandler;
+@property (nonatomic, copy) NSString *googlePlusID;
 
 /**
  *  Default value per-App for initial startup or
