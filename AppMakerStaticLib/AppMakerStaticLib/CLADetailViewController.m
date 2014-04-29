@@ -356,6 +356,22 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 					[emptyImages addObject:[(NSManagedObject *)imageItem objectID]];
 					[emptyViews addObject:imageView];
 				}
+				else
+				{
+					[self.store fetchMainImageForItem:self.item completionBlock:^(NSError *error)
+					{
+						if (![self.item mainImage])
+							return;
+						
+						CATransition *transition = [CATransition animation];
+						transition.type = kCATransitionFade;
+						
+						[imageView.layer addAnimation:transition forKey:nil];
+						
+						imageView.image = [self.item mainImage];
+						
+					}];
+				}
 			}
 			else
 			{

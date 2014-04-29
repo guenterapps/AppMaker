@@ -3,7 +3,7 @@ x remove hud
 - better save during image fetching, better invalidate cache
 - better pinmap draw
 
-- load main image on detail
+x load main image on detail
 - load pinmap on map
 
 
