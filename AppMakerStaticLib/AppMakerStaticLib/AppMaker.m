@@ -865,7 +865,7 @@ static id appMaker = nil;
 		[request setHTTPMethod:@"POST"];
 		[request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 		[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-		[request setValue:[NSString stringWithFormat:@"%d", [jsonData length]] forHTTPHeaderField:@"Content-Length"];
+		[request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[jsonData length]] forHTTPHeaderField:@"Content-Length"];
 		[request setHTTPBody:jsonData];
 		
 #ifdef DEBUG

@@ -434,11 +434,6 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	if (error)
 	{
-		if ([SVProgressHUD isVisible])
-		{
-			[SVProgressHUD dismiss];
-		}
-
 		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
 														message:alertMessage
@@ -451,41 +446,21 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 	}
 	
-	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *error)
-	 {
-		 if (error)
-		 {
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
-			 
-			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-																 message:alertMessage
-																delegate:nil
-													   cancelButtonTitle:@"Continua"
-													   otherButtonTitles:nil];
-			 [alertView show];
-		 }
-		 
-		 [self.tableView.pullToRefreshView stopAnimating];
-		 
-		 if ([SVProgressHUD isVisible])
-		 {
-			 [SVProgressHUD dismiss];
-		 }
-		 
-		 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"topicCode == %@", self.lastTopicCode];
-		 
-		 self.items	= nil;
-		 
-		 _topic		=  [[self.store.topics filteredArrayUsingPredicate:predicate] lastObject];
-		 
-		 if (_topic)
-		 {
-			 [self reloadContentsForTopic:_topic];
-		 }
-		 else
-			 [self.tableView reloadData];
-
-	 }];
+	[self.tableView.pullToRefreshView stopAnimating];
+	
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"topicCode == %@", self.lastTopicCode];
+	
+	self.items	= nil;
+	
+	_topic		=  [[self.store.topics filteredArrayUsingPredicate:predicate] lastObject];
+	
+	if (_topic)
+	{
+		[self reloadContentsForTopic:_topic];
+	}
+	else
+		[self.tableView reloadData];
 
 }
 
@@ -518,11 +493,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 												  selector:@selector(callApi:)
 													  name:CLAAppDataStoreDidStopSeachingPosition
 													object:self.store];
-		 
-		 NSString *loading = [self.localizedStrings localizedStringForString:@"Loading..."];
-		 
-		 [SVProgressHUD showWithStatus:loading maskType:SVProgressHUDMaskTypeGradient];
-		 
+
 		 [self.store startUpdatingLocation];
 	 }];
 	

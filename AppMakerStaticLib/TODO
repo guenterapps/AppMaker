@@ -1,3 +1,14 @@
+x remove hud
+
+- better save during image fetching, better invalidate cache
+- better pinmap draw
+
+- load main image on detail
+- load pinmap on map
+
+
+
+
 X CLAMainTableViewController.m --> change to prefetchImages
 X CLAPreferencesViewController.m --> change to prefetchImages
 
@@ -5,7 +16,7 @@ X reset self.skipEtc on datastore
 
 X add default images in main and detail
 
--- ad default image in mapview
+X ad default image in mapview
 
 X remove fetch funtion unused
 
