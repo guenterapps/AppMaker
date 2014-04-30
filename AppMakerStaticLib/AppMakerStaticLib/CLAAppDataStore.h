@@ -86,6 +86,7 @@ extern NSString *const CLAAppDataStoreFetchErrorKey;
 
 -(void)fetchImagesForImageObjects:(NSArray *)items completion:(void (^)(NSError *))block;
 
+-(NSOperation *)fetchMainImageOperationForItem:(id<CLAItem>)item completionBlock:(void (^)(NSError *))block;
 
 -(void)invalidateCache;
 

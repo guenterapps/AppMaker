@@ -111,10 +111,12 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 
 -(void)mergeObjects:(NSNotification *)notification;
 
--(void)fetchMainImagesForItems:(NSArray *)items ofTotalItems:(NSArray *)total skipStartNotification:(BOOL)skip dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
-
 -(NSArray *)_contentsForHomeCategory;
 -(NSArray *)sortItemsByPosition:(NSArray *)items;
+
+-(void)fetchMainImagesForItems:(NSArray *)items ofTotalItems:(NSArray *)total skipStartNotification:(BOOL)skip dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
+- (void)_fetchMainImageDataAtUrl:(NSURL *)imageURL block:(void (^)(NSError *))block item:(id)item;
+- (NSURL *)_mainImageUrlForItem:(id <CLAItem>)item;
 
 @property (atomic) BOOL skipFetching;
 @property (nonatomic) NSUserDefaults *userDefaults;
@@ -319,69 +321,28 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 -(void)fetchMainImageForItem:(id<CLAItem>)item completionBlock:(void (^)(NSError *))block
 {
 	
-	static NSPredicate *primary;
+	NSURL *imageURL =  [self _mainImageUrlForItem:item];
 	
-	if (!primary)
+	if (imageURL)
 	{
-		primary = [NSPredicate predicateWithFormat:@"%K == %@", @"primary", [NSNumber numberWithBool:YES]];
-	}
-	
-	Image *image = [[[item images] filteredSetUsingPredicate:primary] anyObject];
-	
-	if (!image)
-	{
-
-#ifdef DEBUG
-		NSLog(@"Could not find main image object for item %@", item);
-#endif
-		return;
-	}
-	
-	id <CLAImage> mainImage = [(Item *)item mainImageObject];
-	
-	if (![mainImage imageURL])
-	{
-#ifdef DEBUG
-		NSLog(@"Could not find main image url for item %@", item);
-#endif
-		return;
-	}
-	
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^()
-	{
-		
-		__block NSError *error;
-		
-		NSURL *imageURL =  [NSURL URLWithString:[mainImage imageURL]];
-		
-#ifdef DEBUG
-		NSLog(@"Fetching image at url: %@", imageURL);
-#endif
-		NSData *imageData	= [NSData dataWithContentsOfURL:imageURL
-													options:0
-													error:&error];
-		if (!imageData)
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^()
 		{
-			NSLog(@"%@", error);
-			
-			dispatch_async(dispatch_get_main_queue(), ^(){ block(error); });
-		}
-		else
-		{
-			dispatch_async(dispatch_get_main_queue(), ^()
-			{
-				[(NSManagedObject *)[(Item *)item mainImageObject] setValue:imageData forKey:@"imageData"];
+		   [self _fetchMainImageDataAtUrl:imageURL block:block item:item];
+		});
+	}
+}
 
-				[(Item *)item generatePinMapFromMainImage];
-				
-				[self save:&error];
-
-				block(error);
-
-			});
-		}
-	});
-
+-(NSOperation *)fetchMainImageOperationForItem:(id<CLAItem>)item completionBlock:(void (^)(NSError *))block
+{
+	NSURL *imageURL =  [self _mainImageUrlForItem:item];
+	
+	if (!imageURL)
+		return nil;
+	
+	return [NSBlockOperation blockOperationWithBlock:^()
+	{
+		[self _fetchMainImageDataAtUrl:imageURL block:block item:item];
+	}];
 }
 
 //-(void)fetchMainImagesForTopic:(id <CLATopic>)topic completion:(void (^)(NSError *))block
@@ -1083,6 +1044,79 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 //	
 //	block(error, imageData, );
 //}
+
+- (NSURL *)_mainImageUrlForItem:(id<CLAItem>)item
+{
+	
+	NSParameterAssert([item conformsToProtocol:@protocol(CLAItem)]);
+	
+	static NSPredicate *primary;
+	
+	if (!primary)
+	{
+		primary = [NSPredicate predicateWithFormat:@"%K == %@", @"primary", [NSNumber numberWithBool:YES]];
+	}
+	
+	Image *image = [[[item images] filteredSetUsingPredicate:primary] anyObject];
+	
+	if (!image)
+	{
+		
+#ifdef DEBUG
+		NSLog(@"Could not find main image object for item %@", item);
+#endif
+		return nil;
+	}
+	
+	id <CLAImage> mainImage = [(Item *)item mainImageObject];
+	
+	if (![mainImage imageURL])
+	{
+#ifdef DEBUG
+		NSLog(@"Could not find main image url for item %@", item);
+#endif
+		return nil;
+	}
+	
+	return [NSURL URLWithString:[mainImage imageURL]];
+}
+
+- (void)_fetchMainImageDataAtUrl:(NSURL *)imageURL block:(void (^)(NSError *))block item:(id)item
+{
+	__block NSError *error;
+	
+#ifdef DEBUG
+	NSLog(@"Fetching image at url: %@", imageURL);
+#endif
+	NSData *imageData = [NSData dataWithContentsOfURL:imageURL
+											  options:0
+												error:&error];
+	if (!imageData)
+	{
+		NSLog(@"%@", error);
+		
+		dispatch_async(dispatch_get_main_queue(), ^()
+		{
+			if (block)
+				block(error);
+		});
+	}
+	else
+	{
+		dispatch_async(dispatch_get_main_queue(), ^()
+		{
+			[(NSManagedObject *)[(Item *)item mainImageObject] setValue:imageData forKey:@"imageData"];
+
+			[(Item *)item generatePinMapFromMainImage];
+
+			[self save:&error];
+
+			if (block)
+				block(error);
+		   
+		});
+	}
+}
 
 -(NSArray *)sortItemsByPosition:(NSArray *)items
 {

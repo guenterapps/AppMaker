@@ -2,9 +2,10 @@ x remove hud
 
 - better save during image fetching, better invalidate cache
 - better pinmap draw
+- multiple threads core data accesses
 
 x load main image on detail
-- load pinmap on map
+x load pinmap on map
 
 
 
