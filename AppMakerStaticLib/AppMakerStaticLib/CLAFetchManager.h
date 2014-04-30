@@ -35,6 +35,8 @@
 @property (nonatomic) NSTimeInterval httpTimeout;
 @property (nonatomic) NSString *singleContentId;
 
+@property (nonatomic, weak) NSOperationQueue *consumerQueue;
+
 -(id)initWithEndpoint:(NSString *)endPoint; //get full data
 //-(id)initForTopic:(NSString *)topic withEndpoint:(NSString *)endPoint;
 

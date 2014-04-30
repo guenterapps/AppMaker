@@ -612,6 +612,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	fetchManager.position			= self.lastPosition.coordinate;
 	fetchManager.preferences		= self.preferences;
 	
+	fetchManager.consumerQueue		= queue;
 	[queue addOperation:fetchManager];
 }
 
@@ -644,6 +645,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	fetchManager.position		= self.lastPosition.coordinate;
 	fetchManager.preferences	= self.preferences;
 	
+	fetchManager.consumerQueue		= queue;
 	[queue addOperation:fetchManager];
 }
 
@@ -697,7 +699,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	_contents	= nil;
 	_locales	= nil;
 	
-	[self.context reset];
+	//[self.context reset];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreDidInvalidateCache object:self];
 }
@@ -1184,7 +1186,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 		return;
 	}
 	
-	[self.context performBlockAndWait:^()
+	[self.context  performBlockAndWait:^()
 	{
 		[self.context mergeChangesFromContextDidSaveNotification:notification];
 	}];

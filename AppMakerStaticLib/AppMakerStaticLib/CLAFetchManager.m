@@ -64,6 +64,8 @@ typedef NSArray * (^ParseHandler)(NSData *jsonData, NSError **error);
 -(void)preLoadMediasAsCache:(BOOL)cached;
 -(void)preLoadLocalesAsCache:(BOOL)cached;
 
+-(void)mergeObjects:(NSNotification *)notification;
+
 /**
  *  Tells delegate and removes temporary data
  *
@@ -184,6 +186,11 @@ typedef NSArray * (^ParseHandler)(NSData *jsonData, NSError **error);
 	NSParameterAssert(self.delegate);
 
 	[self setupManagerObjects];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(mergeObjects:)
+												 name:NSManagedObjectContextDidSaveNotification
+											   object:nil];
 
 	BOOL shouldContinue = YES;
 	
@@ -343,10 +350,28 @@ typedef NSArray * (^ParseHandler)(NSData *jsonData, NSError **error);
 	
 	}
 
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Private Methods
 
+-(void)mergeObjects:(NSNotification *)notification
+{
+	
+	if ([notification object] == self.context)
+	{
+		return;
+	}
+	
+	[self.consumerQueue addOperationWithBlock:^()
+	{
+		[self.context mergeChangesFromContextDidSaveNotification:notification];
+	}];
+	
+	
+
+
+}
 
 -(NSOperationQueue *)notificationQueue
 {
