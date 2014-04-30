@@ -441,8 +441,6 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 											  cancelButtonTitle:@"Continua"
 											  otherButtonTitles:nil];
 		[alert show];
-		
-		return;
 
 	}
 	
