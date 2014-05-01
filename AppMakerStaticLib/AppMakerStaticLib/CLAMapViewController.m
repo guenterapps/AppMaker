@@ -588,7 +588,8 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id < MKAnnotation >)annotation
 {
 	
-	MKAnnotationView *annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:CLAAnnotationViewReuseIdentifier];
+	MKAnnotationView *annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:CLAAnnotationViewReuseIdentifier];
+	//[self.mapView dequeueReusableAnnotationViewWithIdentifier:CLAAnnotationViewReuseIdentifier];
 	
 	if (!annotationView)
 		annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation
@@ -598,8 +599,8 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	{
 		return nil;
 	}
-
-	[annotationView setImage:[self pinMapForItem:(id <CLAItem>)annotation]];
+	
+	//[annotationView setImage:[self pinMapForItem:(id <CLAItem>)annotation]];
 	
 	annotationView.enabled = YES;
 	annotationView.canShowCallout = YES;
