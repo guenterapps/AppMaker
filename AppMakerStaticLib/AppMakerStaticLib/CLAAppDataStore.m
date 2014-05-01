@@ -105,6 +105,13 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	NSPredicate *_poisPredicate;
 }
 
+@property (atomic) BOOL skipFetching;
+@property (nonatomic) NSUserDefaults *userDefaults;
+@property (nonatomic) CLLocationManager *locationManager;
+
+@property (nonatomic) NSDate *lastSyncDate;
+@property (nonatomic) CLLocation *lastPosition;
+
 -(NSArray *)fetchObjectsInEntity:(NSString *)entity;
 
 -(NSOperationQueue *)operationQueue;
@@ -118,12 +125,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 - (void)_fetchMainImageDataAtUrl:(NSURL *)imageURL block:(void (^)(NSError *))block item:(id)item;
 - (NSURL *)_mainImageUrlForItem:(id <CLAItem>)item;
 
-@property (atomic) BOOL skipFetching;
-@property (nonatomic) NSUserDefaults *userDefaults;
-@property (nonatomic) CLLocationManager *locationManager;
-
-@property (nonatomic) NSDate *lastSyncDate;
-@property (nonatomic) CLLocation *lastPosition;
+-(BOOL)_isFetching;
 
 @end
 
@@ -178,7 +180,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 
 -(void)save:(NSError **)error
 {
-	if ([self.context hasChanges])
+	if ([self.context hasChanges] && ![self _isFetching])
 	{
 		__block NSError *internalError;
 		
@@ -1046,6 +1048,11 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 //	
 //	block(error, imageData, );
 //}
+
+- (BOOL)_isFetching
+{
+	return [[self operationQueue] operationCount] > 0;
+}
 
 - (NSURL *)_mainImageUrlForItem:(id<CLAItem>)item
 {
