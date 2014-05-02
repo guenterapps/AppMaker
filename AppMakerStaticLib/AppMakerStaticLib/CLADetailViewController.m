@@ -405,7 +405,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	CLAActionsDetailCell *cell = (CLAActionsDetailCell *)[self.tableView dequeueReusableCellWithIdentifier:CLAActionsDetailCellIdentifier];
 	
 	NSString *fontName			= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
-	UIColor *textColor			= [self.store userInterface][CLAAppDataStoreUIActionCellTintColorKey];
+	UIColor *textColor			= [self.store userInterface][CLAAppDataStoreUIHeaderColorKey];
 	UIColor *disabledTextColor	= [textColor colorWithAlphaComponent:0.5];
 	CGFloat fontSize			= [[self.store userInterface][CLAAppDataStoreUIActionFontSizeKey] floatValue];
 	
@@ -418,7 +418,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 	NSString *gotoWebSite = [self.localizedStrings localizedStringForString:@"Go to website"];
 	
-	UIImage *webImage = [[UIImage imageNamed:@"web"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+	UIImage *webImage = [UIImage imageNamed:@"web"];
 	
 	[self setupButton:cell.mailButton withImage:webImage selector:@selector(openBrowser:)];
 	[cell.mailButton setTitle:gotoWebSite forState:UIControlStateNormal];
@@ -435,7 +435,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 	NSString *call = [self.localizedStrings localizedStringForString:@"Call"];
 	
-	UIImage *callImage = [[UIImage imageNamed:@"chiama"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+	UIImage *callImage = [UIImage imageNamed:@"chiama"];
 	
 	[self setupButton:cell.phoneButton withImage:callImage selector:@selector(callPhone:)];
 	[cell.phoneButton setTitle:call forState:UIControlStateNormal];

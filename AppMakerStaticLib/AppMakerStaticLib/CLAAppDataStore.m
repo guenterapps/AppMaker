@@ -702,7 +702,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 				case 1:
 					for (NSString *key in currentDictionary)
 					{
-						UIImage *currentImage = [[UIImage imageNamed:currentDictionary[key]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+						UIImage *currentImage = [UIImage imageNamed:currentDictionary[key]];
 						
 						NSAssert(currentImage, @"Could not load image for key %@", key);
 						
