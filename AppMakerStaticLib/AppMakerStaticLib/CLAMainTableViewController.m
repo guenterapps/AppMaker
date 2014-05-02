@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
-#define TIMEOUT 10.0
+#import <CoreLocation/CoreLocation.h>
 
 #import "CLAMainTableViewController.h"
 #import "CLAMapViewController.h"
@@ -14,10 +14,12 @@
 #import "CLAMenuTableViewController.h"
 #import "CLADetailViewController.h"
 #import "CLAEventTableViewCell.h"
-#import <CoreLocation/CoreLocation.h>
 #import "Item.h"
 #import "Topic.h"
 #import "UITableViewCell+Common.h"
+
+#define TIMEOUT 10.0
+#define MIN_SEARCH_LENGTH 4
 
 NSString *const CLAMainTableViewCellIdentifier = @"CLAMainTableViewCell";
 NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
@@ -227,6 +229,13 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", @"title", self.queryString];
 	
+	if ([self.queryString length] >= MIN_SEARCH_LENGTH)
+	{
+		NSPredicate *description = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", @"detailText", self.queryString];
+		
+		predicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[predicate, description]];
+	}
+	
 	self.searchControllerItems = [[self.store contents] filteredArrayUsingPredicate:predicate];
 	
 	return [self.searchControllerItems count];
@@ -432,7 +441,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	if (error)
 	{
-		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %i)", error.code];
+		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
 														message:alertMessage
 													   delegate:nil
@@ -446,7 +455,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	 {
 		 if (error)
 		 {
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
+			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
 			 
 			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																 message:alertMessage
