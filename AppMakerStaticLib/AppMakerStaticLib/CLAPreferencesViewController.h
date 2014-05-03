@@ -8,12 +8,11 @@
 
 #import "CLABaseViewController.h"
 
-@class CLAPreferences, CLALocalizedStringsStore;
+@class CLAPreferences;
 
 @interface CLAPreferencesViewController : CLABaseViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) CLAPreferences *preferences;
-@property (nonatomic) CLALocalizedStringsStore *localizedStrings;
 
 -(UITableView *)tableView;
 

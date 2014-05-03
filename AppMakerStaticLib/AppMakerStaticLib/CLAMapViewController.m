@@ -30,6 +30,8 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	UIButton *navigateControl;
 	
 	BOOL _isItinerary;
+	
+	NSOperationQueue *_operationQueue;
 
 	id animator;
 	id attachment;
@@ -61,6 +63,8 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	if (self = [super init])
 	{
 		_isDetailMap = isDetail;
+		_operationQueue = [[NSOperationQueue alloc] init];
+		[_operationQueue setMaxConcurrentOperationCount:1];
 	}
 	
 	return self;
@@ -83,7 +87,9 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 					   options:UIViewAnimationOptionTransitionFlipFromLeft
 					completion:^(BOOL finished)
 	 {
-		 
+		 [self.mapView removeAnnotations:[self.mapView annotations]];
+		 [self.mapView removeOverlays:[self.mapView overlays]];
+
 		 [self.navigationController setViewControllers:@[mainTableViewController]];
 		 mainTableViewController.skipAnimation = NO;
 		 
@@ -95,6 +101,11 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 {
 	if (![self menuViewControllerShouldSelectTopic:topic])
 		return;
+	
+	if (![[topic topicCode] isEqualToString:_lastTopic])
+	{
+		[_operationQueue cancelAllOperations];
+	}
 	
 	_topic		= topic;
 	_lastTopic	= [[topic topicCode] copy];
@@ -172,6 +183,7 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 {
 	[super viewDidDisappear:animated];
 	[self.mapView removeAnnotations:self.items];
+	[_operationQueue cancelAllOperations];
 }
 
 -(void)viewDidLoad
@@ -254,6 +266,32 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 -(UIImage *)pinMapForItem:(id<CLAItem>)item
 {
 	UIImage *pinMap = [item pinMap];
+	
+	NSString *itemTopicCode	= [[[item topic] topicCode] copy];
+	
+	if (!pinMap)
+	{
+		pinMap = [UIImage imageNamed:@"pinEmpty"];
+		
+		NSOperation *fetchOperation;
+		
+		fetchOperation = [self.store fetchMainImageOperationForItem:item
+													completionBlock:^(NSError *error)
+							{
+								if (![itemTopicCode isEqualToString:[self.topic topicCode]])
+										return;
+
+								[self.mapView removeAnnotation:(id <MKAnnotation>)item];
+								[self.mapView addAnnotation:(id <MKAnnotation>)item];
+
+							}];
+		if (fetchOperation)
+		{
+			[_operationQueue addOperation:fetchOperation];
+		}
+
+	}
+	
 	UIImage *start	= [UIImage imageNamed:@"start"];
 	UIImage *end	= [UIImage imageNamed:@"end"];
 	

@@ -33,7 +33,7 @@
 @property (nonatomic, retain) NSString *city;
 @property (nonatomic, retain) NSString *type;
 @property (nonatomic, retain) NSString *subType;
-@property (nonatomic, retain) UIImage *pinMap;
+@property (nonatomic, weak) UIImage *pinMap;
 @property (nonatomic, retain) NSData *pinMapData;
 @property (nonatomic, retain) NSDate *date;
 

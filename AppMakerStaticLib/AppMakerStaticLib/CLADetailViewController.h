@@ -14,8 +14,6 @@
 
 @interface CLADetailViewController : CLABaseViewController <UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIWebViewDelegate>
 
-@property (nonatomic) CLALocalizedStringsStore *localizedStrings;
-
 @property (nonatomic) id <CLAItem> item;
 @property (nonatomic) BOOL skipList;
 

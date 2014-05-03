@@ -346,12 +346,36 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			imageView.clipsToBounds = YES;
 			
 			[_headerDetailCell.scrollView addSubview:imageView];
-			imageView.image = imageItem.image;
-			
-			if (!imageItem.image && i > 0)
+
+			if (!imageItem.image)
 			{
-				[emptyImages addObject:[(NSManagedObject *)imageItem objectID]];
-				[emptyViews addObject:imageView];
+				imageView.image = [UIImage imageNamed:@"noImage"];
+
+				if (i > 0)
+				{
+					[emptyImages addObject:[(NSManagedObject *)imageItem objectID]];
+					[emptyViews addObject:imageView];
+				}
+				else
+				{
+					[self.store fetchMainImageForItem:self.item completionBlock:^(NSError *error)
+					{
+						if (![self.item mainImage])
+							return;
+						
+						CATransition *transition = [CATransition animation];
+						transition.type = kCATransitionFade;
+						
+						[imageView.layer addAnimation:transition forKey:nil];
+						
+						imageView.image = [self.item mainImage];
+						
+					}];
+				}
+			}
+			else
+			{
+				imageView.image = imageItem.image;
 			}
 		}
 	}
