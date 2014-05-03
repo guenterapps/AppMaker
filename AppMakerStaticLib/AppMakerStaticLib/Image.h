@@ -15,9 +15,9 @@
 
 @interface Image : NSManagedObject <CLAImage>
 
-@property (nonatomic, retain) UIImage *image;
-@property (nonatomic, retain) NSData * imageData;
-@property (nonatomic, retain) Item *item;
+@property (nonatomic, weak) UIImage *image;
+@property (nonatomic) NSData * imageData;
+@property (nonatomic) Item *item;
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSString *imageURL;
 @property (nonatomic) NSString *videoURL;

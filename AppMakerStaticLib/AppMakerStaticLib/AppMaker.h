@@ -55,6 +55,8 @@ extern NSString *const CLAMenuControllerSelectedIndexPathKey;
 +(id)startWithApiKey:(NSString *)apiKey fromNotification:(NSDictionary *)payload;
 +(id)sharedMaker;
 
+-(void)loadApplicationIfNeeded;
+
 #pragma mark - Remote Notification handling
 
 -(void)registerAPNToken:(NSData *)token forNotificationsEnabled:(BOOL)enabled;

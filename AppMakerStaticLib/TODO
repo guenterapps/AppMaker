@@ -1,34 +1,38 @@
-X set hidden flag
-X fix app flow
-X logic to handle 5 minutes cache
-X handled http errror
-X remove phone and number cells
-X set a limit to the new location (mantaints the last one) -- REMOVED
-- add attribs columns
-X pull to refresh
-x handle etag
-X async load immagini --> avoid multiple times, avoid infinite loop, load on detail view
-X pulizia cache
-X add order property on every object
-X zoom efficiently map
-X facebook and twitter
-X select first topic on load (if any)
-- fix map flickering
-X Credits view
-X getUi flow
-X migrate from image property to image link
-X YOUTUBE
-- PUSH notification
-X handle set topic on mapview!
+x remove hud
+
+X better save during image fetching, better invalidate cache
+- better pinmap draw
+X multiple threads core data accesses
+
+X load main image on detail
+X load pinmap on map
 
 
--- Release NOTE
 
-- tasti chiama/web
-- apertura singolo elemento
-- navigazione in app
 
--- NB: cancellare l'app prima di installare!
+X CLAMainTableViewController.m --> change to prefetchImages
+X CLAPreferencesViewController.m --> change to prefetchImages
+
+X reset self.skipEtc on datastore
+
+X add default images in main and detail
+
+X ad default image in mapview
+
+X remove fetch funtion unused
+
+X memory handling for large import (seems to increase)
+
+-- aspect ratio
+
+X disable button when alertview prompts
+
+X searchbar
+
+X pull to refresh with hud
+
+X codice su mainTableViewController/AppDatastore per get main image --> check se la cell è ancora quella che mi serve o se sto già scaricando l'immagine.
+
 
 
 

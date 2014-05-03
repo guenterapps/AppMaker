@@ -208,7 +208,7 @@
 	{
 		[self reloadContents];
 
-		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %i)", error.code];
+		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
 														message:alertMessage
 													   delegate:nil
@@ -220,13 +220,13 @@
 		
 	}
 	
-	[self.store asyncFetchMainImagesWithCompletionBlock:^(NSError *error)
+	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *error)
 	 {
 		 [self reloadContents];
 
 		 if (error)
 		 {
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
+			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
 			 
 			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																 message:alertMessage

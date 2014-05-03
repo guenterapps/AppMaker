@@ -15,6 +15,7 @@
 
 @property (nonatomic) CLAAppDataStore *store;
 @property (nonatomic, weak) AppMaker *appMaker;
+@property (nonatomic) CLALocalizedStringsStore *localizedStrings;
 
 -(BOOL)iOS7Running;
 

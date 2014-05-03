@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
-#define JSONPROGRESS 50
+#define JSONPROGRESS 20
 
 #import "CLASplashScreenViewController.h"
 #import "CLAAppDataStore.h"
@@ -17,7 +17,9 @@
 {
 	NSInteger _countStep;
 	NSInteger _countTotal;
+	NSInteger _countTarget;
 	CLAProgressManager *_progressManager;
+	UIButton *stopLoading;
 }
 
 -(void)setupCounter:(NSNotification *)notification;
@@ -39,8 +41,9 @@
 {
     [super viewDidLoad];
 	
-	CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-	UIColor *tintColor = [self.store userInterface][CLAAppDataStoreUISplashTintColorKey];
+	CGSize screenSize	= [[UIScreen mainScreen] bounds].size;
+	UIColor *tintColor	= [self.store userInterface][CLAAppDataStoreUISplashTintColorKey];
+	UIFont *font		= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:[[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue]];
 
 	self.view.backgroundColor = [UIColor blackColor];
 	
@@ -63,17 +66,48 @@
 	
 	UILabel *progress	= [[UILabel alloc] initWithFrame:CGRectMake(0., 0., 200., 50)];
 	
-	progress.font		= [UIFont fontWithName:[self.store userInterface][CLAAppDataStoreUIFontNameKey] size:[[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue]];
+	progress.font		= font;
 	
 	progress.textColor = tintColor;
 	progress.textAlignment	= NSTextAlignmentCenter;
-	progress.center = CGPointMake(screenSize.width / 2., (screenSize.height / 10.0) * 9.0);
+	//progress.center = CGPointMake(screenSize.width / 2., (screenSize.height / 10.0) * 9.0);
 	
 	[self.view addSubview:progress];
 	
 	_progressManager = [[CLAProgressManager alloc] initWithMessage:@"Aggiornamento"];
 	_progressManager.progressLabel = progress;
 	[_progressManager resetCounter];
+	
+	stopLoading = [UIButton buttonWithType:UIButtonTypeSystem];
+	[stopLoading setTintColor:tintColor];
+	[stopLoading.titleLabel setFont:font];
+	[stopLoading setTitle:@"Stop Loading" forState:UIControlStateNormal];
+	[stopLoading addTarget:self action:@selector(skipImageLoading) forControlEvents:UIControlEventTouchUpInside];
+	
+	stopLoading.enabled = NO;
+	stopLoading.hidden = YES;
+	
+	[self.view addSubview:stopLoading];
+	
+	for (UIView *view in self.view.subviews)
+	{
+		view.translatesAutoresizingMaskIntoConstraints = NO;
+	}
+	
+	NSArray  *constraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[progress]-[stopLoading]-|"
+																	options:NSLayoutFormatAlignAllCenterX
+																	metrics:nil
+																	  views:NSDictionaryOfVariableBindings(progress, stopLoading)];
+	NSLayoutConstraint *center = [NSLayoutConstraint constraintWithItem:self.view
+															  attribute:NSLayoutAttributeCenterX
+															  relatedBy:NSLayoutRelationEqual
+																 toItem:progress
+															  attribute:NSLayoutAttributeCenterX
+															 multiplier:1.0
+															   constant:0.];
+	
+	[self.view addConstraints:constraints];
+	[self.view addConstraint:center];
 	
 }
 
@@ -104,7 +138,26 @@
 
 -(void)startUpdatingProgress
 {
-	[_progressManager countToDelta:JSONPROGRESS withInterval:0.5];
+	[_progressManager countToDelta:JSONPROGRESS withInterval:2.0];
+}
+
+-(void)enableSkipLoadingButton
+{
+	[UIView animateWithDuration:0.4 animations:^()
+	{
+		stopLoading.enabled = YES;
+		stopLoading.hidden = NO;
+		_progressManager.progressLabel.alpha = 0.5;
+		
+	}];
+}
+
+-(void)disableSkipLoadingButton
+{
+	[UIView animateWithDuration:0.2 animations:^()
+	 {
+		 stopLoading.enabled = NO;
+	 }];
 }
 
 #pragma mark - private methods
@@ -115,16 +168,11 @@
 	
 	if ([total integerValue] > 0)
 	{
-		float_t imagesProgress = (float_t)(100 - JSONPROGRESS);
+		_countTarget = [total integerValue];
+		_countStep	 = JSONPROGRESS;
+		_countTotal	 = 0;
 		
-		NSAssert(imagesProgress > 0, @"Cannot have 0 progress for image fetching");
-		
-		float_t totalFloat		= (float_t)[total integerValue];
-	
-		_countStep				= (NSInteger)ceilf(imagesProgress/totalFloat);
-		_countTotal				= MIN(100, JSONPROGRESS);
-		
-		[_progressManager countToDelta:_countTotal withInterval:0.1];
+		[_progressManager countToDelta:MIN(100, JSONPROGRESS) withInterval:0.2];
 	}
 	else
 	{
@@ -147,11 +195,23 @@
 		return;
 	}
 
-	_countTotal = MIN(100, _countTotal + _countStep);
-
-	[_progressManager countToDelta:_countTotal withInterval:0.1];
+	_countTotal++;
 	
-	if (_countTotal == 100)
+	NSInteger delta		= (NSInteger)((100 - JSONPROGRESS) * _countTotal/(float_t)_countTarget) + JSONPROGRESS;
+	
+	BOOL targetReached	= _countTotal == _countTarget;
+
+	if (ABS(delta - _countStep) > 0)
+	{
+		if (targetReached)
+			delta = 100;
+		
+		_countStep = delta;
+
+		[_progressManager countToDelta:delta withInterval:0.1];
+	}
+
+	if (targetReached)
 	{
 		skip = YES;
 
@@ -161,6 +221,20 @@
 			[self.delegate splashScreenDidShowFullProgressPercentage];
 		});
 	}
+}
+
+-(void)skipImageLoading
+{
+	stopLoading.enabled = NO;
+
+	[self.store skipImageLoading];
+	[self.appMaker loadApplicationIfNeeded];
+	
+//	double delayInSeconds = 0.2;
+//	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+//	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//		[self.delegate splashScreenDidShowFullProgressPercentage];
+//	});
 }
 
 @end
