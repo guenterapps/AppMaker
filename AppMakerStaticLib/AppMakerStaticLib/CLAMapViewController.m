@@ -371,17 +371,19 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	 {
 		 if (err)
 		 {
-			 [self.mapView setShowsUserLocation:NO];
-			 NSLog(@"%@", [err localizedDescription]);
+//			 [self.mapView setShowsUserLocation:NO];
+//			 NSLog(@"%@", [err localizedDescription]);
+//			 
+//			 UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
+//														  message:@"Non è stato trovato alcun percorso!"
+//														 delegate:nil
+//												cancelButtonTitle:@"Annulla"
+//												otherButtonTitles:nil];
+//			 [av show];
+//			 
+//			 return;
 			 
-			 UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
-														  message:@"Non è stato trovato alcun percorso!"
-														 delegate:nil
-												cancelButtonTitle:@"Annulla"
-												otherButtonTitles:nil];
-			 [av show];
-			 
-			 return;
+			 NSLog(@"%@", err);
 		 }
 		 
 		 MKRoute *route;
@@ -435,17 +437,20 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 		 }
 		 else
 		 {
-			 NSString *errorMsg = @"Non è stato trovato alcun percorso!";
-			 NSLog(@"%@", errorMsg);
 			 
-			 [self.mapView setShowsUserLocation:NO];
-			 
-			 UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
-														  message:errorMsg
-														 delegate:nil
-												cancelButtonTitle:@"Annulla"
-												otherButtonTitles:nil];
-			 [av show];
+			 NSLog(@"No routes found");
+
+//			 NSString *errorMsg = @"Non è stato trovato alcun percorso!";
+//			 NSLog(@"%@", errorMsg);
+//			 
+//			 [self.mapView setShowsUserLocation:NO];
+//			 
+//			 UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
+//														  message:errorMsg
+//														 delegate:nil
+//												cancelButtonTitle:@"Annulla"
+//												otherButtonTitles:nil];
+//			 [av show];
 		 }
 		 
 	 }];
