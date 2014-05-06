@@ -385,10 +385,11 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 			}
 			
 			CLAWebViewController *webViewController = [[CLAWebViewController alloc] init];
-			webViewController.appMaker		= self.appMaker;
-			webViewController.store			= self.store;
-			webViewController.headerTitle	= @"www.novaragov.it";
-
+			webViewController.appMaker			= self.appMaker;
+			webViewController.store				= self.store;
+			webViewController.localizedStrings	= self.localizedStrings;
+			webViewController.headerTitle		= @"www.novaragov.it";
+	
 			webViewController.webView.scalesPageToFit = YES;
 			
 			NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.novaragov.it/wifi/"]];
