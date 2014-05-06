@@ -8,10 +8,13 @@
 
 #define JSONPROGRESS 20
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "CLASplashScreenViewController.h"
 #import "CLAAppDataStore.h"
 #import "CLAProgressManager.h"
-#import <QuartzCore/QuartzCore.h>
+#import "CLALocalizedStringsStore.h"
+
 
 @interface CLASplashScreenViewController ()
 {
@@ -74,14 +77,16 @@
 	
 	[self.view addSubview:progress];
 	
-	_progressManager = [[CLAProgressManager alloc] initWithMessage:@"Aggiornamento"];
+	NSString *stopLoadingText = [self.localizedStrings localizedStringForString:@"Stop loading"];
+	
+	_progressManager = [[CLAProgressManager alloc] initWithMessage:[self.localizedStrings localizedStringForString:@"Updating"]];
 	_progressManager.progressLabel = progress;
 	[_progressManager resetCounter];
 	
 	stopLoading = [UIButton buttonWithType:UIButtonTypeSystem];
 	[stopLoading setTintColor:tintColor];
 	[stopLoading.titleLabel setFont:font];
-	[stopLoading setTitle:@"Stop Loading" forState:UIControlStateNormal];
+	[stopLoading setTitle:stopLoadingText forState:UIControlStateNormal];
 	[stopLoading addTarget:self action:@selector(skipImageLoading) forControlEvents:UIControlEventTouchUpInside];
 	
 	stopLoading.enabled = NO;
