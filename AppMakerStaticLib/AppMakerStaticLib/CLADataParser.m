@@ -202,6 +202,9 @@ static NSDateFormatter *dateFormatter;
 			
 			for (NSString *key in itemMap)
 			{
+				if (contentDictionary[key] == [NSNull null])
+					continue;
+
 				if ([@"updated_at" isEqualToString:key])
 				{
 					NSDate *lastUpdate = [dateFormatter dateFromString:contentDictionary[key]];
