@@ -346,12 +346,36 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			imageView.clipsToBounds = YES;
 			
 			[_headerDetailCell.scrollView addSubview:imageView];
-			imageView.image = imageItem.image;
-			
-			if (!imageItem.image && i > 0)
+
+			if (!imageItem.image)
 			{
-				[emptyImages addObject:[(NSManagedObject *)imageItem objectID]];
-				[emptyViews addObject:imageView];
+				imageView.image = [UIImage imageNamed:@"noImage"];
+
+				if (i > 0)
+				{
+					[emptyImages addObject:[(NSManagedObject *)imageItem objectID]];
+					[emptyViews addObject:imageView];
+				}
+				else
+				{
+					[self.store fetchMainImageForItem:self.item completionBlock:^(NSError *error)
+					{
+						if (![self.item mainImage])
+							return;
+						
+						CATransition *transition = [CATransition animation];
+						transition.type = kCATransitionFade;
+						
+						[imageView.layer addAnimation:transition forKey:nil];
+						
+						imageView.image = [self.item mainImage];
+						
+					}];
+				}
+			}
+			else
+			{
+				imageView.image = imageItem.image;
 			}
 		}
 	}
@@ -427,7 +451,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	[cell.mailButton.titleLabel setFont:font];
 	cell.mailButton.backgroundColor = backColor;
 	
-	if (!self.item.urlAddress)
+	if (!self.item.urlAddress || [self.item.urlAddress length] == 0)
 	{
 		cell.mailButton.enabled = NO;
 	}
@@ -444,7 +468,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	[cell.phoneButton.titleLabel setFont:font];
 	cell.phoneButton.backgroundColor = backColor;
 	
-	if (!self.item.phoneNumber)
+	if (!self.item.phoneNumber || [self.item.phoneNumber length] == 0)
 	{
 		cell.phoneButton.enabled = NO;
 	}
@@ -1019,12 +1043,19 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	
 	CLAWebViewController *browser = [[CLAWebViewController alloc] init];
 	
-	browser.store		= self.store;
-	browser.appMaker	= self.appMaker;
-	browser.item		= self.item;
+	browser.store				= self.store;
+	browser.appMaker			= self.appMaker;
+	browser.item				= self.item;
+	browser.localizedStrings	= self.localizedStrings;
 	
+	NSString *itemUrl = self.item.urlAddress;
 	
-	NSURL *url = [NSURL URLWithString:self.item.urlAddress];
+	if (NSNotFound == [self.item.urlAddress rangeOfString:@"http://"].location)
+	{
+		itemUrl = [@"http://" stringByAppendingString:itemUrl];
+	}
+	
+	NSURL *url = [NSURL URLWithString:itemUrl];
 	
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];
 	

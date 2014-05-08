@@ -10,6 +10,8 @@
 #define REGISTERKEY @"devices/register"
 #define PUSHANIMATIONKEY @"PUSHANIMATIONKEY"
 
+#import <objc/runtime.h>
+
 #import "AppMaker.h"
 #import "CLAPanelViewController.h"
 #import "CLAMainTableViewController.h"
@@ -38,15 +40,23 @@ static NSString *const CLALastAPNTokenKey		= @"CLALastAPNTokenKey";
 	BOOL reloadData;
 	BOOL _startFromNotification;
 	NSString *_singleContentId;
+	
+	BOOL _loadApplicationIfNeeded;
+	
+	CLASplashScreenViewController *splashScreen;
 }
 
 @property (nonatomic) BOOL serverPushEnabled;
 @property (nonatomic) NSDictionary *notifPayload;
 
+@property (nonatomic) BOOL lockPresentApplication;
+
 -(void)setupViewControllers;
 -(id)setupViewControllerOfClass:(Class)class;
 -(void)dismissSplashScreen;
 -(void)setupAppearance;
+
+- (void)handlePresentApplication;
 
 
 //Notification callbacks
@@ -211,6 +221,21 @@ static id appMaker = nil;
 
 #pragma mark - helper methods
 
+-(void)loadApplicationIfNeeded
+{
+	_loadApplicationIfNeeded = YES;
+}
+
+- (void)handlePresentApplication
+{
+	if (!self.lockPresentApplication)
+	{
+		self.lockPresentApplication = YES;
+		[self presentApplication];
+		[self getAPNToken];
+	}
+}
+
 - (void)setupViewControllers
 {
 
@@ -228,13 +253,9 @@ static id appMaker = nil;
 	
 	_preferencesViewController.preferences = self.preferences;
 	
-	_preferencesViewController.localizedStrings = self.stringsStore;
-	_menuTableViewController.localizedStrings	= self.stringsStore;
-	_mapViewController.localizedStrings			= self.stringsStore;
-	
 	_menuTableViewController.delegate = (id <CLAMenuViewControllerDelegate>)_mapViewController;
 
-	CLASplashScreenViewController *splashScreen = [self setupViewControllerOfClass:[CLASplashScreenViewController class]];
+	splashScreen = [self setupViewControllerOfClass:[CLASplashScreenViewController class]];
 
 	splashScreen.delegate = self;
 	
@@ -289,6 +310,14 @@ static id appMaker = nil;
 	[viewController setValue:self.store forKey:@"store"];
 	[viewController setValue:self forKey:@"appMaker"];
 	
+	
+	objc_property_t localizedStore = class_getProperty(class, "localizedStrings");
+	
+	if (localizedStore != NULL)
+	{
+		[viewController setValue:self.stringsStore forKey:@"localizedStrings"];
+	}
+
 	return viewController;
 }
 
@@ -379,7 +408,7 @@ static id appMaker = nil;
 
 			 if (error)
 			 {
-				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
+				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
 				 
 				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																	 message:alertMessage
@@ -480,8 +509,6 @@ static id appMaker = nil;
 #ifdef DEBUG
 	NSLog(@"Presenting next view controller..");
 #endif
-
-#warning handle error: if first time, load seed data, else show message.
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 
@@ -496,7 +523,7 @@ static id appMaker = nil;
 		
 		if (!reloadData)
 		{
-			alertMessage = @"Sembra che tu non sia connesso, ma niente paura: potrai navigare l'App offline anche se con qualche limitazione!";
+			alertMessage = @"Sembra che tu non sia connesso: potrai comunque navigare l'App senza accedere agli strumenti online.";
 			buttonMessage = @"Continua";
 		}
 		else
@@ -505,7 +532,7 @@ static id appMaker = nil;
 			buttonMessage	= @"Riprova";
 		}
 
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Modalità offline"
 														message:alertMessage
 													   delegate:self
 											  cancelButtonTitle:buttonMessage
@@ -515,25 +542,51 @@ static id appMaker = nil;
 		return;
 	}
 	
+	[splashScreen enableSkipLoadingButton];
 
-	[self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
+	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *preFetcherror)
 	 {
-
-		 if (error)
+		 
+		 if (_loadApplicationIfNeeded)
 		 {
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
+			 _loadApplicationIfNeeded = NO;
 			 
-			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-																 message:alertMessage
-																delegate:self
-													   cancelButtonTitle:@"Continua"
-													   otherButtonTitles:nil];
-			 [alertView show];
+			 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+				 [self handlePresentApplication];
+			 });
+			 
+			 return;
 		 }
-		 else
+		 
+		 [self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
 		 {
-			// [self presentApplication];
-		 }
+			 NSError *presentingError = preFetcherror ? preFetcherror : error;
+			 
+			 [splashScreen disableSkipLoadingButton];
+			 
+			 if (presentingError)
+			 {
+
+				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)presentingError.code];
+				 
+				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
+																	 message:alertMessage
+																	delegate:self
+														   cancelButtonTitle:@"Continua"
+														   otherButtonTitles:nil];
+				 [alertView show];
+			 }
+			 else if (_loadApplicationIfNeeded)
+			 {
+				 _loadApplicationIfNeeded = NO;
+				 
+				 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+					 [self handlePresentApplication];
+				 });
+			 }
+			 
+		 }];
+		 
 		 
 	 }];
 	
@@ -671,8 +724,7 @@ static id appMaker = nil;
 
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-			[self presentApplication];
-			[self getAPNToken];
+			[self handlePresentApplication];
 		});
 	}
 	
@@ -680,10 +732,10 @@ static id appMaker = nil;
 }
 #pragma mark - CLASplashScreenDelegateProtocol
 
+
 -(void)splashScreenDidShowFullProgressPercentage
 {
-	[self presentApplication];
-	[self getAPNToken];
+	[self handlePresentApplication];
 }
 
 #pragma mark - Push Notification Methods
@@ -738,10 +790,10 @@ static id appMaker = nil;
 	{
 		[self registerAPNToken:self.lastAPNToken forNotificationsEnabled:NO];
 	}
-	else if (self.serverPushEnabled && !currentStatusDenied)
-	{
-		return;
-	}
+//	else if (self.serverPushEnabled && !currentStatusDenied)
+//	{
+//		return;
+//	}
 	else
 	{
 		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeSound|UIRemoteNotificationTypeAlert];
@@ -809,7 +861,7 @@ static id appMaker = nil;
 		[request setHTTPMethod:@"POST"];
 		[request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 		[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-		[request setValue:[NSString stringWithFormat:@"%d", [jsonData length]] forHTTPHeaderField:@"Content-Length"];
+		[request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[jsonData length]] forHTTPHeaderField:@"Content-Length"];
 		[request setHTTPBody:jsonData];
 		
 #ifdef DEBUG
@@ -828,7 +880,7 @@ static id appMaker = nil;
 		}
 		else if (200 != httpResponse.statusCode)
 		{
-			NSLog(@"App&Map could not register APN token for server response: %i - %@", httpResponse.statusCode, [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
+			NSLog(@"App&Map could not register APN token for server response: %li - %@", (long)httpResponse.statusCode, [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
 		}
 		else
 		{

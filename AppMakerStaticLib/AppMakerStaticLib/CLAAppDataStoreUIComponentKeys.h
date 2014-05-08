@@ -23,6 +23,7 @@ typedef enum
 
 extern NSString *const CLAAppDataStoreUIDirectionsColorKey;
 extern NSString *const CLAAppDataStoreUIDirectionsTextColorKey;
+extern NSString *const CLAAppDataStoreUIDirectionsPolylineColorKey;
 
 extern NSString *const CLAAppDataStoreUIBackgroundColorKey;
 extern NSString *const CLAAppDataStoreUIForegroundColorKey;
@@ -69,5 +70,6 @@ extern NSString *const CLAAppDataStoreUIListIconKey;
 extern NSString *const CLAAppDataStoreUIShareIconKey;
 
 extern NSString *const CLAAppDataStoreUIShowSearchBar;
+extern NSString *const CLAAppDataStoreUIShowHomeCategory;
 
 #endif

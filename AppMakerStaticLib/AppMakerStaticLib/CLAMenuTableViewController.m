@@ -36,12 +36,16 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 	UISearchDisplayController *searchController;
 	NSIndexPath *_indexPathSelectedFromSearch;
 	BOOL _isSearching;
-	
+
 	NSMutableSet *_openParentTopics;
+
+	UIImage *_backgroundImage;
+
 }
 
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification;
 -(NSArray *)searchBarSpacer;
+-(BOOL)useBackgroundImage;
 
 -(NSArray *)buildTopics;
 -(BOOL)isParentTopic:(NSIndexPath *)indexPath;
@@ -71,11 +75,8 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 	BOOL showSearchBar = [[self.store userInterface][CLAAppDataStoreUIShowSearchBar] boolValue];
 	
 	UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
-	self.tableView.backgroundView = backView;
 
-	self.tableView.backgroundView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
-	
-	self.tableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+	backView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 
 	[self setupTableView:self.tableView withCellIdentifier:CLAMenuTableViewCellIdentifier];
 	[self setupTableView:self.tableView withCellIdentifier:CLASubMenuTableViewCellIdentifier];
@@ -98,7 +99,7 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 		
 		searchBar.barTintColor		= [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 		searchBar.tintColor			= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
-		searchBar.searchBarStyle	= UISearchBarStyleMinimal;
+		//searchBar.searchBarStyle	= UISearchBarStyleMinimal;
 		searchBar.translucent		= NO;
 		
 		searchController.searchResultsTableView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
@@ -121,6 +122,20 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 		self.tableView.contentInset = UIEdgeInsetsMake(20.0, 0., 0., 0.);
 	}
 
+	
+	if ([self useBackgroundImage])
+	{
+		UIImage  *backgroundImage = [_backgroundImage resizableImageWithCapInsets:UIEdgeInsetsZero
+														  resizingMode:UIImageResizingModeTile];
+
+		self.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+	}
+	else
+	{
+		self.tableView.backgroundColor	= [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
+		self.tableView.backgroundView	= backView;
+	}
+	
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -228,18 +243,26 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 	label.textColor				= fontColor;
 	label.highlightedTextColor	= fontColor;
 	
-	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
-	
 	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
 	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
 	
 	UIView *selectedView = [[UIView alloc] initWithFrame:CGRectZero];
 	[selectedView setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuSelectedColorKey]];
 	
-	cell.backgroundView			= backGroundview;
+	if ([self useBackgroundImage])
+	{
+		[cell setBackgroundColor:[UIColor clearColor]];
+	}
+	else
+	{
+		[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
+		cell.backgroundView			= backGroundview;
+	}
+
 	cell.selectedBackgroundView	= selectedView;
 
     NSAssert([cell isKindOfClass:[CLAMenuTableViewCell class]], @"Wrong cell class!");
+	
 	
 	if (indexPath.row < [self.items count])
 	{
@@ -532,6 +555,14 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 	}
 	
 	return [NSArray arrayWithArray:collectedTopics];
+}
+
+-(BOOL)useBackgroundImage
+{
+	_backgroundImage = [UIImage imageNamed:@"menuBackground"];
+	
+	return _backgroundImage != nil;
+
 }
 
 -(NSArray *)searchBarSpacer

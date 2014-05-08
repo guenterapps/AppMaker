@@ -28,17 +28,9 @@
 -(UIImage *)image
 {
 	[self willAccessValueForKey:@"image"];
-	
-	UIImage *primitiveValue = [self primitiveValueForKey:@"image"];
-	
-	if (!primitiveValue)
-	{
-		NSData *imageData = [self primitiveValueForKey:@"imageData"];
-		
-		primitiveValue = [UIImage imageWithData:imageData];
-		
-		[self setPrimitiveValue:primitiveValue forKey:@"image"];
-	}
+
+	NSData *imageData = [self primitiveValueForKey:@"imageData"];
+	UIImage *primitiveValue = [UIImage imageWithData:imageData scale:[[UIScreen mainScreen] scale]];;
 	
 	[self didAccessValueForKey:@"image"];
 

@@ -10,11 +10,7 @@
 #import "CLABaseViewController.h"
 #import "CLAMenuViewControllerDelegate.h"
 
-@class CLALocalizedStringsStore;
-
 @interface CLAMenuTableViewController : CLABaseViewController <UITableViewDelegate, UITableViewDataSource, UISearchDisplayDelegate, UISearchBarDelegate>
-
-@property (nonatomic) CLALocalizedStringsStore *localizedStrings;
 
 @property (nonatomic) NSArray *items;
 @property (nonatomic, weak) id <CLAMenuViewControllerDelegate> delegate;

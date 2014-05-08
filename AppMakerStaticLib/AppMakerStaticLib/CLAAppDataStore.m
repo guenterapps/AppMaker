@@ -12,12 +12,16 @@
 #import "Image.h"
 #import "Item.h"
 #import "UIColor-Expanded.h"
+#import "CLAHomeCategory.h"
 
 #ifdef DEBUG
 
 #import "CLAAppDataStore+FakeData.h"
 
 #endif
+
+#define PREFETCHCOUNT 3
+#define ORDERBY_POSITION @"distance"
 
 NSString *const CLAAppDataStoreWillFetchImages			= @"CLAAppDataStoreWillFetchImages";
 NSString *const CLAAppDataStoreDidFetchImage			= @"CLAAppDataStoreDidFetchImage";
@@ -37,8 +41,9 @@ NSString *const CLAAppDataStoreFetchErrorKey			= @"CLAAppDataStoreFetchErrorKey"
 
 #pragma mark User Interface Keys
 
-NSString *const CLAAppDataStoreUIDirectionsColorKey		= @"CLAAppDataStoreUIDirectionsColorKey";
-NSString *const CLAAppDataStoreUIDirectionsTextColorKey	= @"CLAAppDataStoreUIDirectionsTextColorKey";
+NSString *const CLAAppDataStoreUIDirectionsColorKey			= @"CLAAppDataStoreUIDirectionsColorKey";
+NSString *const CLAAppDataStoreUIDirectionsTextColorKey		= @"CLAAppDataStoreUIDirectionsTextColorKey";
+NSString *const CLAAppDataStoreUIDirectionsPolylineColorKey = @"CLAAppDataStoreUIDirectionsPolylineColorKey";
 
 NSString *const CLAAppDataStoreUIBackgroundColorKey		= @"CLAAppDataStoreUIBackgroundColorKey";
 NSString *const CLAAppDataStoreUIForegroundColorKey		= @"CLAAppDataStoreUIForegroundColorKey";
@@ -85,6 +90,9 @@ NSString *const CLAAppDataStoreUIShareIconKey			= @"CLAAppDataStoreUIShareIconKe
 
 NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearchBar";
 
+NSString *const CLAAppDataStoreUIHomePoisRadius			= @"CLAAppDataStoreUIHomePoisRadius";
+NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHomeCategory";
+
 @interface CLAAppDataStore ()
 {
 	NSOperationQueue *_queue;
@@ -97,19 +105,27 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	NSPredicate *_poisPredicate;
 }
 
+@property (atomic) BOOL skipFetching;
+@property (nonatomic) NSUserDefaults *userDefaults;
+@property (nonatomic) CLLocationManager *locationManager;
+
+@property (nonatomic) NSDate *lastSyncDate;
+@property (nonatomic) CLLocation *lastPosition;
+
 -(NSArray *)fetchObjectsInEntity:(NSString *)entity;
 
 -(NSOperationQueue *)operationQueue;
 
 -(void)mergeObjects:(NSNotification *)notification;
 
--(void)fetchMainImagesForItems:(NSArray *)items dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
+-(NSArray *)_contentsForHomeCategory;
+-(NSArray *)sortItemsByPosition:(NSArray *)items;
 
-@property (nonatomic) NSUserDefaults *userDefaults;
-@property (nonatomic) CLLocationManager *locationManager;
+-(void)fetchMainImagesForItems:(NSArray *)items ofTotalItems:(NSArray *)total skipStartNotification:(BOOL)skip dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
+- (void)_fetchMainImageDataAtUrl:(NSURL *)imageURL block:(void (^)(NSError *))block item:(id)item;
+- (NSURL *)_mainImageUrlForItem:(id <CLAItem>)item;
 
-@property (nonatomic) NSDate *lastSyncDate;
-@property (nonatomic) CLLocation *lastPosition;
+-(BOOL)_isFetching;
 
 @end
 
@@ -153,7 +169,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 		self.locationManager.delegate = self;
 		self.locationManager.distanceFilter = 500.0;
-		self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+		self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 		[self.locationManager startUpdatingLocation];
 	}
 	else
@@ -164,7 +180,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 -(void)save:(NSError **)error
 {
-	if ([self.context hasChanges])
+	if ([self.context hasChanges] && ![self _isFetching])
 	{
 		__block NSError *internalError;
 		
@@ -234,117 +250,14 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 #pragma mark - Data Fetch
 
-#pragma mark Remote data
-
-- (void)fetchImagesForObjects:(NSMutableArray *)objectIDs urls:(NSMutableArray *)urls block:(void (^)(NSError *))block
+-(void)skipImageLoading
 {
-	__block NSError *error;
-	NSInteger imagesToFetch = [objectIDs count];
-	
-	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-	
-	dispatch_apply(imagesToFetch, queue, ^(size_t iteration)
-	{
-		NSInteger index = (NSInteger)iteration;
-
-#ifdef DEBUG
-		NSLog(@"Fetching image at url: %@", urls[index]);
-#endif
-
-		NSError *internalError;
-		NSURL *url			= [NSURL URLWithString:urls[index]];
-		NSData *imageData	= [NSData dataWithContentsOfURL:url options:0 error:&internalError];
-
-		if (internalError)
-		{
-			error = internalError;
-			NSLog(@"%@", internalError);
-		}
-
-		dispatch_async(dispatch_get_main_queue(), ^()
-		{
-			if (!internalError)
-			{
-				[[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreDidFetchImage object:self userInfo:nil];
-			}
-
-			Item *item = (Item *)[self.context objectWithID:objectIDs[index]];
-
-			[(NSManagedObject *)[item mainImageObject] setValue:imageData forKey:@"imageData"];
-
-			[item generatePinMapFromMainImage];
-		});
-
-	});
-
-	dispatch_async(dispatch_get_main_queue(), ^()
-	{
-		NSError *saveError;
-
-		[self save:&saveError];
-		
-		if (saveError)
-		{
-			NSLog(@"Error saving after fetching images: %@", saveError);
-			abort();
-		}
-		
-		[self invalidateCache];
-
-		block(error);
-
-	});
-
+	self.skipFetching = YES;
 }
 
--(void)fetchMainImagesForItems:(NSArray *)items dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block
-{
-	NSMutableArray *objectIDs	= [NSMutableArray array];
-	NSMutableArray *urls		= [NSMutableArray array];
-	
-	if (([items count]) > 0)
-	{
-		for (Item *item in items)
-		{
-			id <CLAImage> mainImage = [item mainImageObject];
-			
-			if (![mainImage imageURL])
-			{
-				continue;
-			}
-			
-			[objectIDs	addObject:[item objectID]];
-			[urls		addObject:[(id <CLAImage>)mainImage imageURL]];
-		}
+#pragma mark Image loading
 
-		dispatch_async(dispatch_get_main_queue(), ^()
-					   {
-						   NSDictionary *userInfo = @{CLATotalImagesToFetchKey : @([urls count])};
-						   
-						   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreWillFetchImages object:self userInfo:userInfo];
-					   });
-	
-		dispatch(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^()
-		{
-			[self fetchImagesForObjects:objectIDs urls:urls block:block];
-
-		});
-	}
-	else
-	{
-		NSLog(@"Requested to fetch images for empty array!");
-		dispatch_async(dispatch_get_main_queue(), ^()
-					   {
-						   NSDictionary *userInfo = @{CLATotalImagesToFetchKey : @(0)};
-						   
-						   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreWillFetchImages object:self userInfo:userInfo];
-					   });
-		block(nil);
-	}
-
-}
-
--(void)asyncFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block
+-(void)preFetchMainImagesWithCompletionBlock:(void (^)(NSError *))block
 {
 	static NSPredicate *nilImages;
 	
@@ -353,16 +266,30 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		nilImages = [NSPredicate predicateWithFormat:@"%K == nil", @"mainImage"];
 	}
 	
-	NSMutableArray *items = [NSMutableArray array];
+	NSMutableArray *items		= [NSMutableArray array];
+	NSMutableArray *totalItems	= [NSMutableArray array];
 	
 	for (Topic *topic in self.topics)
 	{
-		[items addObjectsFromArray:[[[topic items] allObjects] filteredArrayUsingPredicate:nilImages]];
+		NSArray *preFetchedArray	= [self contentsForTopic:topic];
+		
+		preFetchedArray			= [preFetchedArray filteredArrayUsingPredicate:nilImages];
+		NSRange preFetchRange	= NSMakeRange(0, MIN([preFetchedArray count], PREFETCHCOUNT));
+		
+		[totalItems addObjectsFromArray:preFetchedArray];
+		[items addObjectsFromArray:[preFetchedArray subarrayWithRange:preFetchRange]];
 	}
 	
 	void (*dispatch)(dispatch_queue_t, dispatch_block_t) = &dispatch_async;
 	
-	[self fetchMainImagesForItems:items dispatch:dispatch completion:block];
+	self.skipFetching = NO;
+	
+	[self fetchMainImagesForItems:items
+					 ofTotalItems:totalItems
+			skipStartNotification:NO
+						 dispatch:dispatch
+					   completion:block];
+	
 }
 
 -(void)fetchMainImagesWithCompletionBlock:(void (^)(NSError *))block
@@ -378,13 +305,46 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 	for (Topic *topic in self.topics)
 	{
-		[items addObjectsFromArray:[[[topic items] allObjects] filteredArrayUsingPredicate:nilImages]];
+		[items addObjectsFromArray:[[self contentsForTopic:topic] filteredArrayUsingPredicate:nilImages]];
 	}
 	
-	void (*dispatch)(dispatch_queue_t, dispatch_block_t) = &dispatch_sync;
+	void (*dispatch)(dispatch_queue_t, dispatch_block_t) = &dispatch_async;
 	
-	[self fetchMainImagesForItems:items dispatch:dispatch completion:block];
+	self.skipFetching = NO;
+	
+	[self fetchMainImagesForItems:items
+					 ofTotalItems:items
+			skipStartNotification:YES
+						 dispatch:dispatch
+					   completion:block];
 
+}
+
+-(void)fetchMainImageForItem:(id<CLAItem>)item completionBlock:(void (^)(NSError *))block
+{
+	
+	NSURL *imageURL =  [self _mainImageUrlForItem:item];
+	
+	if (imageURL)
+	{
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^()
+		{
+		   [self _fetchMainImageDataAtUrl:imageURL block:block item:item];
+		});
+	}
+}
+
+-(NSOperation *)fetchMainImageOperationForItem:(id<CLAItem>)item completionBlock:(void (^)(NSError *))block
+{
+	NSURL *imageURL =  [self _mainImageUrlForItem:item];
+	
+	if (!imageURL)
+		return nil;
+	
+	return [NSBlockOperation blockOperationWithBlock:^()
+	{
+		[self _fetchMainImageDataAtUrl:imageURL block:block item:item];
+	}];
 }
 
 //-(void)fetchMainImagesForTopic:(id <CLATopic>)topic completion:(void (^)(NSError *))block
@@ -508,33 +468,138 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	
 }
 
+#pragma mark Image loading - Internal Methods
 
+- (void)fetchMainImagesForObjectIDs:(NSMutableArray *)objectIDs urls:(NSMutableArray *)urls block:(void (^)(NSError *))block
+{
+	__block NSError *error;
 
-//-(void)fetchMainImageForItem:(id<CLAItem>)item completionBlock:(void (^)(NSError *))block
-//{
-//
-//	static NSPredicate *primary;
-//	
-//	if (!primary)
-//	{
-//		primary = [NSPredicate predicateWithFormat:@"%K == %@", @"primary", [NSNumber numberWithBool:YES]];
-//	}
-//	
-//	Image *image = [[[item images] filteredSetUsingPredicate:primary] anyObject];
-//#warning no image;
-//	if (!image)
-//	{
-//		return;
-//	}
-//	
-//	NSAssert(image, @"Item should have a primary image!");
-//	
-//	
-//	[self fetchImageForImageObject:image completion:block];
-//
-//}
+	for (NSInteger index = 0; index < [objectIDs count]; ++index)
+	{
+		if (self.skipFetching)
+		{
+			self.skipFetching = NO;
+			break;
+		}
+		
+#ifdef DEBUG
+		NSLog(@"Fetching image at url: %@", urls[index]);
+#endif
+		
+		NSError *internalError;
+		NSURL *url			= [NSURL URLWithString:urls[index]];
+		NSData *imageData	= [NSData dataWithContentsOfURL:url options:0 error:&internalError];
+		
+		if (internalError)
+		{
+			error = internalError;
+			NSLog(@"%@", internalError);
+		}
+		
+		dispatch_async(dispatch_get_main_queue(), ^()
+		{
+			if (!internalError)
+			{
+			   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreDidFetchImage object:self userInfo:nil];
+			}
 
+			Item *item = (Item *)[self.context objectWithID:objectIDs[index]];
 
+			[(NSManagedObject *)[item mainImageObject] setValue:imageData forKey:@"imageData"];
+
+			[item generatePinMapFromMainImage];
+		});
+		
+	};
+	
+	dispatch_async(dispatch_get_main_queue(), ^()
+	{
+		NSError *saveError;
+
+		[self save:&saveError];
+
+		if (saveError)
+		{
+		   NSLog(@"Error saving after fetching images: %@", saveError);
+		   abort();
+		}
+
+		[self invalidateCache];
+
+		if (block)
+		{
+		   block(error);
+		}
+
+	});
+	
+}
+
+-(void)fetchMainImagesForItems:(NSArray *)items ofTotalItems:(NSArray *)total skipStartNotification:(BOOL)skip dispatch:(void (*)())dispatch completion:(void (^)(NSError *))block;
+{
+	NSMutableArray *objectIDs	= [NSMutableArray array];
+	NSMutableArray *urls		= [NSMutableArray array];
+	
+	if (([items count]) > 0)
+	{
+		__block NSUInteger totalCount = 0;
+		
+		[total enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+		 {
+			 Item *item		= (Item *)obj;
+			 id <CLAImage> mainImage = [item mainImageObject];
+			 
+			 if ([mainImage imageURL])
+				 ++totalCount;
+			 
+			 
+		 }];
+		
+		for (Item *item in items)
+		{
+			id <CLAImage> mainImage = [item mainImageObject];
+			
+			if (![mainImage imageURL])
+			{
+				continue;
+			}
+			
+			[objectIDs	addObject:[item objectID]];
+			[urls		addObject:[(id <CLAImage>)mainImage imageURL]];
+		}
+		
+		if (!skip)
+		{
+			dispatch_async(dispatch_get_main_queue(), ^()
+						   {
+							   NSDictionary *userInfo = @{CLATotalImagesToFetchKey : @(totalCount)};
+							   
+							   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreWillFetchImages object:self userInfo:userInfo];
+						   });
+		}
+		
+		
+		dispatch(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^()
+				 {
+					 [self fetchMainImagesForObjectIDs:objectIDs urls:urls block:block];
+					 
+				 });
+	}
+	else
+	{
+		NSLog(@"Requested to fetch images for empty array!");
+		dispatch_async(dispatch_get_main_queue(), ^()
+					   {
+						   NSDictionary *userInfo = @{CLATotalImagesToFetchKey : @(0)};
+						   
+						   [[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreWillFetchImages object:self userInfo:userInfo];
+					   });
+		block(nil);
+	}
+	
+}
+
+#pragma mark JSON Fetching
 
 -(void)fetchRemoteDataForSingleContent:(NSString *)contentId withTimeout:(NSTimeInterval)timeout
 {
@@ -549,6 +614,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	fetchManager.position			= self.lastPosition.coordinate;
 	fetchManager.preferences		= self.preferences;
 	
+	fetchManager.consumerQueue		= queue;
 	[queue addOperation:fetchManager];
 }
 
@@ -581,6 +647,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	fetchManager.position		= self.lastPosition.coordinate;
 	fetchManager.preferences	= self.preferences;
 	
+	fetchManager.consumerQueue		= queue;
 	[queue addOperation:fetchManager];
 }
 
@@ -634,7 +701,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 	_contents	= nil;
 	_locales	= nil;
 	
-	[self.context reset];
+	//[self.context reset];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:CLAAppDataStoreDidInvalidateCache object:self];
 }
@@ -742,25 +809,33 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		_topics = [_topics filteredArrayUsingPredicate:_notEmptyTopics];
 		
 		_topics = [_topics sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-				   {
-					   id <CLATopic>topic1 = (id <CLATopic>)obj1;
-					   id <CLATopic>topic2	= (id <CLATopic>)obj2;
-					   
-					   
-					   NSComparisonResult result = NSOrderedSame;
-					   
-					   if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
-					   {
-						   result = NSOrderedDescending;
-					   }
-					   else if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic2.title])
-					   {
-						   result = NSOrderedAscending;
-					   }
-					   
-					   return result;
-					   
-				   }];
+				  {
+					  id <CLATopic>topic1 = (id <CLATopic>)obj1;
+					  id <CLATopic>topic2	= (id <CLATopic>)obj2;
+					  
+					  
+					  NSComparisonResult result = NSOrderedSame;
+					  
+					  if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
+					  {
+						  result = NSOrderedDescending;
+					  }
+					  else if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic2.title])
+					  {
+						  result = NSOrderedAscending;
+					  }
+					  
+					  return result;
+					  
+				  }];
+		
+		if ([[self userInterface][CLAAppDataStoreUIShowHomeCategory] boolValue])
+		{
+			NSMutableArray *_tempTopics = [NSMutableArray arrayWithArray:_topics];
+			[_tempTopics insertObject:[CLAHomeCategory homeCategory] atIndex:0];
+			_topics = [NSArray arrayWithArray:_tempTopics];
+		}
+
 	}
 	
 	return _topics;
@@ -822,9 +897,24 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 -(NSArray *)contentsForTopic:(id <CLATopic>)topic
 {
-	NSSortDescriptor *defaultOrdering = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
+	if (NSOrderedSame == [@"home" caseInsensitiveCompare:[topic topicCode]])
+	{
+		return [self _contentsForHomeCategory];
+	}
 	
-	return [[[topic items] allObjects] sortedArrayUsingDescriptors:@[defaultOrdering]];
+	NSArray *items = [[topic items] allObjects];
+	
+	if ([ORDERBY_POSITION isEqualToString:[(Topic *)topic sortOrder]])
+	{
+		items	= [self sortItemsByPosition:items];
+	}
+	else
+	{
+		NSSortDescriptor *defaultOrdering = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
+		items = [items sortedArrayUsingDescriptors:@[defaultOrdering]];
+	}
+	
+	return items;
 }
 
 -(NSArray *)poisForTopic:(id<CLATopic>)topic
@@ -861,7 +951,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		
 		NSAssert(_coordinator, @"Could not create NSPersistentStoreCoordinator!\n");
 		
-		NSURL * documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+		NSURL * documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory
 																			inDomains:NSUserDomainMask] lastObject];
 		
 		
@@ -872,8 +962,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		NSError *error;
 		
 		NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption	: @YES,
-										NSInferMappingModelAutomaticallyOption	: @YES};
-		
+									  NSInferMappingModelAutomaticallyOption	: @YES};
+			
 		NSPersistentStore *store = [_coordinator addPersistentStoreWithType:NSSQLiteStoreType
 															  configuration:nil
 																		URL:storeUrl
@@ -885,6 +975,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 			
 			abort();
 		}
+
 	}
 	
 	return _coordinator;
@@ -910,8 +1001,8 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 -(CLLocation *)lastPosition
 {
-	if (!_lastPosition)
-	{
+	//if (!_lastPosition)
+	//{
 		NSNumber *latitude	= [[self userDefaults] objectForKey:CLALastPositionLatitudeKey];
 		NSNumber *longitude	= [[self userDefaults] objectForKey:CLALastPositionLongitudeKey];
 		
@@ -923,7 +1014,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 													   longitude:[longitude doubleValue]];
 		}
 		
-	}
+	//}
 	
 	return _lastPosition;
 	
@@ -953,6 +1044,161 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 
 #pragma mark - private methods
 
+//- (void)fetchImageURL:(NSURL *)imageURL completion:(void (^)(NSError *, NSData *, NSManagedObjectID *))block
+//{
+////	if ([_imageLoadRequestIds containsObject:image.objectID])
+////		return;
+////	
+////	[_imageLoadRequestIds addObject:image.objectID];
+////	
+////	CLAImageFetch *imageFetch = [[CLAImageFetch alloc] initWithURL:[image imageURL]
+////														 forObject:[image objectID]
+////												   completionBlock:block];
+////	imageFetch.coordinator = self.coordinator;
+////	
+////	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mergeObjects:) name:NSManagedObjectContextDidSaveNotification object:imageFetch];
+////	
+////	[[self operationQueue] addOperation:imageFetch];
+//	
+//	NSError *error;
+//	NSData *imageData= [NSData dataWithContentsOfURL:imageURL options:0 error:&error];
+//	
+//	block(error, imageData, );
+//}
+
+- (BOOL)_isFetching
+{
+	return [[self operationQueue] operationCount] > 0;
+}
+
+- (NSURL *)_mainImageUrlForItem:(id<CLAItem>)item
+{
+	
+	NSParameterAssert([item conformsToProtocol:@protocol(CLAItem)]);
+	
+	static NSPredicate *primary;
+	
+	if (!primary)
+	{
+		primary = [NSPredicate predicateWithFormat:@"%K == %@", @"primary", [NSNumber numberWithBool:YES]];
+	}
+	
+	Image *image = [[[item images] filteredSetUsingPredicate:primary] anyObject];
+	
+	if (!image)
+	{
+		
+#ifdef DEBUG
+		NSLog(@"Could not find main image object for item %@", item);
+#endif
+		return nil;
+	}
+	
+	id <CLAImage> mainImage = [(Item *)item mainImageObject];
+	
+	if (![mainImage imageURL])
+	{
+#ifdef DEBUG
+		NSLog(@"Could not find main image url for item %@", item);
+#endif
+		return nil;
+	}
+	
+	return [NSURL URLWithString:[mainImage imageURL]];
+}
+
+- (void)_fetchMainImageDataAtUrl:(NSURL *)imageURL block:(void (^)(NSError *))block item:(id)item
+{
+	__block NSError *error;
+	
+#ifdef DEBUG
+	NSLog(@"Fetching image at url: %@", imageURL);
+#endif
+	NSData *imageData = [NSData dataWithContentsOfURL:imageURL
+											  options:0
+												error:&error];
+	if (!imageData)
+	{
+		NSLog(@"%@", error);
+		
+		dispatch_async(dispatch_get_main_queue(), ^()
+		{
+			if (block)
+				block(error);
+		});
+	}
+	else
+	{
+		dispatch_async(dispatch_get_main_queue(), ^()
+		{
+			[(NSManagedObject *)[(Item *)item mainImageObject] setValue:imageData forKey:@"imageData"];
+
+			[(Item *)item generatePinMapFromMainImage];
+
+			[self save:&error];
+
+			if (block)
+				block(error);
+		   
+		});
+	}
+}
+
+-(NSArray *)sortItemsByPosition:(NSArray *)items
+{
+	NSParameterAssert(items);
+
+	return	[items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+			{
+				Item *item1	= (Item *)obj1;
+				Item *item2	= (Item *)obj2;
+
+				CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
+
+				CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
+
+				CLLocationDistance distance1 = [location1 distanceFromLocation:self.lastPosition];
+				CLLocationDistance distance2 = [location2 distanceFromLocation:self.lastPosition];
+
+				NSComparisonResult result;
+
+				if (distance1 > distance2)
+				   result = NSOrderedDescending;
+				else if (distance2 > distance1)
+				   result = NSOrderedAscending;
+				else
+				   result = NSOrderedSame;
+
+				return result;
+			}];
+}
+
+-(NSArray *)_contentsForHomeCategory
+{
+	NSMutableArray *_contentsForHome = [NSMutableArray array];
+	NSInteger poisRadius;
+	
+	if ((poisRadius = [[self userInterface][CLAAppDataStoreUIHomePoisRadius] integerValue]) == 0)
+		poisRadius = 500;
+	
+	[[self pois] enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop)
+	{
+		id <CLAItem> item = (id <CLAItem>)obj;
+		
+		if (NSOrderedSame == [[[item topic] title] caseInsensitiveCompare:@"credits"])
+			return;
+		
+		CLLocation *itemLocation = [[CLLocation alloc] initWithLatitude:[item coordinate].latitude
+															  longitude:[item coordinate].longitude];
+		if ([itemLocation distanceFromLocation:self.lastPosition] <= poisRadius)
+			[_contentsForHome addObject:item];
+		
+	}];
+	
+	
+	return [self sortItemsByPosition:[NSArray arrayWithArray:_contentsForHome]];
+}
+
 -(void)mergeObjects:(NSNotification *)notification
 {
 
@@ -961,7 +1207,7 @@ NSString *const CLAAppDataStoreUIShowSearchBar			= @"CLAAppDataStoreUIShowSearch
 		return;
 	}
 	
-	[self.context performBlockAndWait:^()
+	[self.context  performBlockAndWait:^()
 	{
 		[self.context mergeChangesFromContextDidSaveNotification:notification];
 	}];

@@ -38,7 +38,7 @@
 @property (nonatomic) NSString *city;
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSString *subType;
-@property (nonatomic) UIImage *pinMap;
+@property (nonatomic, weak) UIImage *pinMap;
 @property (nonatomic) NSDate *date;
 
 @end
@@ -50,13 +50,14 @@
 @property (nonatomic) NSSet *items;
 @property (nonatomic, retain) id <CLATopic> parentTopic;
 @property (nonatomic, retain) NSSet *childTopics;
+@property (nonatomic) NSString *sortOrder;
 
 @end
 
 @protocol CLAImage <CommonProperties>
 
 @property (nonatomic) NSNumber *primary;
-@property (nonatomic) UIImage *image;
+@property (nonatomic, weak) UIImage *image;
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSString *imageURL;
 @property (nonatomic) NSString *videoURL;

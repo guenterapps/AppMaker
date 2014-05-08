@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
-#define TIMEOUT 10.0
-#define ORDERBY_POSITION @"distance"
+#import <CoreLocation/CoreLocation.h>
+
+#import <CoreLocation/CoreLocation.h>
 
 #import "CLAMainTableViewController.h"
 #import "CLAMapViewController.h"
@@ -15,10 +16,13 @@
 #import "CLAMenuTableViewController.h"
 #import "CLADetailViewController.h"
 #import "CLAEventTableViewCell.h"
-#import <CoreLocation/CoreLocation.h>
 #import "Item.h"
 #import "Topic.h"
 #import "UITableViewCell+Common.h"
+#import "SVProgressHUD.h"
+
+#define TIMEOUT 10.0
+#define MIN_SEARCH_LENGTH 4
 
 NSString *const CLAMainTableViewCellIdentifier = @"CLAMainTableViewCell";
 NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
@@ -36,6 +40,8 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 -(void)reloadContentsForStoreFetchedData:(NSNotification *)notification;
 -(void)setItems:(NSArray *)items;
+-(void)callApi:(NSNotification *)notification;
+-(UIImage *)mainImageForItem:(id <CLAItem>)item onCell:(UITableViewCell *)cell;
 
 @end
 
@@ -56,37 +62,37 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	return self;
 }
 
--(void)setItems:(NSArray *)items
-{
-	if ([ORDERBY_POSITION isEqualToString:[(Topic *)self.topic sortOrder]])
-	{
-		items	= [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-		{
-			Item *item1	= (Item *)obj1;
-			Item *item2	= (Item *)obj2;
-
-			CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
-
-			CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
-
-			CLLocationDistance distance1 = [location1 distanceFromLocation:self.store.lastPosition];
-			CLLocationDistance distance2 = [location2 distanceFromLocation:self.store.lastPosition];
-
-			NSComparisonResult result;
-
-			if (distance1 > distance2)
-				result = NSOrderedDescending;
-			else if (distance2 > distance1)
-				result = NSOrderedAscending;
-			else
-				result = NSOrderedSame;
-
-			return result;
-		}];
-	}
-	
-	_items = items;
-}
+//-(void)setItems:(NSArray *)items
+//{
+//	if ([ORDERBY_POSITION isEqualToString:[(Topic *)self.topic sortOrder]])
+//	{
+//		items	= [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+//		{
+//			Item *item1	= (Item *)obj1;
+//			Item *item2	= (Item *)obj2;
+//
+//			CLLocation *location1 = [[CLLocation alloc] initWithLatitude:[[item1 latitude] doubleValue] longitude:[[item1 longitude] doubleValue]];
+//
+//			CLLocation *location2 = [[CLLocation alloc] initWithLatitude:[[item2 latitude] doubleValue] longitude:[[item2 longitude] doubleValue]];
+//
+//			CLLocationDistance distance1 = [location1 distanceFromLocation:self.store.lastPosition];
+//			CLLocationDistance distance2 = [location2 distanceFromLocation:self.store.lastPosition];
+//
+//			NSComparisonResult result;
+//
+//			if (distance1 > distance2)
+//				result = NSOrderedDescending;
+//			else if (distance2 > distance1)
+//				result = NSOrderedAscending;
+//			else
+//				result = NSOrderedSame;
+//
+//			return result;
+//		}];
+//	}
+//	
+//	_items = items;
+//}
 
 
 -(void)setTopic:(id<CLATopic>)topic
@@ -112,16 +118,21 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		self.navigationItem.rightBarButtonItems = nil;
 	}
 	
-	if (topicHasChanged)
+	[self.tableView reloadData];
+	
+	if (topicHasChanged && _topic)
 	{
 		_scrolledHeight		= self.tableView.frame.size.height;
-		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
-							  atScrollPosition:UITableViewScrollPositionTop
-									  animated:NO];
-	}
-	
-	[self.tableView reloadData];
+		
+		if ([self.items count] > 0 )
+		{
 
+			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
+								  atScrollPosition:UITableViewScrollPositionTop
+										  animated:NO];
+
+		}
+	}
 }
 
 -(void)toggleViewController
@@ -222,6 +233,13 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", @"title", self.queryString];
 	
+	if ([self.queryString length] >= MIN_SEARCH_LENGTH)
+	{
+		NSPredicate *description = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", @"detailText", self.queryString];
+		
+		predicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[predicate, description]];
+	}
+	
 	self.searchControllerItems = [[self.store contents] filteredArrayUsingPredicate:predicate];
 	
 	return [self.searchControllerItems count];
@@ -270,7 +288,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		eventCell.dayLabel.textColor	= [self.store userInterface][CLAAppDataStoreUIMainListFontColorKey];
 		
 		[eventCell setTitle:item.title];
-		[eventCell setImage:[item mainImage]];
+		[eventCell setImage:[self mainImageForItem:item onCell:eventCell]];
 
 		
 		eventCell.monthLabel.text = [[monthFormatter stringFromDate:item.date] uppercaseString];
@@ -284,7 +302,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 		
 		[mainCell setTitle:item.title];
 		
-		[mainCell setImage:[item mainImage]];
+		[mainCell setImage:[self mainImageForItem:item onCell:mainCell]];
 		
 		cell = (UITableViewCell *)mainCell;
 	}
@@ -301,50 +319,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	if (shadowMask & CLACellShadowMaskMainCell)
 		[cell setShadowColor:(UIColor *)[self.store userInterface][CLAAppDataStoreUICellShadowColorKey]];
 
-	
     return cell;
-
-//	else
-//	{
-//		[self.store fetchMainImageForItem:item completionBlock:^(NSError *error)
-//		{
-//			if (error)
-//			{
-//				
-//				NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
-//
-//				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-//																	message:alertMessage
-//																   delegate:nil
-//														  cancelButtonTitle:@"Continua"
-//														  otherButtonTitles:nil];
-//				[alertView show];
-//				
-//				return;
-//				
-//			}
-//
-//			if ([item mainImage]) //check to avoid infinite requesting!
-//			{
-//				[(Item *)item generatePinMapFromMainImage];
-//				
-//				NSError *err;
-//				[self.store save:&err];
-//				
-//				if (err)
-//				{
-//					UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore!"
-//																 message:[NSString stringWithFormat:@"Errore nel salvataggio dei dati! (Code: %i)", [err code]]
-//																delegate:nil
-//													   cancelButtonTitle:@"Continua"
-//													   otherButtonTitles:nil];
-//					[av show];
-//				}
-//				
-//				[self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//			}
-//		}];
-//	}
 
 }
 
@@ -413,6 +388,48 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 }
 
 #pragma mark - Private Methods
+
+-(UIImage *)mainImageForItem:(id <CLAItem>)item onCell:(UITableViewCell *)cell;
+{
+	NSParameterAssert(item);
+	
+	UIImage *mainImage = [item mainImage];
+	
+	if (!mainImage)
+	{
+
+		[self.store fetchMainImageForItem:item completionBlock:^(NSError *error)
+		{
+			if (![item mainImage])
+				return;
+			
+			NSIndexPath *cellIndexPath = [self.tableView indexPathForCell:cell];
+			
+			if (cellIndexPath && (cellIndexPath.row < [self.items count]))
+			{
+				id <CLAItem> cellItem = [self.items objectAtIndex:cellIndexPath.row];
+				
+				if ([cellItem isEqual:item])
+				{
+					CATransition *fade = [CATransition animation];
+					
+					[fade setType:kCATransitionFade];
+					
+					[cell.layer addAnimation:fade forKey:nil];
+					
+					[(CLAMainTableViewCell *)cell setImage:[item mainImage]];
+				}
+			}
+			
+		}];
+	
+		return [UIImage imageNamed:@"noImage"];
+	}
+	
+	return mainImage;
+}
+
+
 #pragma mark Data handling
 
 -(void)reloadContentsForStoreFetchedData:(NSNotification *)notification
@@ -427,7 +444,7 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	if (error)
 	{
-		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %i)", error.code];
+		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
 														message:alertMessage
 													   delegate:nil
@@ -437,36 +454,21 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 
 	}
 	
-	[self.store asyncFetchMainImagesWithCompletionBlock:^(NSError *error)
-	 {
-		 if (error)
-		 {
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %i)", error.code];
-			 
-			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-																 message:alertMessage
-																delegate:nil
-													   cancelButtonTitle:@"Continua"
-													   otherButtonTitles:nil];
-			 [alertView show];
-		 }
-		 
-		 [self.tableView.pullToRefreshView stopAnimating];
-		 
-		 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"topicCode == %@", self.lastTopicCode];
-		 
-		 self.items	= nil;
-		 
-		 _topic		=  [[self.store.topics filteredArrayUsingPredicate:predicate] lastObject];
-		 
-		 if (_topic)
-		 {
-			 [self reloadContentsForTopic:_topic];
-		 }
-		 else
-			 [self.tableView reloadData];
-
-	 }];
+	[self.tableView.pullToRefreshView stopAnimating];
+	
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"topicCode == %@", self.lastTopicCode];
+	
+	self.items	= nil;
+	
+	_topic		=  [[self.store.topics filteredArrayUsingPredicate:predicate] lastObject];
+	
+	if (_topic)
+	{
+		[self reloadContentsForTopic:_topic];
+	}
+	else
+		[self.tableView reloadData];
 
 }
 
@@ -496,19 +498,16 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	[self.tableView addPullToRefreshWithActionHandler:^()
 	 {
 		 [[NSNotificationCenter defaultCenter] addObserver:self
-												  selector:@selector(reloadContentsForStoreFetchedData:)
-													  name:CLAAppDataStoreDidFetchNewData
-													object:self.store];
-		 
-		 [[NSNotificationCenter defaultCenter] addObserver:self
-												  selector:@selector(reloadContentsForStoreFetchedData:)
-													  name:CLAAppDataStoreDidFailToFetchNewData
+												  selector:@selector(callApi:)
+													  name:CLAAppDataStoreDidStopSeachingPosition
 													object:self.store];
 
-		 [self.store fetchRemoteDataWithTimeout:TIMEOUT skipCaching:NO];
+		 [self.store startUpdatingLocation];
 	 }];
 	
-	[self.tableView.pullToRefreshView setTitle:@"Carico i dati..." forState:SVPullToRefreshStateLoading];
+	[self.tableView.pullToRefreshView setTitle:[self.localizedStrings localizedStringForString:@"Loading..."]
+									  forState:SVPullToRefreshStateLoading];
+
 	[self.tableView.pullToRefreshView setTitle:@"Aggiorna!" forState:SVPullToRefreshStateTriggered];
 	[self.tableView.pullToRefreshView setTitle:@"Finito!" forState:SVPullToRefreshStateStopped];
 	
@@ -516,6 +515,25 @@ NSString *const CLAEventTableViewCellIdentifier = @"CLAEventTableViewCell";
 	
 	[self.tableView.pullToRefreshView setTextColor:foreGroundColor];
 	[self.tableView.pullToRefreshView setArrowColor:foreGroundColor];
+}
+
+-(void)callApi:(NSNotification *)notification
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self
+													name:CLAAppDataStoreDidStopSeachingPosition
+												  object:self.store];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(reloadContentsForStoreFetchedData:)
+												 name:CLAAppDataStoreDidFetchNewData
+											   object:self.store];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(reloadContentsForStoreFetchedData:)
+												 name:CLAAppDataStoreDidFailToFetchNewData
+											   object:self.store];
+	
+	[self.store fetchRemoteDataWithTimeout:TIMEOUT skipCaching:NO];
 }
 
 @end

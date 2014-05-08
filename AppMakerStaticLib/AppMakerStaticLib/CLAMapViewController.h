@@ -17,8 +17,6 @@
 
 @interface CLAMapViewController : CLABaseViewController <MKMapViewDelegate, CLAMenuViewControllerDelegate, UICollisionBehaviorDelegate>
 
-@property (nonatomic) CLALocalizedStringsStore *localizedStrings;
-
 @property (nonatomic) NSArray *items;
 @property (nonatomic) id <CLATopic>topic;
 

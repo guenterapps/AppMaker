@@ -9,7 +9,7 @@
 #import "CLABaseViewController.h"
 #import "CLAModelProtocols.h"
 
-@interface CLAWebViewController : CLABaseViewController
+@interface CLAWebViewController : CLABaseViewController <UIWebViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, readonly) UIWebView *webView;
 @property (nonatomic) NSString *headerTitle;

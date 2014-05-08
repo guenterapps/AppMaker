@@ -9,6 +9,7 @@
 #import "Item.h"
 #import "Topic.h"
 
+#define SCALE [[UIScreen mainScreen] scale]
 #define BORDER 2.0
 
 @implementation Item
@@ -89,16 +90,9 @@
 {
 	[self willAccessValueForKey:@"pinMap"];
 	
-	UIImage *primitiveValue = [self primitiveValueForKey:@"pinMap"];
+	NSData *pinMapData = [self primitiveValueForKey:@"pinMapData"];
 	
-	if (!primitiveValue)
-	{
-		NSData *pinMapData = [self primitiveValueForKey:@"pinMapData"];
-		
-		primitiveValue = [UIImage imageWithData:pinMapData];
-		
-		[self setPrimitiveValue:primitiveValue forKey:@"pinMap"];
-	}
+	UIImage * primitiveValue = [UIImage imageWithData:pinMapData scale:SCALE];
 	
 	[self didAccessValueForKey:@"pinMap"];
 	
@@ -112,19 +106,20 @@
 	UIImage *mainImage	= [self mainImage];
 	UIImage *pinMap		= [UIImage imageNamed:@"pin"];
 	NSData * pinMapData;
+	
+	CGSize pinSize = CGSizeMake(pinMap.size.width, pinMap.size.height);
 		
+	UIGraphicsBeginImageContextWithOptions(pinSize, NO, SCALE);
 		
-	UIGraphicsBeginImageContext(pinMap.size);
-		
-	[pinMap drawInRect:CGRectMake(0.0, 0.0, pinMap.size.width, pinMap.size.height)];
-	[mainImage drawInRect:CGRectMake(BORDER, BORDER, pinMap.size.width - 2 * BORDER, pinMap.size.width - 2 * BORDER)];
+	[pinMap drawInRect:CGRectMake(0.0, 0.0, pinSize.width, pinSize.height)];
+	[mainImage drawInRect:CGRectMake(BORDER, BORDER, pinSize.width - 2 * BORDER, pinSize.width - 2 * BORDER)];
 		
 	pinMap		= UIGraphicsGetImageFromCurrentImageContext();
 	pinMapData	= UIImagePNGRepresentation(pinMap);
-		
-	[self setValue:pinMapData forKey:@"pinMapData"];
-		
+	
 	UIGraphicsEndImageContext();
+	
+	[self setValue:pinMapData forKey:@"pinMapData"];
 
 }
 
