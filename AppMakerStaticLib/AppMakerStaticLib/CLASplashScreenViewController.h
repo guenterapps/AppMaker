@@ -20,6 +20,9 @@
 @property (nonatomic, readonly) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, weak) id <CLASplashScreenDelegateProtocol> delegate;
 
+
+-(void)finishCounterWithInterval:(NSTimeInterval)interval;
+
 -(void)startUpdatingProgress;
 -(void)enableSkipLoadingButton;
 -(void)disableSkipLoadingButton;

@@ -542,54 +542,59 @@ static id appMaker = nil;
 		return;
 	}
 	
-	[splashScreen enableSkipLoadingButton];
-
-	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *preFetcherror)
-	 {
-		 
-		 if (_loadApplicationIfNeeded)
-		 {
-			 _loadApplicationIfNeeded = NO;
-			 
-			 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-				 [self handlePresentApplication];
-			 });
-			 
-			 return;
-		 }
-		 
-		 [self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
-		 {
-			 NSError *presentingError = preFetcherror ? preFetcherror : error;
-			 
-			 [splashScreen disableSkipLoadingButton];
-			 
-			 if (presentingError)
-			 {
-
-				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)presentingError.code];
-				 
-				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-																	 message:alertMessage
-																	delegate:self
-														   cancelButtonTitle:@"Continua"
-														   otherButtonTitles:nil];
-				 [alertView show];
-			 }
-			 else if (_loadApplicationIfNeeded)
-			 {
-				 _loadApplicationIfNeeded = NO;
-				 
-				 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-					 [self handlePresentApplication];
-				 });
-			 }
-			 
-		 }];
-		 
-		 
-	 }];
+	[splashScreen finishCounterWithInterval:0.2];
 	
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+		[self handlePresentApplication];});
+
+//	[splashScreen enableSkipLoadingButton];
+//
+//	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *preFetcherror)
+//	 {
+//		 
+//		 if (_loadApplicationIfNeeded)
+//		 {
+//			 _loadApplicationIfNeeded = NO;
+//			 
+//			 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//				 [self handlePresentApplication];
+//			 });
+//			 
+//			 return;
+//		 }
+//		 
+//		 [self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
+//		 {
+//			 NSError *presentingError = preFetcherror ? preFetcherror : error;
+//			 
+//			 [splashScreen disableSkipLoadingButton];
+//			 
+//			 if (presentingError)
+//			 {
+//
+//				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)presentingError.code];
+//				 
+//				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
+//																	 message:alertMessage
+//																	delegate:self
+//														   cancelButtonTitle:@"Continua"
+//														   otherButtonTitles:nil];
+//				 [alertView show];
+//			 }
+//			 else if (_loadApplicationIfNeeded)
+//			 {
+//				 _loadApplicationIfNeeded = NO;
+//				 
+//				 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//					 [self handlePresentApplication];
+//				 });
+//			 }
+//			 
+//		 }];
+//		 
+//		 
+//	 }];
+
 }
 
 -(void)callApi:(NSNotification *)notification
