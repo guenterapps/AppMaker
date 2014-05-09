@@ -16,12 +16,39 @@
 #define kLONGITUDE_SPAN 1500.0
 #define ITINERARI	@"position"
 
+#define MAP_SIZE 5000
+#define MINIMUM_POIS_TO_SHOW 1
+
 #define WALKING_DISTANCE 3000
 
 static NSString *const CLAAnnotationViewReuseIdentifier = @"CLAAnnotationViewReuseIdentifier";
 
 static NSString *const CLADirectionsTransportTypeKey = @"CLADirectionsTransportTypeKey";
 static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDirectionsModeKey";
+
+@interface CLAUtilityPoi : NSObject
+
+- (id) initWithCoordinate:(CLLocationCoordinate2D)coordinate;
+
+@property (nonatomic, readonly) NSNumber *longitude;
+@property (nonatomic, readonly) NSNumber *latitude;
+
+@end
+
+@implementation CLAUtilityPoi
+
+-(id)initWithCoordinate:(CLLocationCoordinate2D)coordinate
+{
+	if (self = [super init])
+	{
+		_latitude	= @(coordinate.latitude);
+		_longitude	= @(coordinate.longitude);
+	}
+	
+	return self;
+}
+
+@end
 
 @interface CLAMapViewController ()
 {
@@ -151,6 +178,8 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 
 	if (!_isDetailMap)
 	{
+		[self.mapView setShowsUserLocation:YES];
+
 		self.items = [[self store] pois];
 		[(UILabel *)self.navigationItem.titleView setText:[self.topic title]];
 		[self showAnnotationsForTopic:self.topic animated:NO];
@@ -278,8 +307,11 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 		fetchOperation = [self.store fetchMainImageOperationForItem:item
 													completionBlock:^(NSError *error)
 							{
-								if (![itemTopicCode isEqualToString:[self.topic topicCode]])
-										return;
+								BOOL isHome = NSOrderedSame == [[self.topic topicCode] caseInsensitiveCompare:@"HOME"];
+								
+								if (!isHome)
+									if (![itemTopicCode isEqualToString:[self.topic topicCode]])
+											return;
 
 								[self.mapView removeAnnotation:(id <MKAnnotation>)item];
 								[self.mapView addAnnotation:(id <MKAnnotation>)item];
@@ -456,29 +488,76 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	 }];
 }
 
+inline MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
+{
+    MKMapPoint _leftUpperCorner = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+																	  region.center.latitude + region.span.latitudeDelta / 2,
+																	  region.center.longitude - region.span.longitudeDelta / 2));
+    MKMapPoint _rightLowerCorner = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+																	  region.center.latitude - region.span.latitudeDelta / 2,
+																	  region.center.longitude + region.span.longitudeDelta / 2));
+   
+	return MKMapRectMake(MIN(_leftUpperCorner.x,_rightLowerCorner.x), MIN(_leftUpperCorner.y,_rightLowerCorner.y), ABS(_leftUpperCorner.x-_rightLowerCorner.x), ABS(_leftUpperCorner.y-_rightLowerCorner.y));
+}
+
 - (MKCoordinateRegion)regionForPois:(NSArray *)pois
 {
 	
 	MKCoordinateRegion region;
-	MKCoordinateSpan span;
-	CLLocationCoordinate2D coordinateToCenter;
+
+	CLLocationCoordinate2D coordinateToCenter = [self.store.lastPosition coordinate];
 	
-	CLLocationCoordinate2D minimumCoordinate = CLLocationCoordinate2DMake(90, 180);
-	CLLocationCoordinate2D maximumCoordinate = CLLocationCoordinate2DMake(-90, -180);
+	MKUserLocation *userLocation = [self.mapView userLocation];
 	
-	maximumCoordinate.latitude	= [[pois valueForKeyPath:@"@max.latitude"] doubleValue];
-	maximumCoordinate.longitude = [[pois valueForKeyPath:@"@max.longitude"] doubleValue];
+	if (userLocation.location)
+	{
+		coordinateToCenter = userLocation.location.coordinate;
+	}
 	
-	minimumCoordinate.latitude	= [[pois valueForKeyPath:@"@min.latitude"] doubleValue];
-	minimumCoordinate.longitude = [[pois valueForKeyPath:@"@min.longitude"] doubleValue];
+	region = MKCoordinateRegionMakeWithDistance(coordinateToCenter, MAP_SIZE, MAP_SIZE);
 	
-	coordinateToCenter.latitude		= (maximumCoordinate.latitude + minimumCoordinate.latitude) / 2.0;
-	coordinateToCenter.longitude	= (maximumCoordinate.longitude + minimumCoordinate.longitude) / 2.0;
+	MKMapRect mapRect = MKMapRectForCoordinateRegion(region);
 	
-	span.latitudeDelta	= (maximumCoordinate.latitude - minimumCoordinate.latitude) * 1.5;
-	span.longitudeDelta	= (maximumCoordinate.longitude - minimumCoordinate.longitude) * 1.5;
+	NSUInteger idx = [pois indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+				  {
+					  id <CLAItem> item = (id <CLAItem>)obj;
+					  
+					  MKMapPoint point = MKMapPointForCoordinate([item coordinate]);
+
+					  return MKMapRectContainsPoint(mapRect, point);
+				  }];
 	
-	region = MKCoordinateRegionMake(coordinateToCenter, span);
+	if (NSNotFound == idx)
+	{
+		MKCoordinateSpan span;
+		
+		CLAUtilityPoi *lastPosition = [[CLAUtilityPoi alloc] initWithCoordinate:self.store.lastPosition.coordinate];
+
+		NSMutableArray *mutableMinimumPois = [NSMutableArray arrayWithArray:[pois subarrayWithRange:NSMakeRange(0, MIN([pois count] - 1, MINIMUM_POIS_TO_SHOW))]];
+			
+		[mutableMinimumPois addObject:lastPosition];
+											  
+		NSArray *minimumPois = [NSArray arrayWithArray:mutableMinimumPois];
+											  
+		
+		CLLocationCoordinate2D minimumCoordinate = CLLocationCoordinate2DMake(90, 180);
+		CLLocationCoordinate2D maximumCoordinate = CLLocationCoordinate2DMake(-90, -180);
+		
+		maximumCoordinate.latitude	= [[minimumPois valueForKeyPath:@"@max.latitude"] doubleValue];
+		maximumCoordinate.longitude = [[minimumPois valueForKeyPath:@"@max.longitude"] doubleValue];
+		
+		minimumCoordinate.latitude	= [[minimumPois valueForKeyPath:@"@min.latitude"] doubleValue];
+		minimumCoordinate.longitude = [[minimumPois valueForKeyPath:@"@min.longitude"] doubleValue];
+		
+		coordinateToCenter.latitude		= (maximumCoordinate.latitude + minimumCoordinate.latitude) / 2.0;
+		coordinateToCenter.longitude	= (maximumCoordinate.longitude + minimumCoordinate.longitude) / 2.0;
+		
+		span.latitudeDelta	= (maximumCoordinate.latitude - minimumCoordinate.latitude) * 1.5;
+		span.longitudeDelta	= (maximumCoordinate.longitude - minimumCoordinate.longitude) * 1.5;
+		
+		region = MKCoordinateRegionMake(coordinateToCenter, span);
+
+	}
 
 	return region;
 }
@@ -605,8 +684,12 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 
 -(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
 {
-
-	if (!userLocation)
+	if (userLocation.location)
+	{
+		[self.store setValue:userLocation.location forKey:@"lastPosition"];
+	}
+	
+	if (!userLocation || !_isDetailMap)
 	{
 		return;
 	}
