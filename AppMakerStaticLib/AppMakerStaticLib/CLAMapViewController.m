@@ -57,6 +57,7 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	UIButton *navigateControl;
 	
 	BOOL _isItinerary;
+	BOOL _skipRegionUpdate;
 	
 	NSOperationQueue *_operationQueue;
 
@@ -132,7 +133,9 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	if (![[topic topicCode] isEqualToString:_lastTopic])
 	{
 		[_operationQueue cancelAllOperations];
+		_skipRegionUpdate = NO;
 	}
+	
 	
 	_topic		= topic;
 	_lastTopic	= [[topic topicCode] copy];
@@ -596,7 +599,12 @@ inline MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
 	
 	[self.mapView addAnnotations:pois];
 
-	[self.mapView setRegion:region animated:animated];
+	if (!_skipRegionUpdate)
+	{
+		[self.mapView setRegion:region animated:animated];
+		_skipRegionUpdate = YES;
+	}
+
 
 }
 
