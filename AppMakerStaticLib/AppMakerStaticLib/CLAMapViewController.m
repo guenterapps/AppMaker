@@ -16,7 +16,7 @@
 #define kLONGITUDE_SPAN 1500.0
 #define ITINERARI	@"position"
 
-#define MAP_SIZE 5000
+#define MAP_SIZE 1500
 #define MINIMUM_POIS_TO_SHOW 1
 
 #define WALKING_DISTANCE 3000
