@@ -491,7 +491,7 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	 }];
 }
 
-inline MKMapRect _privateMKMapRectForCoordinateRegion(MKCoordinateRegion region)
+static inline MKMapRect _privateMKMapRectForCoordinateRegion(MKCoordinateRegion region)
 {
     MKMapPoint _leftUpperCorner = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
 																	  region.center.latitude + region.span.latitudeDelta / 2,
