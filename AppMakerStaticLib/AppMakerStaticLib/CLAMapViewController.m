@@ -491,7 +491,7 @@ static NSString *const CLALaunchOptionsDirectionsModeKey = @"CLALaunchOptionsDir
 	 }];
 }
 
-inline MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
+inline MKMapRect _privateMKMapRectForCoordinateRegion(MKCoordinateRegion region)
 {
     MKMapPoint _leftUpperCorner = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
 																	  region.center.latitude + region.span.latitudeDelta / 2,
@@ -519,7 +519,7 @@ inline MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
 	
 	region = MKCoordinateRegionMakeWithDistance(coordinateToCenter, MAP_SIZE, MAP_SIZE);
 	
-	MKMapRect mapRect = MKMapRectForCoordinateRegion(region);
+	MKMapRect mapRect = _privateMKMapRectForCoordinateRegion(region);
 	
 	NSUInteger idx = [pois indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
 				  {
