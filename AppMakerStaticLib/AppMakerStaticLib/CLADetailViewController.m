@@ -6,6 +6,11 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
+#import <Social/Social.h>
+#import <Accounts/Accounts.h>
+#import <MapKit/MapKit.h>
+#import <EventKit/EventKit.h>
+
 #import "CLADetailViewController.h"
 #import "CLAHeaderDetailCell.h"
 #import "CLAActionsDetailCell.h"
@@ -13,9 +18,6 @@
 #import "CLAModelProtocols.h"
 #import "CLADescriptionDetailCell.h"
 #import "CLAMapViewController.h"
-#import <Social/Social.h>
-#import <Accounts/Accounts.h>
-#import <MapKit/MapKit.h>
 #import "Image.h"
 #import "UITextView+Utilities.h"
 #import "CLAWebViewController.h"
@@ -76,7 +78,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 -(void)setupButton:(UIButton *)button withImage:(UIImage *)image selector:(SEL)selector;
 -(BOOL)isPoi;
 -(BOOL)showActions;
--(void)setupCellIdentifies;
+-(void)setupCellIdentifiers;
 -(void)openYoutubeLink:(id)sender;
 -(void)setupShareButton;
 -(void)showShareMenu;
@@ -85,10 +87,14 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 -(void)shareOnSocialNetwork:(NSString *)socialNetwork;
 
+- (BOOL)showCalendarShareMenu;
+
 //Social
 
 -(void)setupAndPostToTwitter;
 -(void)setupAndPostToFacebook;
+-(void)setupAndPostToGooglePlus;
+-(void)setupAndSaveToCalender;
 
 @end
 
@@ -386,7 +392,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 		 {
 			 if (error)
 			 {
-				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %i)", error.code];
+				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 				 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
 																 message:alertMessage
 																delegate:nil
@@ -555,7 +561,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 	[_headerDetailCell.scrollView setContentOffset:offset animated:YES];
 }
 
-- (void)setupCellIdentifies
+- (void)setupCellIdentifiers
 {
 	//		NSArray *indexes = @[@(kCLAHeaderDetailViewCellIndex), @(kCLAActionsDetailCellIndex), @(kCLAAddressDetailCellIndex), @(kCLADescriptionDetailCellIndex)];
 	//		NSArray *keys	 = @[CLAHeaderDetailCellIdentifier, CLAActionsDetailCellIdentifier, CLAAddressDetailCellIdentifier, CLADescriptionDetailCellIdentifier];
@@ -593,7 +599,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 -(void)registerTableviewNibs
 {
 	
-	[self setupCellIdentifies];
+	[self setupCellIdentifiers];
 	
 	for (NSString *identifier in _cellIndentifiers)
 	{
@@ -655,6 +661,16 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 #pragma mark Utilities
 
+- (BOOL)showCalendarShareMenu
+{
+	BOOL show = NO;
+	
+	if ([@"event" isEqualToString:[self.item subType]])
+		show = YES;
+
+	return show;
+}
+
 -(BOOL)isPoi
 {
 	CLLocationCoordinate2D coordinate = [self.item coordinate];
@@ -690,11 +706,26 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 
 -(void)showShareMenu
 {
-	UIActionSheet *share = [[UIActionSheet alloc] initWithTitle:nil
-													   delegate:self
-											  cancelButtonTitle:@"Annulla"
-										 destructiveButtonTitle:nil
-											  otherButtonTitles:@"Twitter", @"Facebook", nil];
+	UIActionSheet *share;
+	
+	
+	if ([self showCalendarShareMenu])
+	{
+		share	= [[UIActionSheet alloc] initWithTitle:nil
+											delegate:self
+								   cancelButtonTitle:@"Annulla"
+							  destructiveButtonTitle:nil
+								   otherButtonTitles:@"Twitter", @"Facebook", @"Google+", @"Calendar", nil];
+	}
+	else
+	{
+		share	= [[UIActionSheet alloc] initWithTitle:nil
+											delegate:self
+								   cancelButtonTitle:@"Annulla"
+							  destructiveButtonTitle:nil
+								   otherButtonTitles:@"Twitter", @"Facebook", @"Google+", nil];
+	}
+
 	[share showInView:self.view];
 	
 }
@@ -746,7 +777,124 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 					 completion:nil];
 }
 
-#pragma mark - Facebook & Twitter setup
+#pragma mark - EKEventEditViewDelegate
+
+-(void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
+{
+	[self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Google GPPSignInDelegate
+
+- (void)finishedWithAuth: (GTMOAuth2Authentication *)auth
+                   error: (NSError *) error
+{
+	if (error)
+	{
+		UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore"
+													 message:[error localizedDescription]
+													delegate:nil
+										   cancelButtonTitle:@"OK"
+										   otherButtonTitles:nil];
+		[av show];
+	}
+	else
+	{
+		self.appMaker.gShareHandler(self.item);
+	}
+}
+
+#pragma mark - Social and Calendar share
+
+-(void)setupAndPostToGooglePlus
+{
+	GPPSignIn *signIn = [GPPSignIn sharedInstance];
+	signIn.shouldFetchGooglePlusUser = YES;
+	//signIn.shouldFetchGoogleUserEmail = YES;  // Uncomment to get the user's email
+	
+	// You previously set kClientId in the "Initialize the Google+ client" step
+	signIn.clientID = self.appMaker.googlePlusID;
+	
+	// Uncomment one of these two statements for the scope you chose in the previous step
+	signIn.scopes = @[ kGTLAuthScopePlusLogin ];  // "https://www.googleapis.com/auth/plus.login" scope
+	//signIn.scopes = @[ @"profile" ];            // "profile" scope
+	
+	// Optional: declare signIn.actions, see "app activities"
+	signIn.delegate = self;
+	
+	[signIn authenticate];
+	
+}
+
+-(void)setupAndSaveToCalender
+{
+	EKEventStore  *_eventStore	= [[EKEventStore alloc] init];
+
+	NSString *eventTitle		= [self.item title];
+	NSString *location			= [self.item address];
+	NSDate *startDate			= [self.item date];
+	
+	NSDateComponents *duration	= [[NSDateComponents alloc] init];
+	NSCalendar *calendar		= [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+	
+	[duration setHour:2];
+	
+	NSDate *endDate				= [calendar dateByAddingComponents:duration
+															toDate:startDate
+															options:0];
+
+	
+	[_eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error)
+	{
+		
+		void (^completionHandler)(NSString *, NSString *) = ^(NSString *title, NSString *message)
+		{
+			dispatch_async(dispatch_get_main_queue(), ^
+			{
+			UIAlertView *av = [[UIAlertView alloc] initWithTitle:title
+														message:message
+													   delegate:nil
+											  cancelButtonTitle:@"OK"
+											  otherButtonTitles:nil];
+			[av show];
+
+			});
+		};
+		
+		if (error)
+		{
+			completionHandler(@"Errore!", [error localizedDescription]);
+		}
+		else if	(granted)
+		{
+			
+			EKEvent *event			= [EKEvent eventWithEventStore:_eventStore];
+			
+			[event setStartDate:startDate];
+			[event setEndDate:endDate];
+			[event setTitle:eventTitle];
+			[event setLocation:location];
+			[event setCalendar:[[_eventStore calendarsForEntityType:EKEntityTypeEvent] firstObject]];
+
+			dispatch_async(dispatch_get_main_queue(), ^()
+			{
+				EKEventEditViewController *eventController = [[EKEventEditViewController alloc] init];
+				
+				[eventController setEvent:event];
+				[eventController setEventStore:_eventStore];
+				[eventController setEditViewDelegate:self];
+	
+				[self presentViewController:eventController
+								   animated:YES
+								 completion:nil];
+			});
+		}
+		else
+		{
+			completionHandler(@"Errore!", @"Devi autorizzare l'accesso al calendario per salvare gli eventi! Vai in Impostazioni/Privacy e abilita l'App!");
+		}
+	}];
+}
 
 -(void)shareOnSocialNetwork:(NSString *)socialNetwork
 {
@@ -1018,6 +1166,13 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			break;
 		case 1:
 			[self setupAndPostToFacebook];
+			break;
+		case 2:
+			[self setupAndPostToGooglePlus];
+			break;
+		case 3:
+			if ([self showCalendarShareMenu])
+				[self setupAndSaveToCalender];
 			break;
 		default:
 			break;
