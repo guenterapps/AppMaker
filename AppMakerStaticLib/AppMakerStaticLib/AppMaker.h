@@ -41,6 +41,7 @@
  */
 
 typedef void (^ShareHandler)(SLComposeViewController *composer, id item);
+typedef void (^GShareHandler)(id item);
 
 //Menu selection notification globals
 extern NSString *const CLAMenuControllerDidSelectItemNotificationKey;
@@ -89,6 +90,7 @@ extern NSString *const CLAMenuControllerSelectedIndexPathKey;
 #pragma mark - Share Properties
 
 @property (nonatomic, copy) ShareHandler shareHandler;
+@property (nonatomic, copy) GShareHandler gShareHandler;
 @property (nonatomic, copy) NSString *googlePlusID;
 
 /**

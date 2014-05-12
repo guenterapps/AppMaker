@@ -765,10 +765,19 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 - (void)finishedWithAuth: (GTMOAuth2Authentication *)auth
                    error: (NSError *) error
 {
-	
-	///put share logic here!
-	
-    NSLog(@"Received error %@ and auth object %@",error, auth);
+	if (error)
+	{
+		UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Errore"
+													 message:[error localizedDescription]
+													delegate:nil
+										   cancelButtonTitle:@"OK"
+										   otherButtonTitles:nil];
+		[av show];
+	}
+	else
+	{
+		self.appMaker.gShareHandler(self.item);
+	}
 }
 
 #pragma mark - Social and Calendar share
@@ -1138,8 +1147,8 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			[self setupAndPostToGooglePlus];
 			break;
 		case 3:
-			NSAssert([self showCalendarShareMenu], @"Should show a calendar");
-			[self setupAndSaveToCalender];
+			if ([self showCalendarShareMenu])
+				[self setupAndSaveToCalender];
 			break;
 		default:
 			break;
