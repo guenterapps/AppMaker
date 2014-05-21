@@ -14,29 +14,23 @@
 {
 	[self willAccessValueForKey:@"image"];
 	
-	UIImage *image = [self primitiveValueForKey:@"image"];
-	
-	if (!image)
-	{
-		image = [UIImage imageWithData:[self primitiveValueForKey:@"imageData"]];
-		
-		[self setPrimitiveValue:image forKey:@"image"];
-	}
+	NSData *imageData = [self primitiveValueForKey:@"imageData"];
+	UIImage *primitiveValue = [UIImage imageWithData:imageData scale:[[UIScreen mainScreen] scale]];;
 	
 	[self didAccessValueForKey:@"image"];
 	
-	return image;
+	return primitiveValue;
 }
 
--(void)setImage:(UIImage *)image
-{
-	[self willChangeValueForKey:@"image"];
-	
-	NSData *imageData = UIImagePNGRepresentation(image);
-	
-	[self setPrimitiveValue:imageData forKey:@"imageData"];
-	
-	[self didChangeValueForKey:@"image"];
-}
+//-(void)setImage:(UIImage *)image
+//{
+//	[self willChangeValueForKey:@"image"];
+//	
+//	NSData *imageData = UIImagePNGRepresentation(image);
+//	
+//	[self setPrimitiveValue:imageData forKey:@"imageData"];
+//	
+//	[self didChangeValueForKey:@"image"];
+//}
 
 @end
