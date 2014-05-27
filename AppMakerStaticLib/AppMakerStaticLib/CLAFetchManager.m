@@ -21,9 +21,9 @@
 #define LOCALES	@"locales"
 #define LOCALE	@"locale"
 
-static NSString *CLATopicEtagKey	= @"CLATopicEtagKey";
-static NSString *CLAContentEtagKey	= @"CLAContentEtagKey";
-static NSString *CLALocalesEtagKey	= @"CLALocalesEtagKey";
+NSString *const CLATopicEtagKey	= @"CLATopicEtagKey";
+NSString *const CLAContentEtagKey	= @"CLAContentEtagKey";
+NSString *const CLALocalesEtagKey	= @"CLALocalesEtagKey";
 
 #define TIMEOUT	30
 
