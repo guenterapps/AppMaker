@@ -521,25 +521,22 @@ static id appMaker = nil;
 		
 		reloadData = [[self.store topics] count] <= 1 ;
 		
-		if (!reloadData)
-		{
-			alertMessage = @"Sembra che tu non sia connesso: potrai comunque navigare l'App senza accedere agli strumenti online.";
-			buttonMessage = @"Continua";
-		}
-		else
+		if (reloadData)
 		{
 			alertMessage	= @"Spiacenti, sembra che qualcosa sia andato storto con la connessione!";
 			buttonMessage	= @"Riprova";
+			
+			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Modalità offline"
+															message:alertMessage
+														   delegate:self
+												  cancelButtonTitle:buttonMessage
+												  otherButtonTitles:nil];
+			[alert show];
+			
+			return;
 		}
 
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Modalità offline"
-														message:alertMessage
-													   delegate:self
-											  cancelButtonTitle:buttonMessage
-											  otherButtonTitles:nil];
-		[alert show];
-		
-		return;
+
 	}
 	
 	[splashScreen finishCounterWithInterval:0.2];
