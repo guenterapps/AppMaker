@@ -857,13 +857,8 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 {
 	NSParameterAssert(code);
 	
-	static NSPredicate *_childTopics;
-	
-	if (!_childTopics)
-	{
-		_childTopics = [NSPredicate predicateWithFormat:@"parentTopic.topicCode == %@", code];
-	}
-	
+	NSPredicate *_childTopics = [NSPredicate predicateWithFormat:@"parentTopic.topicCode == %@", code];
+
 	return [[self topics] filteredArrayUsingPredicate:_childTopics];
 }
 
