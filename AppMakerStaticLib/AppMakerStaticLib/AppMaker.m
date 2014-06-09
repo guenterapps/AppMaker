@@ -449,7 +449,14 @@ static id appMaker = nil;
 		id <CLATopic> topic;
 
 		if ([[self.store topics] count] > 0)
-			topic = [self.store topics][0];
+		{
+			topic = [self.store mainTopics][0];
+
+			if ([topic hasChildTopics])
+			{
+				topic = [self.store topicsWithParentTopicCode:[topic topicCode]][0];
+			}
+		}
 		
 		[self.mainTableViewController setTopic:topic];
 		
@@ -491,7 +498,6 @@ static id appMaker = nil;
 		}
 		else
 		{
-#warning SHOW an ALERT FOR NEW CONTENT NOT FOUND!
 			resetAndInjectViewController();
 		}
 	}

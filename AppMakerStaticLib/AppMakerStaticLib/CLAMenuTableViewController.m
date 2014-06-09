@@ -522,16 +522,18 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 {
 	NSMutableArray *collectedTopics = [NSMutableArray arrayWithArray:[[self.store mainTopics] copy]];
 	
-	for (NSString *parentTopicCode in [_openParentTopics copy])
+	NSUInteger menuIndexShift = 0;
+	
+	for (id <CLATopic> parentTopic in [self.store topicsFromTopicsCodes:[_openParentTopics copy]])
 	{
-		NSAssert([parentTopicCode isKindOfClass:[NSString class]], @"topic code should be a NSString");
+		NSAssert(parentTopic, @"topic code should be a NSString");
 
 		NSUInteger index = [[self.store mainTopics] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
 		{
 			BOOL found = NO;
 			id <CLATopic> topic = (id <CLATopic>)obj;
 			
-			if ([[topic topicCode] isEqualToString:parentTopicCode])
+			if ([[topic topicCode] isEqualToString:[parentTopic topicCode]])
 				found = YES;
 
 			return found;
@@ -540,16 +542,17 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 		
 		if (NSNotFound == index)
 		{
-			[_openParentTopics removeObject:parentTopicCode];
+			[_openParentTopics removeObject:[parentTopic topicCode]];
 		}
 		else
 		{
-			NSArray *childTopics		= [self.store topicsWithParentTopicCode:parentTopicCode];
+			NSArray *childTopics		= [self.store topicsWithParentTopicCode:[parentTopic topicCode]];
 			
 			NSAssert([childTopics count] > 0, @"should have child topics");
 			
-			NSIndexSet *childIndexSet	= [[NSIndexSet alloc] initWithIndexesInRange:NSMakeRange(index + 1, [childTopics count])];
+			NSIndexSet *childIndexSet	= [[NSIndexSet alloc] initWithIndexesInRange:NSMakeRange(index + 1 + menuIndexShift, [childTopics count])];
 	
+			menuIndexShift += [childTopics count];
 			[collectedTopics insertObjects:childTopics atIndexes:childIndexSet];
 		}
 	}

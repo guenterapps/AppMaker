@@ -814,7 +814,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 					  id <CLATopic>topic2	= (id <CLATopic>)obj2;
 					  
 					  
-					  NSComparisonResult result = NSOrderedSame;
+					  NSComparisonResult result = [[topic1 ordering] compare:[topic2 ordering]];
 					  
 					  if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
 					  {
@@ -862,6 +862,15 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	return [[self topics] filteredArrayUsingPredicate:_childTopics];
 }
 
+
+-(NSArray *)topicsFromTopicsCodes:(NSArray *)codes
+{
+	NSParameterAssert(codes);
+	
+	NSPredicate *fromTopicCodes = [NSPredicate predicateWithFormat:@"SELF.topicCode in %@", codes];
+	
+	return [self.topics filteredArrayUsingPredicate:fromTopicCodes];
+}
 
 -(id <CLAItem>)contentWithIdentifier:(NSString *)identifier
 {

@@ -52,6 +52,8 @@
 @property (nonatomic, retain) NSSet *childTopics;
 @property (nonatomic) NSString *sortOrder;
 
+-(BOOL)hasChildTopics;
+
 @end
 
 @protocol CLAImage <CommonProperties>

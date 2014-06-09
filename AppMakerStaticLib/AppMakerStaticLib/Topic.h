@@ -29,4 +29,6 @@
 - (void)addItems:(NSSet *)values;
 - (void)removeItems:(NSSet *)values;
 
+-(BOOL)hasChildTopics;
+
 @end

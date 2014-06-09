@@ -22,4 +22,10 @@
 @dynamic childTopics;
 @dynamic parentTopic;
 
+-(BOOL)hasChildTopics
+{
+	return [self.childTopics count] > 0;
+}
+
+
 @end
