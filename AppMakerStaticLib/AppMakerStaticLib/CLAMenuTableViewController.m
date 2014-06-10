@@ -6,6 +6,9 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
+#define TO_OPEN 0
+#define TO_CLOSE M_PI_2
+
 #import "CLAMenuTableViewController.h"
 #import "UIViewController+JASidePanel.h"
 #import "JASidePanelController.h"
@@ -26,6 +29,7 @@ NSString *const CLAMenuControllerSelectedIndexPathKey			= @"CLAMenuControllerSel
 
 static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableViewCell";
+
 
 @interface CLAMenuTableViewController ()
 {
@@ -50,6 +54,8 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 -(NSArray *)buildTopics;
 -(BOOL)isParentTopic:(NSIndexPath *)indexPath;
 -(BOOL)isSubTopic:(NSIndexPath *)indexPath;
+
+-(void)rotateSubCategoryArrowAtIndexPath:(NSIndexPath *)indexPath WithAngle:(CGFloat)angle;
 
 @end
 
@@ -223,16 +229,18 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
 	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
 	
-	if (isSubTopic)
-	{
-		fontSize -= 2.;
-	}
+//	if (isSubTopic)
+//	{
+//		fontSize -= 2.;
+//	}
 	
 	UILabel *label		= [cell valueForKey:@"_title"];
 	
 	if ([self isParentTopic:indexPath])
 	{
 		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+		[(CLAMenuTableViewCell *)cell subCategoryArrow].hidden = NO;
+		[(CLAMenuTableViewCell *)cell subCategoryArrow].tintColor = fontColor;
 	}
 	else
 	{
@@ -335,6 +343,8 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 				
 				if ([_openParentTopics containsObject:topicCode])
 				{
+					[self rotateSubCategoryArrowAtIndexPath:indexPath WithAngle:TO_CLOSE];
+					
 					NSArray *indexPaths				= subTopicsHandler(topicCode);
 					NSIndexPath *selectedIndexPath	= [tableView indexPathForSelectedRow];
 					
@@ -351,9 +361,12 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 				{
 					[_openParentTopics addObject:topicCode];
 					
+					[self rotateSubCategoryArrowAtIndexPath:indexPath WithAngle:TO_OPEN];
+					
 					NSArray *indexPaths				= subTopicsHandler(topicCode);
 					[self.tableView insertRowsAtIndexPaths:subTopicsHandler(topicCode)
 										  withRowAnimation:UITableViewRowAnimationTop];
+					
 					
 					if (![tableView indexPathForSelectedRow])
 					{
@@ -487,6 +500,23 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 }
 
 #pragma mark - Private Methods
+
+-(void)rotateSubCategoryArrowAtIndexPath:(NSIndexPath *)indexPath WithAngle:(CGFloat)angle
+{
+	NSParameterAssert(indexPath);
+	
+	CLAMenuTableViewCell *cell = (CLAMenuTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+	
+	NSAssert(cell, @"Must return a valid cell");
+	
+	[UIView beginAnimations:@"subCategoryArrow" context:NULL];
+	
+	cell.subCategoryArrow.transform = CGAffineTransformMakeRotation(angle);
+	
+	[UIView commitAnimations];
+	
+}
+
 
 -(BOOL)isParentTopic:(NSIndexPath *)indexPath
 {

@@ -14,6 +14,7 @@
 	__weak IBOutlet UILabel *_title;
 }
 
+@property (weak, nonatomic) IBOutlet UIImageView *subCategoryArrow;
 -(void)setTitle:(NSString *)title;
 
 @end
