@@ -156,6 +156,11 @@ static id appMaker = nil;
 -(void)consumeRemoteNotification:(NSDictionary *)notification
 {
 	[self setNotifPayload:notification];
+	
+	if (!_startFromNotification)
+	{
+		return;
+	}
 
 	[SVProgressHUD showWithStatus:@"Carico i nuovi contenuti..." maskType:SVProgressHUDMaskTypeGradient];
 	
@@ -184,10 +189,13 @@ static id appMaker = nil;
 {
 	NSParameterAssert(notifPayload);
 	
-	//id notificationId = notifPayload[@"id_notifica"];
-	id notificationId = notifPayload[@"link"];
+	id notificationId;
 	
-	//NSAssert(notificationId, @"Notification payload should containd 'id_notifica' key");
+	if (!(notificationId = notifPayload[@"link"]))
+	{
+		_startFromNotification		= NO;
+		return;
+	}
 	
 	if ([notificationId isKindOfClass:[NSNumber class]])
 	{
