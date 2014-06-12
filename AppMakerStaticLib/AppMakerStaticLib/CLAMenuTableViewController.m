@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
-#define TO_OPEN 0
-#define TO_CLOSE M_PI_2
+#define TO_OPEN M_PI
+#define TO_CLOSE 0
 
 #import "CLAMenuTableViewController.h"
 #import "UIViewController+JASidePanel.h"

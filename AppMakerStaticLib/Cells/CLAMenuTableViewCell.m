@@ -15,7 +15,7 @@
 	[super awakeFromNib];
 	
 	self.subCategoryArrow.image = [self.subCategoryArrow.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-	self.subCategoryArrow.transform = CGAffineTransformMakeRotation(M_PI_2);
+	//self.subCategoryArrow.transform = CGAffineTransformMakeRotation(0);
 }
 
 -(void)prepareForReuse

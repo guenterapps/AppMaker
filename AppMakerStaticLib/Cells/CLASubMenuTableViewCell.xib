@@ -14,7 +14,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DS2-Rt-mo9">
-                        <rect key="frame" x="30" y="8" width="236" height="27"/>
+                        <rect key="frame" x="40" y="8" width="226" height="27"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -23,7 +23,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="DS2-Rt-mo9" firstAttribute="centerY" secondItem="dYa-Lf-mQ7" secondAttribute="centerY" id="Mvu-st-2M7"/>
-                    <constraint firstItem="DS2-Rt-mo9" firstAttribute="leading" secondItem="dYa-Lf-mQ7" secondAttribute="leading" constant="30" id="aq8-si-jJz"/>
+                    <constraint firstItem="DS2-Rt-mo9" firstAttribute="leading" secondItem="dYa-Lf-mQ7" secondAttribute="leading" constant="40" id="aq8-si-jJz"/>
                     <constraint firstAttribute="trailing" secondItem="DS2-Rt-mo9" secondAttribute="trailing" constant="54" id="oZD-iZ-piW"/>
                 </constraints>
             </tableViewCellContentView>
