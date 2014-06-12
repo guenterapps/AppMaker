@@ -320,6 +320,7 @@ static NSString *const CLADescriptionDetailCellIdentifier	= @"CLADescriptionDeta
 			
 			NSString *videoIDString = [[imageItem videoURL] substringWithRange:NSMakeRange(videoLocation + 3, 11)];
 			NSString *youtubeURL = [@"http://www.youtube.com/embed/" stringByAppendingString:videoIDString];
+			youtubeURL = [NSString stringWithFormat:@"%@?rel=0", youtubeURL];
 			
 			NSString *pageToLoad = [NSString stringWithFormat:webViewPage, (NSInteger)nextFrame.size.width, (NSInteger)nextFrame.size.height, youtubeURL];
 			
