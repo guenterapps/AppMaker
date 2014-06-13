@@ -6,6 +6,9 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
+#define TO_OPEN M_PI
+#define TO_CLOSE 0
+
 #import "CLAMenuTableViewController.h"
 #import "UIViewController+JASidePanel.h"
 #import "JASidePanelController.h"
@@ -26,6 +29,8 @@ NSString *const CLAMenuControllerSelectedIndexPathKey			= @"CLAMenuControllerSel
 
 
 static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
+static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableViewCell";
+
 
 @interface CLAMenuTableViewController ()
 {
@@ -36,7 +41,9 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	UISearchDisplayController *searchController;
 	NSIndexPath *_indexPathSelectedFromSearch;
 	BOOL _isSearching;
-	
+
+	NSMutableSet *_openParentTopics;
+
 	UIImage *_backgroundImage;
 
 }
@@ -44,6 +51,12 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification;
 -(NSArray *)searchBarSpacer;
 -(BOOL)useBackgroundImage;
+
+-(NSArray *)buildTopics;
+-(BOOL)isParentTopic:(NSIndexPath *)indexPath;
+-(BOOL)isSubTopic:(NSIndexPath *)indexPath;
+
+-(void)rotateSubCategoryArrowAtIndexPath:(NSIndexPath *)indexPath WithAngle:(CGFloat)angle;
 
 @end
 
@@ -64,6 +77,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 {
     [super viewDidLoad];
 	
+	_openParentTopics = [NSMutableSet set];
+	
 	BOOL showSearchBar = [[self.store userInterface][CLAAppDataStoreUIShowSearchBar] boolValue];
 	
 	UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -71,6 +86,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	backView.backgroundColor = [self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey];
 
 	[self setupTableView:self.tableView withCellIdentifier:CLAMenuTableViewCellIdentifier];
+	[self setupTableView:self.tableView withCellIdentifier:CLASubMenuTableViewCellIdentifier];
 	
 	if (YES == showSearchBar)
 	{
@@ -133,7 +149,7 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 {
 	[super viewWillAppear:animated];
 	
-	self.items = [self.store.topics copy];
+	self.items = [self buildTopics];
 	
 //	if (!_previousSelection)
 //	{
@@ -194,7 +210,17 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CLAMenuTableViewCellIdentifier forIndexPath:indexPath];
+	UITableViewCell *cell;
+	BOOL isSubTopic = [self isSubTopic:indexPath];
+	
+	if (isSubTopic)
+	{
+		cell = [tableView dequeueReusableCellWithIdentifier:CLASubMenuTableViewCellIdentifier forIndexPath:indexPath];
+	}
+	else
+	{
+		cell = [tableView dequeueReusableCellWithIdentifier:CLAMenuTableViewCellIdentifier forIndexPath:indexPath];
+	}
 	
 	//fixed a strange: the selected cell is covered by the selectedbacgroundview
 	//when it's scrolled until disappears and then reappears. This solved...
@@ -203,7 +229,24 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
 	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
 	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
+	
+//	if (isSubTopic)
+//	{
+//		fontSize -= 2.;
+//	}
+	
 	UILabel *label		= [cell valueForKey:@"_title"];
+	
+	if ([self isParentTopic:indexPath])
+	{
+		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+		[(CLAMenuTableViewCell *)cell subCategoryArrow].hidden = NO;
+		[(CLAMenuTableViewCell *)cell subCategoryArrow].tintColor = fontColor;
+	}
+	else
+	{
+		[cell setSelectionStyle:UITableViewCellSelectionStyleDefault];
+	}
 	
 	label.font					= [UIFont fontWithName:fontName size:fontSize];
 	label.textColor				= fontColor;
@@ -258,31 +301,16 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 #pragma mark - Delegate Methods
 
-//-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//	if (tableView != self.tableView)
-//		return;
-//	
-//	NSString *fontName	= [self.store userInterface][CLAAppDataStoreUIFontNameKey];
-//	UIColor	*fontColor	= [self.store userInterface][CLAAppDataStoreUIMenuFontColorKey];
-//	CGFloat fontSize	= [[self.store userInterface][CLAAppDataStoreUIMenuFontSizeKey] floatValue];
-//	UILabel *label		= [cell valueForKey:@"_title"];
-//	
-//	label.font			= [UIFont fontWithName:fontName size:fontSize];
-//	label.textColor		= fontColor;
-//	
-//	[cell setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
-//	
-//	UIView *backGroundview = [[UIView alloc] initWithFrame:CGRectZero];
-//	[backGroundview setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuBackgroundColorKey]];
-//	
-//	UIView *selectedView = [[UIView alloc] initWithFrame:CGRectZero];
-//	[selectedView setBackgroundColor:[self.store userInterface][CLAAppDataStoreUIMenuSelectedColorKey]];
-//
-//	cell.backgroundView			= backGroundview;
-//	cell.selectedBackgroundView	= selectedView;
-//
-//}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	
+	if ([self isSubTopic:indexPath])
+	{
+		return 35.0;
+	}
+	
+	return 44.0;
+}
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -290,10 +318,99 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 	{
 		_previousSelection = [tableView indexPathForSelectedRow];
 		
-		NSAssert(_previousSelection, @"There should always be a selection!");
+		if (!_previousSelection)
+			_previousSelection = [NSIndexPath indexPathForRow:0 inSection:0];
+
+		//NSAssert(_previousSelection, @"There should always be a selection!");
 		
-		if (indexPath.row < (NSInteger)[self.items count] - 1)
+		if (indexPath.row <= (NSInteger)[self.items count] - 1)
 		{
+			if ([self isParentTopic:indexPath])
+			{
+				id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
+				
+				NSString *topicCode = [[selectedTopic topicCode] copy];
+				
+				NSArray *(^subTopicsHandler)(NSString *) = ^NSArray *(NSString *topicCode)
+				{
+					self.items = [self buildTopics];
+					
+					NSArray *subTopics		= [self.store topicsWithParentTopicCode:topicCode];
+					
+					NSMutableArray *indexPaths = [NSMutableArray array];
+					
+					NSIndexSet *subIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(indexPath.row + 1, [subTopics count])];
+					
+					[subIndexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop)
+					 {
+						 [indexPaths addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+					 }];
+					
+					return indexPaths;
+					
+				};
+				
+				if ([_openParentTopics containsObject:topicCode])
+				{
+					[self rotateSubCategoryArrowAtIndexPath:indexPath WithAngle:TO_CLOSE];
+					
+					NSArray *indexPaths				= subTopicsHandler(topicCode);
+					NSIndexPath *selectedIndexPath	= [tableView indexPathForSelectedRow];
+					
+					if ([indexPaths containsObject:selectedIndexPath])
+					{
+						[tableView deselectRowAtIndexPath:selectedIndexPath animated:NO];
+					}
+					
+					[_openParentTopics removeObject:topicCode];
+					[self.tableView deleteRowsAtIndexPaths:subTopicsHandler(topicCode)
+											  withRowAnimation:UITableViewRowAnimationRight];
+				}
+				else
+				{
+					[_openParentTopics addObject:topicCode];
+					
+					[self rotateSubCategoryArrowAtIndexPath:indexPath WithAngle:TO_OPEN];
+					
+					NSArray *indexPaths				= subTopicsHandler(topicCode);
+					[self.tableView insertRowsAtIndexPaths:subTopicsHandler(topicCode)
+										  withRowAnimation:UITableViewRowAnimationTop];
+					
+					
+					if (![tableView indexPathForSelectedRow])
+					{
+						NSUInteger lastTopicIndex = [self.items indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+						{
+							BOOL found = NO;
+							id <CLATopic> _topic = (id <CLATopic>)obj;
+							
+							if ([_lastTopicCode isEqualToString:[_topic topicCode]])
+							{
+								found = YES;
+							}
+							
+							return found;
+						}];
+						
+						if (NSNotFound != lastTopicIndex)
+						{
+							NSIndexPath *lastTopicIndexPath = [NSIndexPath indexPathForRow:lastTopicIndex inSection:0];
+							
+							if ([indexPaths containsObject:lastTopicIndexPath])
+							{
+								dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+									[tableView selectRowAtIndexPath:lastTopicIndexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+								});
+								
+							}
+						}
+					}
+
+				}
+				
+				return nil;
+			}
+			
 			if (![self.delegate menuViewControllerShouldSelectTopic:[self.items objectAtIndex:indexPath.row]])
 			{
 				return _previousSelection;
@@ -417,11 +534,101 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 #pragma mark - Private Methods
 
+-(void)rotateSubCategoryArrowAtIndexPath:(NSIndexPath *)indexPath WithAngle:(CGFloat)angle
+{
+	NSParameterAssert(indexPath);
+	
+	CLAMenuTableViewCell *cell = (CLAMenuTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+	
+	NSAssert(cell, @"Must return a valid cell");
+	
+	[UIView beginAnimations:@"subCategoryArrow" context:NULL];
+	
+	cell.subCategoryArrow.transform = CGAffineTransformMakeRotation(angle);
+	
+	[UIView commitAnimations];
+	
+}
+
+
+-(BOOL)isParentTopic:(NSIndexPath *)indexPath
+{
+	BOOL isParent = NO;
+	
+	if (indexPath.row <= (NSInteger)[self.items count] - 1)
+	{
+		id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
+		
+		isParent = [[selectedTopic childTopics] count] > 0;
+		
+	}
+	
+	return isParent;
+}
+
+-(BOOL)isSubTopic:(NSIndexPath *)indexPath
+{
+	BOOL isParent = NO;
+	
+	if (indexPath.row <= (NSInteger)[self.items count] - 1)
+	{
+		id <CLATopic> selectedTopic = [self.items objectAtIndex:indexPath.row];
+		
+		isParent = [selectedTopic parentTopic] != nil;
+		
+	}
+	
+	return isParent;
+}
+
+-(NSArray *)buildTopics
+{
+	NSMutableArray *collectedTopics = [NSMutableArray arrayWithArray:[[self.store mainTopics] copy]];
+	
+	NSUInteger menuIndexShift = 0;
+	
+	for (id <CLATopic> parentTopic in [self.store topicsFromTopicsCodes:[_openParentTopics copy]])
+	{
+		NSAssert(parentTopic, @"topic code should be a NSString");
+
+		NSUInteger index = [[self.store mainTopics] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+		{
+			BOOL found = NO;
+			id <CLATopic> topic = (id <CLATopic>)obj;
+			
+			if ([[topic topicCode] isEqualToString:[parentTopic topicCode]])
+				found = YES;
+
+			return found;
+			
+		}];
+		
+		if (NSNotFound == index)
+		{
+			[_openParentTopics removeObject:[parentTopic topicCode]];
+		}
+		else
+		{
+			NSArray *childTopics		= [self.store topicsWithParentTopicCode:[parentTopic topicCode]];
+			
+			NSAssert([childTopics count] > 0, @"should have child topics");
+			
+			NSIndexSet *childIndexSet	= [[NSIndexSet alloc] initWithIndexesInRange:NSMakeRange(index + 1 + menuIndexShift, [childTopics count])];
+	
+			menuIndexShift += [childTopics count];
+			[collectedTopics insertObjects:childTopics atIndexes:childIndexSet];
+		}
+	}
+	
+	return [NSArray arrayWithArray:collectedTopics];
+}
+
 -(BOOL)useBackgroundImage
 {
 	_backgroundImage = [UIImage imageNamed:@"menuBackground"];
 	
 	return _backgroundImage != nil;
+
 }
 
 -(NSArray *)searchBarSpacer
@@ -437,8 +644,8 @@ static NSString *const CLAMenuTableViewCellIdentifier = @"CLAMenuTableViewCell";
 
 -(void)reloadMenuForStoreFetchedData:(NSNotification *)notification
 {
-	self.items = [self.store.topics copy];
-	
+	self.items = [self buildTopics];
+
 	NSIndexPath *indexPathToSelect;
 	
 	if ([self.items count] > 0)

@@ -204,9 +204,10 @@
 
 	NSError *error = [notification userInfo][CLAAppDataStoreFetchErrorKey];
 	
+	[self reloadContents];
+	
 	if (error)
 	{
-		[self reloadContents];
 
 		NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento dei dati! (Code: %li)", (long)error.code];
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Errore!"
@@ -219,25 +220,6 @@
 		return;
 		
 	}
-	
-	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *error)
-	 {
-		 [self reloadContents];
-
-		 if (error)
-		 {
-			 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)error.code];
-			 
-			 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-																 message:alertMessage
-																delegate:nil
-													   cancelButtonTitle:@"Continua"
-													   otherButtonTitles:nil];
-			 [alertView show];
-		 }
-		 
-	 }];
-
 
 }
 

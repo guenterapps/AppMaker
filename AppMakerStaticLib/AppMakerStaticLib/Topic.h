@@ -18,6 +18,8 @@
 @property (nonatomic, retain) NSSet *items;
 @property (nonatomic, retain) NSString *topicCode;
 @property (nonatomic, retain) NSString *sortOrder;
+@property (nonatomic, retain) Topic *parentTopic;
+@property (nonatomic, retain) NSSet *childTopics;
 @end
 
 @interface Topic (CoreDataGeneratedAccessors)
@@ -26,5 +28,7 @@
 - (void)removeItemsObject:(Item *)value;
 - (void)addItems:(NSSet *)values;
 - (void)removeItems:(NSSet *)values;
+
+-(BOOL)hasChildTopics;
 
 @end

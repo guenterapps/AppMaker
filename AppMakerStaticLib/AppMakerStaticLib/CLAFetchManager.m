@@ -21,9 +21,9 @@
 #define LOCALES	@"locales"
 #define LOCALE	@"locale"
 
-static NSString *CLATopicEtagKey	= @"CLATopicEtagKey";
-static NSString *CLAContentEtagKey	= @"CLAContentEtagKey";
-static NSString *CLALocalesEtagKey	= @"CLALocalesEtagKey";
+NSString *const CLATopicEtagKey	= @"CLATopicEtagKey";
+NSString *const CLAContentEtagKey	= @"CLAContentEtagKey";
+NSString *const CLALocalesEtagKey	= @"CLALocalesEtagKey";
 
 #define TIMEOUT	30
 
@@ -667,7 +667,7 @@ typedef NSArray * (^ParseHandler)(NSData *jsonData, NSError **error);
 	   return found;
 	}];
 	
-	NSAssert(found != NSNotFound, @"should have already a topic!");
+	NSAssert(found != NSNotFound, @"Item id %@ should have already a topic!", itemId);
 	
 	topic = [_collectedTopics objectAtIndex:found];
 	

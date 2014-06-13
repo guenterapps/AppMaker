@@ -98,14 +98,39 @@ static NSDateFormatter *dateFormatter;
 	id topics = [NSJSONSerialization JSONObjectWithData:topicsData
 												options:0
 												  error:error];
-	NSMutableArray *collectedTopics;
-	//	NSInteger ordering = 0;
+	
+	NSMutableArray *collectedTopics = [[NSMutableArray alloc] init];;
+	
+	void (^propertyHander)(id, NSDictionary *) = ^(id _topic, NSDictionary *_topicDictionary)
+	{
+		[collectedTopics addObject:_topic];
+		
+		for (NSString *key in topicMap)
+		{
+			if ([@"updated_at" isEqualToString:key])
+			{
+				NSDate *lastUpdate = [dateFormatter dateFromString:_topicDictionary[key]];
+				[_topic setValue:lastUpdate forKey:topicMap[key]];
+				
+				continue;
+				
+			}
+			else if ([@"created_at" isEqualToString:key])
+			{
+				NSDate *created = [dateFormatter dateFromString:_topicDictionary[key]];
+				[_topic setValue:created forKey:itemMap[key]];
+				
+				continue;
+				
+			}
+			
+			[_topic setValue:_topicDictionary[key] forKey:topicMap[key]];
+		}
+	};
 	
 	if (topics)
 	{
 		NSAssert([topics isKindOfClass:[NSArray class]], @"We should get an array of Topics!\n");
-		
-		collectedTopics = [[NSMutableArray alloc] init];
 		
 		for (NSDictionary *topicDictionary in topics)
 		{
@@ -118,33 +143,25 @@ static NSDateFormatter *dateFormatter;
 			
 			NSObject *topic = (NSObject *)[self.delegate topicObjectForTopicCode:code];
 			
-			[collectedTopics addObject:topic];
-			
-			//			[topic setValue:[NSNumber numberWithInteger:ordering++]
-			//								 forKey:@"ordering"];
-			
-			for (NSString *key in topicMap)
+			propertyHander(topic, topicDictionary);
+
+			for (id subDictionary in topicDictionary[@"children"])
 			{
-				if ([@"updated_at" isEqualToString:key])
+				code	= subDictionary[@"code"];
+				
+				if ([code isKindOfClass:[NSNumber class]])
 				{
-					NSDate *lastUpdate = [dateFormatter dateFromString:topicDictionary[key]];
-					[topic setValue:lastUpdate forKey:topicMap[key]];
-					
-					continue;
-					
-				}
-				else if ([@"created_at" isEqualToString:key])
-				{
-					NSDate *created = [dateFormatter dateFromString:topicDictionary[key]];
-					[topic setValue:created forKey:itemMap[key]];
-					
-					continue;
-					
+					code = [(NSNumber *)code stringValue];
 				}
 				
-				[topic setValue:topicDictionary[key] forKey:topicMap[key]];
+				NSObject *subTopic = (NSObject *)[self.delegate topicObjectForTopicCode:code];
+				
+				propertyHander(subTopic, subDictionary);
+				
+				[subTopic setValue:topic forKey:@"parentTopic"];
 				
 			}
+			
 		}
 	}
 	
@@ -202,6 +219,9 @@ static NSDateFormatter *dateFormatter;
 			
 			for (NSString *key in itemMap)
 			{
+				if (contentDictionary[key] == [NSNull null])
+					continue;
+
 				if ([@"updated_at" isEqualToString:key])
 				{
 					NSDate *lastUpdate = [dateFormatter dateFromString:contentDictionary[key]];

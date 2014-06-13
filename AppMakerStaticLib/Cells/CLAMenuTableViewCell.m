@@ -10,6 +10,14 @@
 
 @implementation CLAMenuTableViewCell
 
+-(void)awakeFromNib
+{
+	[super awakeFromNib];
+	
+	self.subCategoryArrow.image = [self.subCategoryArrow.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+	//self.subCategoryArrow.transform = CGAffineTransformMakeRotation(0);
+}
+
 -(void)prepareForReuse
 {
 	_title.text = nil;

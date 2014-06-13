@@ -1,38 +1,30 @@
-x remove hud
 
-X better save during image fetching, better invalidate cache
-- better pinmap draw
-X multiple threads core data accesses
+X new Cell
 
-X load main image on detail
-X load pinmap on map
+X new Model
 
+X mod api: topics: only with parent = null;
+X new api: topicsWithParentTopic:();
 
+X new mutableSet with open/closed categories
+X fetch logic
 
+X two new method to build topic lists:
+X (NSArray *)buildTopics (check for deleted topics)
+	(invoked viewWIllAppear)
+	(reloadForNewContents)
 
-X CLAMainTableViewController.m --> change to prefetchImages
-X CLAPreferencesViewController.m --> change to prefetchImages
-
-X reset self.skipEtc on datastore
-
-X add default images in main and detail
-
-X ad default image in mapview
-
-X remove fetch funtion unused
-
-X memory handling for large import (seems to increase)
-
--- aspect ratio
-
-X disable button when alertview prompts
-
-X searchbar
-
-X pull to refresh with hud
-
-X codice su mainTableViewController/AppDatastore per get main image --> check se la cell è ancora quella che mi serve o se sto già scaricando l'immagine.
+X willSelectCellAtIndexpath
+	X skip selection for parent categories
+	X trigger insertion/deletion of new cells:
+	X add/remove topic id to set
+	X bug: on select/deselect handle ivar _previuousSelection
+	X bug: on pulltorefresh crashes
 
 
+X cellForRowAtIndexPath:
+	check for category/subcategory, return appropriate cell
+	
+- handle first page
 
 

@@ -48,7 +48,11 @@
 @property (nonatomic) NSString *topicCode;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSSet *items;
+@property (nonatomic, retain) id <CLATopic> parentTopic;
+@property (nonatomic, retain) NSSet *childTopics;
 @property (nonatomic) NSString *sortOrder;
+
+-(BOOL)hasChildTopics;
 
 @end
 

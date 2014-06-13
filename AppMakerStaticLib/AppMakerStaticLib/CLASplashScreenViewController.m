@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
-#define JSONPROGRESS 20
+#define JSONPROGRESS 100
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -141,9 +141,14 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)finishCounterWithInterval:(NSTimeInterval)interval
+{
+	[_progressManager countToDelta:JSONPROGRESS withInterval:interval];
+}
+
 -(void)startUpdatingProgress
 {
-	[_progressManager countToDelta:JSONPROGRESS withInterval:2.0];
+	[_progressManager countToDelta:JSONPROGRESS withInterval:3.0];
 }
 
 -(void)enableSkipLoadingButton

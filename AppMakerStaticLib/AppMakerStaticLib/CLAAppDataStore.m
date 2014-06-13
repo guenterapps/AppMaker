@@ -23,6 +23,10 @@
 #define PREFETCHCOUNT 3
 #define ORDERBY_POSITION @"distance"
 
+extern NSString *const CLATopicEtagKey;
+extern NSString *const CLAContentEtagKey;
+extern NSString *const CLALocalesEtagKey;
+
 NSString *const CLAAppDataStoreWillFetchImages			= @"CLAAppDataStoreWillFetchImages";
 NSString *const CLAAppDataStoreDidFetchImage			= @"CLAAppDataStoreDidFetchImage";
 NSString *const CLATotalImagesToFetchKey				= @"CLATotalImagesToFetchKey";
@@ -151,6 +155,29 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 												 selector:@selector(mergeObjects:)
 													 name:NSManagedObjectContextDidSaveNotification
 												   object:nil];
+		
+		NSURL * documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+																			inDomains:NSUserDomainMask] lastObject];
+		
+		NSURL *fileURL = [documentDirectory URLByAppendingPathComponent:@"store.sqllite"];
+		
+		NSString *storePath = [[NSString alloc] initWithCString:[fileURL fileSystemRepresentation] encoding:NSUTF8StringEncoding];
+		
+		NSFileManager *fm = [NSFileManager defaultManager];
+		
+		if ([fm fileExistsAtPath:storePath])
+		{
+			
+			if ([fm removeItemAtURL:fileURL error:nil])
+			{
+			
+				NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+				
+				[ud setObject:nil forKey:CLATopicEtagKey];
+				[ud setObject:nil forKey:CLALocalesEtagKey];
+				[ud setObject:nil forKey:CLAContentEtagKey];
+			}
+		}
 		
 	}
 	
@@ -610,7 +637,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	fetchManager.singleContentId	= contentId;
 	fetchManager.coordinator		= self.coordinator;
 	fetchManager.delegate			= self;
-	fetchManager.httpTimeout		= 0; //defaults to 30
+	fetchManager.httpTimeout		= timeout;
 	fetchManager.position			= self.lastPosition.coordinate;
 	fetchManager.preferences		= self.preferences;
 	
@@ -643,7 +670,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 
 	fetchManager.coordinator	= self.coordinator;
 	fetchManager.delegate		= self;
-	fetchManager.httpTimeout	= 0; //defaults to 30
+	fetchManager.httpTimeout	= timeout;
 	fetchManager.position		= self.lastPosition.coordinate;
 	fetchManager.preferences	= self.preferences;
 	
@@ -804,7 +831,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	{
 		_topics = [self fetchObjectsInEntity:@"Topic"];
 		
-		NSPredicate *_notEmptyTopics = [NSPredicate predicateWithFormat:@"items.@count > 0"];
+		NSPredicate *_notEmptyTopics = [NSPredicate predicateWithFormat:@"items.@count > 0 OR childTopics.@count > 0"];
 		
 		_topics = [_topics filteredArrayUsingPredicate:_notEmptyTopics];
 		
@@ -814,7 +841,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 					  id <CLATopic>topic2	= (id <CLATopic>)obj2;
 					  
 					  
-					  NSComparisonResult result = NSOrderedSame;
+					  NSComparisonResult result = [[topic1 ordering] compare:[topic2 ordering]];
 					  
 					  if (NSOrderedSame == [@"credits" caseInsensitiveCompare:topic1.title])
 					  {
@@ -835,9 +862,41 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 			[_tempTopics insertObject:[CLAHomeCategory homeCategory] atIndex:0];
 			_topics = [NSArray arrayWithArray:_tempTopics];
 		}
+
 	}
 	
 	return _topics;
+}
+
+-(NSArray *)mainTopics
+{
+	static NSPredicate *_parentCategories;
+	
+	if (!_parentCategories)
+	{
+		_parentCategories = [NSPredicate predicateWithFormat:@"parentTopic == nil"];
+	}
+	
+	return [[self topics] filteredArrayUsingPredicate:_parentCategories];
+}
+
+-(NSArray *)topicsWithParentTopicCode:(NSString *)code
+{
+	NSParameterAssert(code);
+	
+	NSPredicate *_childTopics = [NSPredicate predicateWithFormat:@"parentTopic.topicCode == %@", code];
+
+	return [[self topics] filteredArrayUsingPredicate:_childTopics];
+}
+
+
+-(NSArray *)topicsFromTopicsCodes:(NSArray *)codes
+{
+	NSParameterAssert(codes);
+	
+	NSPredicate *fromTopicCodes = [NSPredicate predicateWithFormat:@"SELF.topicCode in %@", codes];
+	
+	return [self.topics filteredArrayUsingPredicate:fromTopicCodes];
 }
 
 -(id <CLAItem>)contentWithIdentifier:(NSString *)identifier

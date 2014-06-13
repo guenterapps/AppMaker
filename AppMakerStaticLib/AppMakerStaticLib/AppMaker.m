@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
-#define TIMEOUT 10.0
+#define TIMEOUT 30.0
 #define REGISTERKEY @"devices/register"
 #define PUSHANIMATIONKEY @"PUSHANIMATIONKEY"
 
@@ -156,6 +156,11 @@ static id appMaker = nil;
 -(void)consumeRemoteNotification:(NSDictionary *)notification
 {
 	[self setNotifPayload:notification];
+	
+	if (!_startFromNotification)
+	{
+		return;
+	}
 
 	[SVProgressHUD showWithStatus:@"Carico i nuovi contenuti..." maskType:SVProgressHUDMaskTypeGradient];
 	
@@ -184,10 +189,13 @@ static id appMaker = nil;
 {
 	NSParameterAssert(notifPayload);
 	
-	//id notificationId = notifPayload[@"id_notifica"];
-	id notificationId = notifPayload[@"link"];
+	id notificationId;
 	
-	//NSAssert(notificationId, @"Notification payload should containd 'id_notifica' key");
+	if (!(notificationId = notifPayload[@"link"]))
+	{
+		_startFromNotification		= NO;
+		return;
+	}
 	
 	if ([notificationId isKindOfClass:[NSNumber class]])
 	{
@@ -449,7 +457,14 @@ static id appMaker = nil;
 		id <CLATopic> topic;
 
 		if ([[self.store topics] count] > 0)
-			topic = [self.store topics][0];
+		{
+			topic = [self.store mainTopics][0];
+
+			if ([topic hasChildTopics])
+			{
+				topic = [self.store topicsWithParentTopicCode:[topic topicCode]][0];
+			}
+		}
 		
 		[self.mainTableViewController setTopic:topic];
 		
@@ -491,7 +506,6 @@ static id appMaker = nil;
 		}
 		else
 		{
-#warning SHOW an ALERT FOR NEW CONTENT NOT FOUND!
 			resetAndInjectViewController();
 		}
 	}
@@ -521,75 +535,77 @@ static id appMaker = nil;
 		
 		reloadData = [[self.store topics] count] <= 1 ;
 		
-		if (!reloadData)
-		{
-			alertMessage = @"Sembra che tu non sia connesso: potrai comunque navigare l'App senza accedere agli strumenti online.";
-			buttonMessage = @"Continua";
-		}
-		else
+		if (reloadData)
 		{
 			alertMessage	= @"Spiacenti, sembra che qualcosa sia andato storto con la connessione!";
 			buttonMessage	= @"Riprova";
+			
+			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Modalità offline"
+															message:alertMessage
+														   delegate:self
+												  cancelButtonTitle:buttonMessage
+												  otherButtonTitles:nil];
+			[alert show];
+			
+			return;
 		}
 
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Modalità offline"
-														message:alertMessage
-													   delegate:self
-											  cancelButtonTitle:buttonMessage
-											  otherButtonTitles:nil];
-		[alert show];
-		
-		return;
+
 	}
 	
-	[splashScreen enableSkipLoadingButton];
-
-	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *preFetcherror)
-	 {
-		 
-		 if (_loadApplicationIfNeeded)
-		 {
-			 _loadApplicationIfNeeded = NO;
-			 
-			 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-				 [self handlePresentApplication];
-			 });
-			 
-			 return;
-		 }
-		 
-		 [self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
-		 {
-			 NSError *presentingError = preFetcherror ? preFetcherror : error;
-			 
-			 [splashScreen disableSkipLoadingButton];
-			 
-			 if (presentingError)
-			 {
-
-				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)presentingError.code];
-				 
-				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
-																	 message:alertMessage
-																	delegate:self
-														   cancelButtonTitle:@"Continua"
-														   otherButtonTitles:nil];
-				 [alertView show];
-			 }
-			 else if (_loadApplicationIfNeeded)
-			 {
-				 _loadApplicationIfNeeded = NO;
-				 
-				 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-					 [self handlePresentApplication];
-				 });
-			 }
-			 
-		 }];
-		 
-		 
-	 }];
+	[splashScreen finishCounterWithInterval:0.2];
 	
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+		[self handlePresentApplication];});
+
+//	[splashScreen enableSkipLoadingButton];
+//
+//	[self.store preFetchMainImagesWithCompletionBlock:^(NSError *preFetcherror)
+//	 {
+//		 
+//		 if (_loadApplicationIfNeeded)
+//		 {
+//			 _loadApplicationIfNeeded = NO;
+//			 
+//			 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//				 [self handlePresentApplication];
+//			 });
+//			 
+//			 return;
+//		 }
+//		 
+//		 [self.store fetchMainImagesWithCompletionBlock:^(NSError *error)
+//		 {
+//			 NSError *presentingError = preFetcherror ? preFetcherror : error;
+//			 
+//			 [splashScreen disableSkipLoadingButton];
+//			 
+//			 if (presentingError)
+//			 {
+//
+//				 NSString *alertMessage = [NSString stringWithFormat:@"Errore nel caricamento delle immagini! (Code: %li)", (long)presentingError.code];
+//				 
+//				 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Errore!"
+//																	 message:alertMessage
+//																	delegate:self
+//														   cancelButtonTitle:@"Continua"
+//														   otherButtonTitles:nil];
+//				 [alertView show];
+//			 }
+//			 else if (_loadApplicationIfNeeded)
+//			 {
+//				 _loadApplicationIfNeeded = NO;
+//				 
+//				 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//					 [self handlePresentApplication];
+//				 });
+//			 }
+//			 
+//		 }];
+//		 
+//		 
+//	 }];
+
 }
 
 -(void)callApi:(NSNotification *)notification

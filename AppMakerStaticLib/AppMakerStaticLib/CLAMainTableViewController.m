@@ -21,7 +21,7 @@
 #import "UITableViewCell+Common.h"
 #import "SVProgressHUD.h"
 
-#define TIMEOUT 10.0
+#define TIMEOUT 30.0
 #define MIN_SEARCH_LENGTH 4
 
 NSString *const CLAMainTableViewCellIdentifier = @"CLAMainTableViewCell";
