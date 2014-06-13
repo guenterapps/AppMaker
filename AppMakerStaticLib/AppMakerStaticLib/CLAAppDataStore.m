@@ -610,7 +610,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 	fetchManager.singleContentId	= contentId;
 	fetchManager.coordinator		= self.coordinator;
 	fetchManager.delegate			= self;
-	fetchManager.httpTimeout		= 0; //defaults to 30
+	fetchManager.httpTimeout		= timeout;
 	fetchManager.position			= self.lastPosition.coordinate;
 	fetchManager.preferences		= self.preferences;
 	
@@ -643,7 +643,7 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 
 	fetchManager.coordinator	= self.coordinator;
 	fetchManager.delegate		= self;
-	fetchManager.httpTimeout	= 0; //defaults to 30
+	fetchManager.httpTimeout	= timeout;
 	fetchManager.position		= self.lastPosition.coordinate;
 	fetchManager.preferences	= self.preferences;
 	

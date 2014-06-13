@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Christian Lao. All rights reserved.
 //
 
-#define TIMEOUT 10.0
+#define TIMEOUT 30.0
 #define REGISTERKEY @"devices/register"
 #define PUSHANIMATIONKEY @"PUSHANIMATIONKEY"
 
