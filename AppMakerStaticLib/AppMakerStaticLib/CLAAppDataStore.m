@@ -23,6 +23,10 @@
 #define PREFETCHCOUNT 3
 #define ORDERBY_POSITION @"distance"
 
+extern NSString *const CLATopicEtagKey;
+extern NSString *const CLAContentEtagKey;
+extern NSString *const CLALocalesEtagKey;
+
 NSString *const CLAAppDataStoreWillFetchImages			= @"CLAAppDataStoreWillFetchImages";
 NSString *const CLAAppDataStoreDidFetchImage			= @"CLAAppDataStoreDidFetchImage";
 NSString *const CLATotalImagesToFetchKey				= @"CLATotalImagesToFetchKey";
@@ -151,6 +155,29 @@ NSString *const CLAAppDataStoreUIShowHomeCategory		= @"CLAAppDataStoreUIShowHome
 												 selector:@selector(mergeObjects:)
 													 name:NSManagedObjectContextDidSaveNotification
 												   object:nil];
+		
+		NSURL * documentDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+																			inDomains:NSUserDomainMask] lastObject];
+		
+		NSURL *fileURL = [documentDirectory URLByAppendingPathComponent:@"store.sqllite"];
+		
+		NSString *storePath = [[NSString alloc] initWithCString:[fileURL fileSystemRepresentation] encoding:NSUTF8StringEncoding];
+		
+		NSFileManager *fm = [NSFileManager defaultManager];
+		
+		if ([fm fileExistsAtPath:storePath])
+		{
+			
+			if ([fm removeItemAtURL:fileURL error:nil])
+			{
+			
+				NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+				
+				[ud setObject:nil forKey:CLATopicEtagKey];
+				[ud setObject:nil forKey:CLALocalesEtagKey];
+				[ud setObject:nil forKey:CLAContentEtagKey];
+			}
+		}
 		
 	}
 	
