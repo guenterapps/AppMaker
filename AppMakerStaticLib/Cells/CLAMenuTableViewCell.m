@@ -21,6 +21,8 @@
 -(void)prepareForReuse
 {
 	_title.text = nil;
+	self.subCategoryArrow.hidden = YES;
+	self.subCategoryArrow.tintColor = nil;
 }
 
 -(void)setTitle:(NSString *)title
