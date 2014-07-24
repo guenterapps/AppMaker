@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA047C62190A822B00FBF523 /* GoogleOpenSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA047C60190A822B00FBF523 /* GoogleOpenSource.framework */; };
-		AA047C63190A822B00FBF523 /* GooglePlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA047C61190A822B00FBF523 /* GooglePlus.framework */; };
 		AA124411185C9DA900058A30 /* MockedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA124410185C9DA900058A30 /* MockedItem.m */; };
 		AA124414185C9DB800058A30 /* MockedTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = AA124413185C9DB800058A30 /* MockedTopic.m */; };
 		AA124417185C9DC200058A30 /* MockedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = AA124416185C9DC200058A30 /* MockedImage.m */; };
@@ -166,6 +164,8 @@
 		AA8DD11F18D4A6B1002BE768 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		AA96F493190A5681001AEB7F /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		AA96F495190A5686001AEB7F /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
+		AA97D8651974645B00458BEF /* libGooglePlusUniversal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGooglePlusUniversal.a; path = "../../../../../Downloads/google-plus-ios-sdk-1.2.1/lib/libGooglePlusUniversal.a"; sourceTree = "<group>"; };
+		AA97D8661974645B00458BEF /* libGooglePlus.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGooglePlus.a; path = "../../../../../Downloads/google-plus-ios-sdk-1.2.1/lib/libGooglePlus.a"; sourceTree = "<group>"; };
 		AAA0621018B52B6D00133ED2 /* CLATableViewCellConfigurationProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLATableViewCellConfigurationProtocol.h; sourceTree = "<group>"; };
 		AAA387E11891CAC40081C900 /* CLAWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAWebViewController.h; sourceTree = "<group>"; };
 		AAA387E21891CAC40081C900 /* CLAWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAWebViewController.m; sourceTree = "<group>"; };
@@ -282,10 +282,8 @@
 				AA8DD12018D4A6B1002BE768 /* AVFoundation.framework in Frameworks */,
 				AA8D43831869856A00633BA1 /* Social.framework in Frameworks */,
 				AAB7F7E1185485C000AEC2FA /* MessageUI.framework in Frameworks */,
-				AA047C63190A822B00FBF523 /* GooglePlus.framework in Frameworks */,
 				AAA7910F184FC85600E0027C /* MapKit.framework in Frameworks */,
 				AA3AA4B3184A18E700A12FB3 /* QuartzCore.framework in Frameworks */,
-				AA047C62190A822B00FBF523 /* GoogleOpenSource.framework in Frameworks */,
 				AABB00331847D28C002CCF40 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -513,6 +511,8 @@
 		AABB00311847D28B002CCF40 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA97D8651974645B00458BEF /* libGooglePlusUniversal.a */,
+				AA97D8661974645B00458BEF /* libGooglePlus.a */,
 				AA047C60190A822B00FBF523 /* GoogleOpenSource.framework */,
 				AA047C61190A822B00FBF523 /* GooglePlus.framework */,
 				AA96F495190A5686001AEB7F /* EventKitUI.framework */,
@@ -915,6 +915,10 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/christian/Downloads/google-plus-ios-sdk-1.2.1/lib",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -937,6 +941,10 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/christian/Downloads/google-plus-ios-sdk-1.2.1/lib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -304,6 +304,18 @@ static NSString *const CLASubMenuTableViewCellIdentifier = @"CLASubMenuTableView
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	
+	//**********************************************************
+	//** __START: fixed searchDisplayController's cells height
+	if (tableView != self.tableView)
+	{
+		UITableViewCell *cell = [[UINib nibWithNibName:@"CLAMainTableViewCell" bundle:nil] instantiateWithOwner:nil options:nil][0];
+		
+		return  cell.bounds.size.height;
+		
+	}
+	//** _END
+	//**********************************************************
+	
 	if ([self isSubTopic:indexPath])
 	{
 		return 35.0;
